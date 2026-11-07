@@ -184,6 +184,25 @@
         .btn-save:hover {
             background-color: #1d4ed8;
         }
+
+        /* 힌트 토글 및 정답 페이지 스타일 */
+        .hint {
+            cursor: pointer;
+            color: #2563eb;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+        .hint:hover {
+            text-decoration: underline;
+        }
+        .answer {
+            display: none;
+            margin-top: 10px;
+        }
+        .answer.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -239,6 +258,9 @@
                 </ul>
             </div>
 
+            <!-- 동적으로 생성될 정답 페이지 메뉴 영역 -->
+            <div id="result-menu-container"></div>
+
         </div>
     </aside>
 
@@ -282,8 +304,8 @@
                 <div class="editable-div" >기초정보분석-타이타닉 데이터셋의 생존 여부(survived) 특성에 대한 요약 통계 결과, 생존하지 못한 승객의 인원수는 총 몇 명이며 전체 승객 대비 비율은 약 몇 %인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label><span class="hint">📮 힌트</span>
-                <input type="text" placeholder="생존하지 못한 승객의 비율만 작성하세요"> <br/>
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="생존하지 못한 승객의 비율만 작성하세요" oninput="checkAllAnswers()"> <br/>
                 <span class="answer"><img src="images/문제1.png" alt=""/></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
@@ -296,9 +318,9 @@
                 <div class="editable-div" >기초정보분석-타이타닉 데이터셋의 승선 항구(embark_town) 특성에 대한 분석 결과, 'Southampton' 항구에서 승선한 승객 수는 총 몇 명인가요?   </div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label><span class="hint">📮 힌트</span>
-                <input type="text" placeholder="정답을 입력하세요..."><br/>
-                   <span  class="answer"><img src="images/문제2.png" alt=""/></span>
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()"><br/>
+                <span class="answer"><img src="images/문제2.png" alt=""/></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -310,8 +332,9 @@
                 <div class="editable-div" >기초정보분석-나이(age) 히스토그램에서 17.4세 이상 ~ 22.4세 미만 구간에 속하는 승객은 총 몇 명인가요? </div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="결측치 개수와 전체비율 입력해주세요 입력예시: 결측치,  비율%">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="결측치 개수와 전체비율 입력해주세요 입력예시: 결측치,  비율%" oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/문제3.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -323,8 +346,9 @@
                 <div class="editable-div" >기초정보분석-타이타닉 데이터셋의 나이(age) 특성에 대한 기술통계 결과, 데이터의 결측치(missing) 개수는 총 몇 개이며 전체 대비 비율은 약 몇 %인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="결측치,비율% 로 입력해 주세요">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="결측치,비율% 로 입력해 주세요" oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/문제4.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -336,8 +360,9 @@
                 <div class="editable-div" >히트맵-타이타닉 데이터셋의 수치형 변수들 간의 상관관계 분석 결과, 자기 자신을 제외하고 **가장 높은 음의 상관관계(-0.549)**를 보여주는 두 변수는 무엇인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="영문으로 입력">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="영문으로 입력" oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/문제5.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -349,8 +374,9 @@
                 <div class="editable-div" >박스차트-승선 항구(embark_town)별 나이(age) 박스차트 분석 결과, Southampton 항구에서 Maximum을 벗어나 점으로 표시된 이상치(Outlier) 중 가장 높은 나이(값)는 몇 살인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="가장 높은 답을 찾아서 작성 하세요">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="가장 높은 답을 찾아서 작성 하세요" oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/문제6.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -362,8 +388,9 @@
                 <div class="editable-div" >분포차트-생존 여부(survived)와 객실 등급(pclass) 간의 관계를 보여주는 분포차트 분석 결과, 사망자(0) 중 2등급(pclass=2) 승객의 인원수는 총 몇 명인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="결측치,비율% 로 입력해 주세요">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="결측치,비율% 로 입력해 주세요" oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/문제7.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -376,8 +403,9 @@
                 <div class="editable-div" >타이타닉 데이터 전처리를 수행할 때, 수치형 데이터인 나이(age)의 결측치는 데이터의 편향과 이상치 영향을 줄이기 위해 **( ① )**으로 대체하고, 범주형 데이터인 승선 항구(embark_town)의 결측치는 가장 많이 등장하는 **( ② )**으로 대체하는 것이 효과적이다. ①과 ②에 들어갈 올바른 전처리 전략은 무엇인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="영어, 한글 모두  입력 가능 합니다.">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="영어, 한글 모두  입력 가능 합니다." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/전처리1.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -389,8 +417,9 @@
                 <div class="editable-div" >타이타닉 승객의 생존 여부를 맞추기 위해 딥러닝 모델을 학습시킨 결과, 전체 테스트 데이터 중 모델이 정답을 맞춘 비율인 **Accuracy(정확도)**는 약 얼마인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="정답을 입력하세요...">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/전처리2.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -410,8 +439,9 @@
 빈칸 ①, ②, ③에 들어갈 올바른 설정값은 무엇인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="정답을 입력하세요...">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/전처리3.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -423,8 +453,9 @@
                 <div class="editable-div" >딥러닝 학습 설정에서 최대 학습 횟수(Epochs)를 100으로 넉넉하게 설정했음에도 불구하고, 학습 결과 화면을 보면 **4번째(epoch: 4)**에서 학습이 일찍 끝났습니다. 이렇게 설정한 횟수보다 훨씬 빨리 학습이 멈춘 결정적인 이유와, 그 작동에 관여한 기능의 이름은 무엇인가요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="정답을 입력하세요...">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/전처리4.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -437,8 +468,9 @@
                 <div class="editable-div" >age_IM :17, embark_town_IM: Southnmpton, fare:1, parch:1, pclass:1, sex:male, slbsp:2  일경우 survived_predictions는 사망(0)과 생존(1)중 무엇으로 판정 되었나요?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="정답을 입력하세요...">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/모델1.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -450,8 +482,9 @@
                 <div class="editable-div">age_IM :17, embark_town_IM: Southnmpton, fare:1, parch:1, pclass:1, sex:male, slbsp:2  일경우 이 승객이 생존할 확률(survived_probabilities_1)은 약 몇 %인가요 (소수점 아래 첫째 자리까지 또는 소수로 표기)?</div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="정답을 입력하세요...">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/모델2.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -463,8 +496,9 @@
                 <div class="editable-div" ></div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="정답을 입력하세요...">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/모델3.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
@@ -476,14 +510,26 @@
                 <div class="editable-div" ></div>
             </div>
             <div class="form-group">
-                <label>정답 입력</label>
-                <input type="text" placeholder="정답을 입력하세요...">
+                <label>정답 입력 <span class="hint" onclick="toggleHint(this)">📮 힌트</span></label>
+                <input type="text" class="answer-input" placeholder="정답을 입력하세요..." oninput="checkAllAnswers()">
+                <span class="answer"><img src="images/모델4.png" alt="" /></span>
             </div>
             <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
         </section>
+
+        <!-- 동적으로 생성될 정답 페이지 본문 영역 -->
+        <section id="result-page" class="content-section">
+            <h1>🎉 모든 문제 정답 완료</h1>
+            <div class="form-group">
+                <label>작성하신 전체 정답 목록</label>
+                <div id="result-content" class="editable-div full" style="background-color: #f8fafc;">
+                    <!-- 입력된 정답들이 여기에 동적으로 표시됩니다. -->
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- 탭 전환 스크립트 -->
+    <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
         function switchTab(sectionId, element) {
             // 모든 본문 영역 숨기기
@@ -498,7 +544,67 @@
             items.forEach(item => item.classList.remove('active'));
 
             // 클릭한 메뉴에 active 클래스 추가
-            element.classList.add('active');
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        // 힌트 클릭 시 정답 이미지 토글 함수
+        function toggleHint(hintElement) {
+            const formGroup = hintElement.closest('.form-group');
+            const answerBox = formGroup.querySelector('.answer');
+            if (answerBox) {
+                answerBox.classList.toggle('show');
+            }
+        }
+
+        // 모든 정답이 입력되었는지 확인하고 정답 페이지를 동적으로 생성하는 함수
+        function checkAllAnswers() {
+            const inputs = document.querySelectorAll('.answer-input');
+            let allFilled = true;
+
+            inputs.forEach(input => {
+                if (input.value.trim() === '') {
+                    allFilled = false;
+                }
+            });
+
+            const resultMenuContainer = document.getElementById('result-menu-container');
+            
+            if (allFilled) {
+                // 정답 메뉴가 아직 생성되지 않았다면 생성
+                if (!document.getElementById('result-menu-item')) {
+                    resultMenuContainer.innerHTML = `
+                        <div class="category-group" style="margin-top: 20px;">
+                            <div class="category-title">🏆 결과</div>
+                            <ul class="problem-list">
+                                <li id="result-menu-item" class="problem-item" onclick="switchTab('result-page', this)">정답 페이지</li>
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                // 정답 페이지 내용 업데이트
+                let resultContentHtml = '<h4>모든 문제의 입력된 정답 내역입니다.</h4><br/><ul>';
+                inputs.forEach((input, index) => {
+                    const section = input.closest('.content-section');
+                    const title = section.querySelector('h1').innerText;
+                    resultContentHtml += `<li style="margin-bottom: 10px;"><strong>[${title}]</strong> 정답: ${input.value}</li>`;
+                });
+                resultContentHtml += '</ul>';
+                document.getElementById('result-content').innerHTML = resultContentHtml;
+
+            } else {
+                // 입력이 비어지면 정답 메뉴 제거 및 탭 해제
+                const resultMenuItem = document.getElementById('result-menu-item');
+                if (resultMenuItem) {
+                    // 현재 활성화된 상태였다면 첫 번째 탭으로 복귀
+                    if (resultMenuItem.classList.contains('active')) {
+                        switchTab('dq-1', document.querySelector('.problem-item'));
+                    }
+                    resultMenuContainer.innerHTML = '';
+                }
+            }
         }
     </script>
 </body>
