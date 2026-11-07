@@ -593,6 +593,8 @@
 
     <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
+    <!-- 탭 전환 및 기능 구현 스크립트 -->
+    <script>
         // 사용자가 입력한 정답들을 순서대로 기억하기 위한 객체 저장소
         const savedAnswers = {};
 
@@ -669,7 +671,7 @@
                     const section = input.closest('.content-section');
                     const titleElement = section ? section.querySelector('h1') : null;
                     const title = titleElement ? titleElement.innerText : `문제 ${questionNum}`;
-                    const answerValue = savedAnswers[questionNum] || '-';
+                    const answerValue = savedAnswers[questionNum] || input.value.trim() || '-';
 
                     tableHtml += `
                         <tr>
@@ -683,11 +685,6 @@
                 tableHtml += `</tbody></table>`;
                 document.getElementById('result-content').innerHTML = tableHtml;
 
-                // 정답 완료 시 입력창 초기화
-                inputs.forEach(input => {
-                    input.value = '';
-                });
-
             } else {
                 // 입력이 비어지면 정답 리스트 메뉴 숨기기
                 const resultMenuItem = document.getElementById('result-menu-item');
@@ -700,5 +697,6 @@
             }
         }
     </script>
+    
 </body>
 </html>
