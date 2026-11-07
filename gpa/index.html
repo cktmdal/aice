@@ -400,7 +400,11 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
             <p class="section-desc">모델의 학습 성능에 영향을 주는 세부 파라미터 값(학습률, 트리 깊이 등)을 지정합니다.</p>
             <div class="card-grid">
                  <div class="card"><h3>딥러닝 학습</h3><p><img src="images/28(오브젝트데이터는 디코더변경).png" alt=""></p>
-                 <p class="section-desc">스트레스 수준은 "object"로 데이터 유형  category, 디코더 선택 sparse로 한다</p>
+                 <p class="section-desc">스트레스 수준은 "object"로 데이터 유형  category, 디코더 선택 sparse로 한다 <br/>
+                 컴퓨터는 문자나 단어를 직접 이해하지 못하기 때문에, 범주형 데이터를 학습할 때 원-핫 인코딩(One-Hot Encoding)이라는 방식을 거칩니다.<br>
+                 sparse 디코더를 선택하면, 컴퓨터에게 "0이 아닌 중요한 값(1)의 위치만 압축해서 기억하고, 나머지 수많은 0들은 굳이 메모리에 다 차지게 저장하지 마!" 라고 지시하는 것과 같습니다.<br>
+                 학습 속도도 빨라지고 메모리와 성능의 낭비가 적어지는 효율성이 있습니다.
+                 </p>
                 </div>
             </div>
             <div class="card-grid">
