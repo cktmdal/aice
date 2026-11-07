@@ -594,27 +594,33 @@
     <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
     <!-- 탭 전환 및 기능 구현 스크립트 -->
+   <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
         // 사용자가 입력한 정답들을 순서대로 기억하기 위한 객체 저장소
         const savedAnswers = {};
 
         function switchTab(sectionId, element) {
+            // 모든 본문 영역 숨기기
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(sec => sec.classList.remove('active'));
 
+            // 선택한 본문 영역만 보이기
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
                 targetSection.classList.add('active');
             }
 
+            // 모든 메뉴 항목에서 active 클래스 제거
             const items = document.querySelectorAll('.problem-item');
             items.forEach(item => item.classList.remove('active'));
 
+            // 클릭한 메뉴에 active 클래스 추가
             if (element) {
                 element.classList.add('active');
             }
         }
 
+        // 힌트 토글 함수
         function toggleHint(hintElement) {
             const formGroup = hintElement.closest('.form-group');
             const answerBox = formGroup.querySelector('.answer');
@@ -686,7 +692,7 @@
                 document.getElementById('result-content').innerHTML = tableHtml;
 
             } else {
-                // 입력이 비어지면 정답 리스트 메뉴 숨기기
+                // 입력이 모두 채워지지 않았다면 정답 리스트 메뉴 숨기기
                 const resultMenuItem = document.getElementById('result-menu-item');
                 if (resultMenuItem) {
                     if (resultMenuItem.classList.contains('active')) {
@@ -697,6 +703,5 @@
             }
         }
     </script>
-    
 </body>
 </html>
