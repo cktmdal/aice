@@ -414,7 +414,7 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
                      📌 디코더 선택: regressor (회귀 모델) 선택 이유는? 연속된 숫자를 맞추는 일이기 때문에, 예측 모델을 회귀 모델(regressor)로 선택합니다.<br>
                      📌 활성화 함수  linear(GPA처럼 연속된 숫자 점수를 그대로 정확하게 예측해서 출력해야 하기 때문에, 숫자를 변형 없이 그대로 통과시켜 주는 linear 함수를 사용하는 것 ),<br/>
                      📌 FC 활성화 함수  relu(입력값이 0보다 작으면 0으로 만들어 버리고, 0보다 크면 입력된 값 그대로 통과시키는 아주 단순한 함수로 양수 영역에서는 입력값을 그대로 통과시키기 때문에 기울기가 항상 1로 일정하게 유지) <br>
-                     📌 FC 레이어수 2, FC 레이어 크기 2<br/>
+                     📌 FC 레이어수 2, FC 레이어 크기 5<br/>
                      📌 Epochs 20, batch size 128, early stop 5<br>
                      📌 Optimizer adam(학습을 진행할 때 방향과 보폭을 가장 효율적으로 찾아줌)  한다</p>
                 </div>
