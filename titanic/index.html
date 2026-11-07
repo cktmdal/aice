@@ -147,7 +147,14 @@
             overflow-y: auto;
             outline: none;
         }
-
+        
+       .full {
+            min-height: 80px;
+            max-height: 600px;
+            overflow-y: auto;
+            outline: none;
+        }
+        
         /* 빈 상태일 때 플레이스홀더처럼 보이게 처리하는 스타일 */
         .editable-div:empty:before {
             content: attr(data-placeholder);
@@ -238,7 +245,7 @@
     <main>
         <!-- 데이터 분석 문제들 -->
   <section id="dq-1" class="content-section active">
-        <div class="editable-div">
+        <div class="editable-div full" >
                    <h3>타이타닉 탑승자 명단을 사용하여 타이타닉 데이터 분석 및 생존자 예측</h3>
 
             <h5>문제 정의하기</h5>
