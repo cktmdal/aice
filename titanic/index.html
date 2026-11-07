@@ -185,12 +185,17 @@
         <div class="sidebar-header">Titanic AI Quiz 관리자</div>
         <div class="menu-container">
             
-            <!-- 분류: 회귀 (예시용 공간) -->
+            <!-- 분류: 회귀 (예시용 공간) 
             <div class="category-group">
                 <div class="category-title">📁 회귀 (Regression)</div>
                 <div class="sub-category-title">추후 오픈 예정</div>
             </div>
-
+            
+-->        <div class="sub-category-title">문제정의</div>
+                <ul class="problem-list">
+                    <li class="problem-item active" onclick="switchTab('da-0', this)">문제정의</li>
+                </ul>
+            
             <!-- 분류: 분류 (Classification) -->
             <div class="category-group">
                 <div class="category-title">📂 분류 (Classification)</div>
@@ -198,7 +203,7 @@
                 <!-- 1. 데이터 분석 -->
                 <div class="sub-category-title">데이터 분석</div>
                 <ul class="problem-list">
-                    <li class="problem-item active" onclick="switchTab('da-1', this)">문제 1</li>
+                    <li class="problem-item " onclick="switchTab('da-1', this)">문제 1</li>
                     <li class="problem-item" onclick="switchTab('da-2', this)">문제 2</li>
                     <li class="problem-item" onclick="switchTab('da-3', this)">문제 3</li>
                     <li class="problem-item" onclick="switchTab('da-4', this)">문제 4</li> 
@@ -233,6 +238,30 @@
     <main>
         <!-- 데이터 분석 문제들 -->
         <section id="da-1" class="content-section active">
+              <div class="editable-div">
+                   <h3>타이타닉 탑승자 명단을 사용하여 타이타닉 데이터 분석 및 생존자 예측</h3>
+
+            <h5>문제 정의하기</h5>
+            📙 타이타닉 탑승자 명단을 통해 생존자 분석 – 디카프리오는 정말 살 수 없었을까?<br><br>
+                
+            [ 1912년 4월 10일 영국 Southampton에서 출발하고 5일 후, 1912년 4월 15일 침몰<br>
+            이진 분류 예제에 적합한 데이터셋 중 6개 변수, 1개 변수는 생존 결과로 1이면 생존, 0이면 사망<br>
+            → 6개 변수를 독립변수로 보고 생존 유무를 예측하는 이진 분류 문제로 정의 ]<br>
+                
+            ✔️ 타이타닉 생존자 예측 데이터 셋 주요 컬럼 설명<br><br>
+               ​▫️​ Survived : 생존 여부 (0 = 사망, 1 = 생존)<br>
+               ​▫️​ Pclass : 티켓 클래스 (1 = 1등석, 2 = 2등석, 3 = 3등석)<br>
+               ​▫️​ Sex : 성별<br>
+               ​▫️​ Age : 나이<br>
+               ​▫️​ SibSp : 함께 탑승한 자녀 / 배우자 의 수<br>
+               ​▫️​ Parch : 함께 탑승한 부모님 / 아이들 의 수<br>
+               ​▫️​ Ticket : 티켓 번호<br>
+               ​▫️​ Fare : 탑승 요금<br>
+               ​▫️​ Cabin : 수하물 번호<br>
+               ​▫️​ Boat : 탈출한 보트가 있다면 boat 번호<br>
+               ​▫️​ Embarked : 선착장 (C = Cherbourg, Q = Queenstown, S = Southampton)<br>
+               </div>
+            
             <h1>[데이터 분석] 문제 1</h1>
             <div class="form-group">
                 <label>문제 내용 (Q)</label>
