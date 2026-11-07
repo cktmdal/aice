@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - 입력층, 은닉층, 출력층과 인공신경망 구조 마스터 교재</title>
+    <!-- Chart.js 라이브러리 연동 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #fecdd3;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .desc-box {
+            background: #f1f5f9;
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .desc-box p { margin: 4px 0; }
+        .desc-box span { color: var(--primary); font-weight: bold; }
+
+        /* 표 스타일 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: normal;
+        }
+
+        /* 신경망 다이어그램 박스 스타일 */
+        .network-box {
+            position: relative;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 25px 15px 15px 15px;
+            width: 100%;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        .layers-container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 180px;
+            z-index: 2;
+        }
+
+        .layer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        /* 뉴런(노드) 스타일 */
+        .neuron {
+            width: 36px;
+            height: 36px;
+            background-color: #ffffff;
+            border: 2px solid #555;
+            border-radius: 50%;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        .neuron:hover {
+            background-color: #e3f2fd;
+            border-color: #1976d2;
+            transform: scale(1.1);
+        }
+
+        /* SVG 연결선 스타일 */
+        .connections-svg {
+            position: absolute;
+            top: 25px;
+            left: 15px;
+            width: calc(100% - 30px);
+            height: 180px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .connections-svg line {
+            stroke: #666;
+            stroke-width: 1.5;
+            opacity: 0.7;
+        }
+
+        /* 하단 라벨 스타일 */
+        .labels-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            z-index: 2;
+        }
+        .label-badge {
+            background-color: var(--accent-green);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            flex: 1;
+            margin: 0 2px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧠 AICE Junior: 입력층, 은닉층, 출력층과 인공신경망 구조 마스터</h1>
+        <p>입력층, 은닉층, 출력층의 개념 및 딥러닝 인공신경망 구조 완벽 정리</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- 섹션 2: 딥러닝 인공신경망 구조 (기존 유지) -->
+        <section>
+            <h2>🚀 2. 딥러닝 - 은닉층이 2개 이상인 인공신경망[cite: 8]</h2>
+            <p style="font-size: 0.95rem; color: #475569; margin-bottom: 1.5rem;">
+                다수의 은닉층을 통과하며 복잡한 비선형 관계를 학습하는 대표적인 딥러닝 네트워크 구조입니다[cite: 8].
+            </p>
+
+            <div class="grid-2">
+                <!-- 왼쪽 딥러닝 구조 (은닉층 2개) -->
+                <div class="card">
+                    <h3 style="font-size: 1rem; color: var(--accent-blue); margin-top: 0; text-align: center;">기본 딥러닝 구조 (은닉층 2개)[cite: 1, 8]</h3>
+                    <div class="network-box" style="margin-top: 1rem;">
+                        <svg class="connections-svg" id="svg-left"></svg>
+                        <div class="layers-container" id="layers-left">
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="1"></div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층[cite: 1, 8]</div>
+                            <div class="label-badge">은닉층1[cite: 1, 8]</div>
+                            <div class="label-badge">은닉층2[cite: 1, 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-blue);">출력층[cite: 1, 8]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽 딥러닝 구조 (은닉층 3개) -->
+                <div class="card">
+                    <h3 style="font-size: 1rem; color: var(--primary); margin-top: 0; text-align: center;">다중 은닉층 구조 (은닉층 3개)[cite: 1, 8]</h3>
+                    <div class="network-box" style="margin-top: 1rem;">
+                        <svg class="connections-svg" id="svg-right"></svg>
+                        <div class="layers-container" id="layers-right">
+                            <div class="layer" data-neurons="3"></div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="2"></div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층[cite: 1, 8]</div>
+                            <div class="label-badge">은닉층1[cite: 1, 8]</div>
+                            <div class="label-badge">은닉층2[cite: 1, 8]</div>
+                            <div class="label-badge">은닉층3[cite: 8]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 은닉층이란? 섹션 (기존 유지) -->
+        <section>
+            <h2>🔍 2-1. 은닉층이란?[cite: 8]</h2>
+            
+            <div class="desc-box">
+                <p>» 입력층과 출력층 사이에 위치한 하나 이상의 층입니다[cite: 8].</p>
+                <p>» 일반적으로 은닉층이 많고, 뉴런의 개수가 많으면 <span>성능이 좋습니다</span>[cite: 8].</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="font-size: 1rem; color: var(--accent-blue); margin-top: 0; text-align: center;">은닉층이 2개인 구조[cite: 8]</h3>
+                    <div class="network-box" style="margin-top: 1rem;">
+                        <svg class="connections-svg" id="svg-hidden-2"></svg>
+                        <div class="layers-container" id="layers-hidden-2">
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="1"></div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층[cite: 1, 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층1[cite: 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층2[cite: 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-blue);">출력층[cite: 1, 8]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 1rem; color: var(--primary); margin-top: 0; text-align: center;">은닉층이 3개인 구조[cite: 8]</h3>
+                    <div class="network-box" style="margin-top: 1rem;">
+                        <svg class="connections-svg" id="svg-hidden-3"></svg>
+                        <div class="layers-container" id="layers-hidden-3">
+                            <div class="layer" data-neurons="3"></div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="2"></div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층1[cite: 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층2[cite: 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층3[cite: 8]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- [신규 추가] FC 레이어수와 FC 레이어 크기 섹션 -->
+        <section>
+            <h2>🎛️ 2-2. FC 레이어수와 FC 레이어 크기[cite: 10]</h2>
+            
+            <div class="desc-box">
+                <p>» <span>FC 레이어 수</span>: 은닉층의 개수를 의미합니다[cite: 10].</p>
+                <p>» <span>FC 레이어 크기</span>: 각 은닉층에 포함된 뉴런(노드)의 개수를 의미합니다[cite: 10].</p>
+            </div>
+
+            <div class="grid-2" style="align-items: center;">
+                <!-- 왼쪽: 파라미터 조절 UI 시뮬레이션 카드 -->
+                <div class="card" style="padding: 1.2rem;">
+                    <h3 style="font-size: 0.95rem; color: #334155; margin-top: 0; margin-bottom: 1rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.5rem;">⚙️ 모델 파라미터 설정 패널[cite: 10]</h3>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.85rem; font-weight: bold; color: var(--primary); display: block; margin-bottom: 4px;">FC 레이어 수 (3)[cite: 10]</label>
+                        <input type="range" min="0" max="10" value="3" disabled style="width: 100%; accent-color: var(--primary);">
+                        <div style="text-align: right; font-size: 0.8rem; color: #64748b; font-weight: bold;">3[cite: 10]</div>
+                    </div>
+
+                    <div style="margin-bottom: 0.5rem;">
+                        <label style="font-size: 0.85rem; font-weight: bold; color: var(--primary); display: block; margin-bottom: 4px;">FC 레이어 크기 (5)[cite: 10]</label>
+                        <input type="range" min="1" max="1024" value="5" disabled style="width: 100%; accent-color: var(--primary);">
+                        <div style="text-align: right; font-size: 0.8rem; color: #64748b; font-weight: bold;">256[cite: 10]</div>
+                    </div>
+
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px; margin-top: 1rem; font-size: 0.85rem; color: #991b1b;">
+                        <strong>💡 만약 다음과 같다면[cite: 10]:</strong><br>
+                        • FC 레이어수: 3[cite: 10]<br>
+                        • 레이어 크기: 5[cite: 10]
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 은닉층 3개, 각 은닉층 뉴런 5개인 구조 다이어그램 -->
+                <div>
+                    <div class="network-box" style="height: 310px;">
+                        <svg class="connections-svg" id="svg-fc" style="height: 210px;"></svg>
+                        <div class="layers-container" id="layers-fc" style="height: 210px;">
+                            <!-- 입력층 (7개 노드) -->
+                            <div class="layer" data-neurons="7"></div>
+                            <!-- 은닉층 1 (5개 노드) -->
+                            <div class="layer" data-neurons="5"></div>
+                            <!-- 은닉층 2 (5개 노드) -->
+                            <div class="layer" data-neurons="5"></div>
+                            <!-- 은닉층 3 (5개 노드) -->
+                            <div class="layer" data-neurons="5"></div>
+                            <!-- 출력층 (1개 노드) -->
+                            <div class="layer" data-neurons="1"></div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층[cite: 1, 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층1[cite: 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층2[cite: 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-green);">은닉층3[cite: 8]</div>
+                            <div class="label-badge" style="background-color: var(--accent-blue);">출력층[cite: 1, 8]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 1: 입력층이란? (독립변수 2개 예시 - 기존 유지) -->
+        <section>
+            <h2>📌 1. 입력층이란? (독립변수 2개 예시)</h2>
+            
+            <div class="desc-box">
+                <p>» 신경망의 시작 부분으로 외부로부터 데이터를 받아들입니다.</p>
+                <p>» 입력층은 <span>독립변수(x)</span>의 개수에 따라 노드의 수가 정해집니다.</p>
+            </div>
+
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>공부한 시간 (X<sub>1</sub>)</th>
+                                <th>게임을 한 시간 (X<sub>2</sub>)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <div class="network-box">
+                        <svg class="connections-svg" id="svg-input"></svg>
+                        <div class="layers-container" id="layers-input">
+                            <div class="layer">
+                                <div class="neuron">x1</div>
+                                <div class="neuron">x2</div>
+                            </div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="1"></div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층1</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층2</div>
+                            <div class="label-badge" style="background-color: var(--accent-blue);">출력층</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 1-1: 독립변수 3개 예시 (기존 유지) -->
+        <section>
+            <h2>📌 1-1. 입력층이란? (독립변수 3개 예시)</h2>
+            
+            <div class="desc-box">
+                <p>» 독립변수(x)가 3개인 경우, 입력층의 노드 수도 3개($x_1, x_2, x_3$)로 늘어납니다.</p>
+            </div>
+
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>공부한 시간 (X<sub>1</sub>)</th>
+                                <th>게임을 한 시간 (X<sub>2</sub>)</th>
+                                <th>이동속도 (X<sub>3</sub>)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>12.5</td>
+                                <td>15</td>
+                                <td>32</td>
+                            </tr>
+                            <tr>
+                                <td>2.5</td>
+                                <td>5</td>
+                                <td>45</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <div class="network-box">
+                        <svg class="connections-svg" id="svg-input-3"></svg>
+                        <div class="layers-container" id="layers-input-3">
+                            <div class="layer">
+                                <div class="neuron" style="width: 32px; height: 32px; font-size: 0.75rem;">x1</div>
+                                <div class="neuron" style="width: 32px; height: 32px; font-size: 0.75rem;">x2</div>
+                                <div class="neuron" style="width: 32px; height: 32px; font-size: 0.75rem;">x3</div>
+                            </div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="2"></div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층1</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층2</div>
+                            <div class="label-badge" style="background-color: var(--accent-blue);">출력층</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 3: 출력층이란? (수치 예측 예시 - 기존 유지) -->
+        <section>
+            <h2>🎯 3. 출력층이란? (수치 예측 예시)</h2>
+            
+            <div class="desc-box">
+                <p>» 신경망의 마지막 부분으로 모델의 예측값을 만들어 냅니다.</p>
+                <p>» 종속 변수(<span>y</span>)에 따라 노드의 수가 정해집니다.</p>
+            </div>
+
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>공부한 시간 (X<sub>1</sub>)</th>
+                                <th>게임을 한 시간 (X<sub>2</sub>)</th>
+                                <th>점수 (y)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10</td>
+                                <td>2</td>
+                                <td>90.5</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>70</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <div class="network-box">
+                        <svg class="connections-svg" id="svg-output"></svg>
+                        <div class="layers-container" id="layers-output">
+                            <div class="layer">
+                                <div class="neuron">x1</div>
+                                <div class="neuron">x2</div>
+                            </div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer" data-neurons="2"></div>
+                            <div class="layer">
+                                <div class="neuron" style="background-color: #dbeafe; border-color: var(--accent-blue); color: var(--accent-blue);">y</div>
+                            </div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층1</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층2</div>
+                            <div class="label-badge" style="background-color: var(--accent-blue);">출력층</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 4: 출력층 동물 분류 예시 (기존 유지) -->
+        <section>
+            <h2>🐾 3-1. 출력층이란? (동물 분류 예시 - 다중 분류)</h2>
+            
+            <div class="desc-box">
+                <p>» 신경망의 마지막 부분으로 모델의 예측값을 만들어 냅니다.</p>
+                <p>» 종속 변수(동물의 종류)에 따라 출력층의 뉴런 수가 정해집니다. (강아지, 토끼, 고양이)</p>
+            </div>
+
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>체중 (X<sub>1</sub>)</th>
+                                <th>꼬리길이 (X<sub>2</sub>)</th>
+                                <th>이동속도 (X<sub>3</sub>)</th>
+                                <th>동물의 종류 (y)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>12.5</td>
+                                <td>15</td>
+                                <td>32</td>
+                                <td>강아지</td>
+                            </tr>
+                            <tr>
+                                <td>2.5</td>
+                                <td>5</td>
+                                <td>45</td>
+                                <td>토끼</td>
+                            </tr>
+                            <tr>
+                                <td>3.5</td>
+                                <td>25</td>
+                                <td>48</td>
+                                <td>고양이</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <div class="network-box" style="height: 310px;">
+                        <svg class="connections-svg" id="svg-animal" style="height: 210px;"></svg>
+                        <div class="layers-container" id="layers-animal" style="height: 210px;">
+                            <div class="layer">
+                                <div class="neuron" style="width: 30px; height: 30px; font-size: 0.7rem;">x1</div>
+                                <div class="neuron" style="width: 30px; height: 30px; font-size: 0.7rem;">x2</div>
+                                <div class="neuron" style="width: 30px; height: 30px; font-size: 0.7rem;">x3</div>
+                            </div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" data-neurons="4"></div>
+                            <div class="layer" style="gap: 8px;">
+                                <div class="neuron" style="width: 32px; height: 32px; font-size: 1rem;" title="강아지">🐶</div>
+                                <div class="neuron" style="width: 32px; height: 32px; font-size: 1rem;" title="토끼">🐰</div>
+                                <div class="neuron" style="width: 32px; height: 32px; font-size: 1rem;" title="고양이">🐱</div>
+                            </div>
+                        </div>
+                        <div class="labels-container">
+                            <div class="label-badge">입력층</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층1</div>
+                            <div class="label-badge" style="background-color: #f59e0b;">은닉층2</div>
+                            <div class="label-badge" style="background-color: var(--accent-blue);">출력층</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>AICE Junior 학습  | Hangang Media High School</p>
+    </footer>
+
+    <script>
+        // 뉴런 생성 및 동적 풀 커넥션(Full Connection) 선을 그려주는 함수
+        function buildNetwork(layersContainerId, svgId) {
+            const container = document.getElementById(layersContainerId);
+            const svg = document.getElementById(svgId);
+            if (!container || !svg) return;
+            const layerElements = container.querySelectorAll('.layer');
+
+            // 1. data-neurons 속성이 있는 레이어에 뉴런(동그라미) 동적 생성
+            layerElements.forEach(layerEl => {
+                const countAttr = layerEl.getAttribute('data-neurons');
+                if (countAttr) {
+                    const count = parseInt(countAttr);
+                    for (let i = 0; i < count; i++) {
+                        const neuron = document.createElement('div');
+                        neuron.className = 'neuron';
+                        if (count > 5) {
+                            neuron.style.width = '26px';
+                            neuron.style.height = '26px';
+                            neuron.style.fontSize = '0.65rem';
+                        }
+                        layerEl.appendChild(neuron);
+                    }
+                }
+            });
+
+            // 2. 렌더링 직후 위치 좌표를 계산하여 SVG 선 연결
+            setTimeout(() => {
+                svg.innerHTML = '';
+                const svgRect = svg.getBoundingClientRect();
+
+                for (let i = 0; i < layerElements.length - 1; i++) {
+                    const currentNeurons = layerElements[i].querySelectorAll('.neuron');
+                    const nextNeurons = layerElements[i + 1].querySelectorAll('.neuron');
+
+                    currentNeurons.forEach(curr => {
+                        const currRect = curr.getBoundingClientRect();
+                        const x1 = currRect.left + currRect.width / 2 - svgRect.left;
+                        const y1 = currRect.top + currRect.height / 2 - svgRect.top;
+
+                        nextNeurons.forEach(next => {
+                            const nextRect = next.getBoundingClientRect();
+                            const x2 = nextRect.left + nextRect.width / 2 - svgRect.left;
+                            const y2 = nextRect.top + nextRect.height / 2 - svgRect.top;
+
+                            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                            line.setAttribute('x1', x1);
+                            line.setAttribute('y1', y1);
+                            line.setAttribute('x2', x2);
+                            line.setAttribute('y2', y2);
+                            svg.appendChild(line);
+                        });
+                    });
+                }
+            }, 60);
+        }
+
+        // 페이지 로드 시 모든 신경망 구조 생성
+        window.addEventListener('DOMContentLoaded', () => {
+            buildNetwork('layers-input', 'svg-input');
+            buildNetwork('layers-input-3', 'svg-input-3');
+            buildNetwork('layers-output', 'svg-output');
+            buildNetwork('layers-animal', 'svg-animal');
+            buildNetwork('layers-hidden-2', 'svg-hidden-2');
+            buildNetwork('layers-hidden-3', 'svg-hidden-3');
+            buildNetwork('layers-fc', 'svg-fc');
+            buildNetwork('layers-left', 'svg-left');
+            buildNetwork('layers-right', 'svg-right');
+        });
+
+        // 창 크기 변경 시 선 위치 반응형 재조정
+        window.addEventListener('resize', () => {
+            buildNetwork('layers-input', 'svg-input');
+            buildNetwork('layers-input-3', 'svg-input-3');
+            buildNetwork('layers-output', 'svg-output');
+            buildNetwork('layers-animal', 'svg-animal');
+            buildNetwork('layers-hidden-2', 'svg-hidden-2');
+            buildNetwork('layers-hidden-3', 'svg-hidden-3');
+            buildNetwork('layers-fc', 'svg-fc');
+            buildNetwork('layers-left', 'svg-left');
+            buildNetwork('layers-right', 'svg-right');
+        });
+    </script>
+</body>
+</html>

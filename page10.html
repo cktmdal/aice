@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - 딥러닝의 학습 방법</title>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #666666;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: block; /* 기존 flex 좌측 치우침 방지 및 전체 확장 */
+        }
+
+        /* 헤더를 상단 전체에 걸치도록 수정 */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 40px;
+        }
+
+        header h1 { 
+            margin: 0 0 0.5rem 0; 
+            font-size: 2.2rem; 
+            color: white !important; 
+        }
+        
+        header p { 
+            margin: 0; 
+            font-size: 1.1rem; 
+            opacity: 0.95; 
+        }
+
+        .container {
+            max-width: 1050px;
+            width: 90%;
+            margin: 0 auto 40px auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
+
+        /* 섹션 스타일 */
+        .section {
+            margin-bottom: 35px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: #fff5f7;
+            border: 1px solid #ffd1dc;
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .highlight-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .highlight-box li {
+            margin-bottom: 8px;
+        }
+
+        .keyword {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* 회귀 분석과 오차 개념 시각화 섹션 */
+        .interactive-card {
+            background: #f1f3f5;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .graph-mockup {
+            position: relative;
+            height: 260px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            overflow: hidden;
+        }
+
+        .axis-x {
+            position: absolute;
+            bottom: 25px;
+            left: 35px;
+            right: 20px;
+            height: 2px;
+            background: #333;
+        }
+        .axis-y {
+            position: absolute;
+            bottom: 25px;
+            left: 35px;
+            top: 20px;
+            width: 2px;
+            background: #333;
+        }
+        .axis-label-x { position: absolute; bottom: 5px; right: 20px; font-weight: bold; font-size: 0.9rem; }
+        .axis-label-y { position: absolute; top: 5px; left: 15px; font-weight: bold; font-size: 0.9rem; }
+
+        .regression-line {
+            position: absolute;
+            bottom: 35px;
+            left: 40px;
+            width: 340px;
+            height: 3px;
+            background: #2b8a3e;
+            transform: rotate(-22deg);
+            transform-origin: left bottom;
+            z-index: 2;
+        }
+
+        .dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #1971c2;
+            border-radius: 50%;
+            z-index: 3;
+        }
+
+        .error-rect {
+            position: absolute;
+            background: rgba(230, 30, 30, 0.85);
+            left: 235px; 
+            bottom: 75px; 
+            width: 75px; 
+            height: 75px;
+            z-index: 1;
+        }
+
+        .pred-square {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #e03131;
+            left: 304px; 
+            bottom: 146px;
+            z-index: 4;
+        }
+
+        .label-pred {
+            position: absolute;
+            background: #2b8a3e;
+            color: white;
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 4px;
+            left: 325px; 
+            bottom: 155px;
+            z-index: 5;
+        }
+
+        .label-diff {
+            position: absolute;
+            background: #1971c2;
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 4px;
+            left: 110px; 
+            bottom: 110px;
+            z-index: 5;
+        }
+
+        .label-square-text {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-align: center;
+            z-index: 6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            left: 235px; 
+            bottom: 75px; 
+            width: 75px; 
+            height: 75px;
+        }
+
+        .label-actual {
+            position: absolute;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #333;
+            left: 255px; 
+            bottom: 57px;
+            z-index: 5;
+        }
+
+        /* 최적화 선택기 UI 스타일 */
+        .optimizer-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            padding: 12px 20px;
+            border-radius: 8px;
+            max-width: 320px;
+            margin: 15px auto 0 auto;
+        }
+
+        .optimizer-label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        select {
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* 딥러닝 학습 방법 카드 스타일 */
+        .process-card {
+            background: #f1f3f5;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        /* 이미지 컨테이너 스타일 */
+        .image-container {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 15px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+        }
+
+        /* 푸터 */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 전체를 가로지르는 헤더 영역 -->
+    <header>
+        <h1>딥러닝의 학습 방법</h1>
+        <p class="subtitle">AICE Junior - 인공지능 모델이 스스로 똑똑해지는 원리</p>
+    </header>
+
+    <div class="container">
+        <!-- 핵심 개념 섹션 -->
+        <div class="section">
+            <h2>📌 딥러닝에서의 학습이란?</h2>
+            <div class="highlight-box">
+                <ul>
+                    <li>인공지능 모델 학습의 핵심은 <span class="keyword">오차를 줄이는 규칙과 함수를 찾는 것</span>입니다[cite: 1].</li>
+                    <li><strong>오차 정의:</strong> $\text{실제값} - \text{예측값}$[cite: 1]</li>
+                    <li>모델이 예측한 값과 실제 데이터 간의 차이(오차)를 계산하고, 이 오차를 최소화하는 방향으로 가중치와 편향을 지속적으로 수정합니다[cite: 1].</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 회귀 분석과 오차 개념 시각화 섹션 -->
+        <div class="section">
+            <h2>📈 회귀 분석과 오차 개념 시각화</h2>
+            <div class="interactive-card">
+                <div class="graph-mockup">
+                    <div class="axis-x"></div>
+                    <div class="axis-y"></div>
+                    <span class="axis-label-x">X</span>
+                    <span class="axis-label-y">Y</span>
+
+                    <div class="regression-line"></div>
+
+                    <div class="dot" style="bottom: 45px; left: 75px;"></div>
+                    <div class="dot" style="bottom: 60px; left: 115px;"></div>
+                    <div class="dot" style="bottom: 100px; left: 155px;"></div>
+                    <div class="dot" style="bottom: 85px; left: 195px;"></div>
+                    <div class="dot" style="bottom: 130px; left: 245px;"></div>
+                    <div class="dot" style="bottom: 150px; left: 305px;"></div>
+                    <div class="dot" style="bottom: 165px; left: 350px;"></div>
+
+                    <div class="error-rect"></div>
+                    <div class="pred-square"></div>
+
+                    <div class="label-pred">예측값</div>
+                    <div class="label-diff">실제값-예측값</div>
+                    <div class="label-actual">실제값</div>
+                    <div class="label-square-text">오차의<br>제곱값</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 최적화(Optimizer) 섹션 -->
+        <div class="section">
+            <h2>⚙️ 최적화 (Optimizer)</h2>
+            <div class="highlight-box">
+                <ul>
+                    <li>최적화(Optimizer)란 <span class="keyword">오차가 작은 방향으로 파라미터(가중치, 편향(bias)) 값을 조절하는 알고리즘</span>입니다.</li>
+                    <li>최적화 알고리즘은 <span class="keyword">adam, rmsprop, sgd</span> 등의 방법이 있으며 주로 <span class="keyword">adam</span>이 사용됩니다.</li>
+                </ul>
+                
+                <div class="optimizer-box">
+                    <span class="optimizer-label">Optimizer</span>
+                    <select id="optimizerSelect">
+                        <option value="adam" selected>adam</option>
+                        <option value="rmsprop">rmsprop</option>
+                        <option value="sgd">sgd</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 딥러닝의 학습 방법 1 (page11.png 적용) -->
+        <div class="section">
+            <h2>🔄 딥러닝의 학습 방법 (1)</h2>
+            <div class="process-card">
+                <div class="image-container">
+                    <img src="images/page11.png" alt="딥러닝의 학습 방법 구조 1">
+                </div>
+            </div>
+        </div>
+
+        <!-- 딥러닝의 학습 방법 2 (page11-1.png 적용) -->
+        <div class="section">
+            <h2>🔄 딥러닝의 학습 방법 (2)</h2>
+            <div class="process-card">
+                <div class="image-container">
+                    <img src="images/page11-1.png" alt="딥러닝의 학습 방법 구조 2">
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            AICE Junior 학습 | Hangang Media High School
+        </footer>
+    </div>
+
+</body>
+</html>

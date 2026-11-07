@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - AI 문제 해결 과정 마스터 교재</title>
+    <!-- Chart.js 라이브러리 상단 선언으로 그래프 렌더링 보장 -->
+     <!-- 수도꼭지 아이콘(FontAwesome) 사용을 위한 CDN 선언 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #fecdd3;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 프로세스 리스트 */
+        .process-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .process-item {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border-left: 6px solid var(--primary);
+        }
+        .process-num {
+            font-weight: bold;
+            color: var(--primary);
+            min-width: 140px;
+            font-size: 1.05rem;
+        }
+        .process-desc {
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        /* 캔버스 및 차트 영역 */
+        .canvas-box {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 4단계 카드 그리드 */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+        .step4-card {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+        .step4-num {
+            background: #f43f5e;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 0.75rem auto;
+        }
+
+        /* 데이터 예시 테이블 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+        .data-table th, .data-table td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table th {
+            background-color: #334155;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🚀 AICE Junior: AI 문제 해결 과정 마스터 교재</h1>
+        <p>배달 음식점 주문량 예측 사례를 통한 AI 문제 해결 과정 및 데이터 전처리·모델 학습·활용 완벽 정리</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 슬라이드 1: AI 문제 해결 과정 개요 -->
+        <section>
+            <h2>📌 1. AI 문제 해결 과정</h2>
+            <div class="process-list">
+                <div class="process-item" style="border-left-color: #f43f5e;">
+                    <div class="process-num">1. 문제 정의</div>
+                    <div class="process-desc">해결해야 하는 문제가 무엇인지 명확히 정의하기</div>
+                </div>
+                <div class="process-item" style="border-left-color: #fb7185;">
+                    <div class="process-num">2. 데이터 수집</div>
+                    <div class="process-desc">문제 해결에 필요한 데이터 수집하기</div>
+                </div>
+                <div class="process-item" style="border-left-color: #e11d48;">
+                    <div class="process-num">3. 데이터 분석/가공</div>
+                    <div class="process-desc">결과 예측에 필요한 데이터를 파악하고 컴퓨터로 분석 가능한 형태로 처리하기</div>
+                </div>
+                <div class="process-item" style="border-left-color: #be123c;">
+                    <div class="process-num">4. AI 모델 학습</div>
+                    <div class="process-desc">머신러닝/딥러닝 학습 및 결과 평가하기</div>
+                </div>
+                <div class="process-item" style="border-left-color: #881337;">
+                    <div class="process-num">5. AI 모델 활용</div>
+                    <div class="process-desc">시뮬레이션하고 활용하기</div>
+                </div>
+            </div>
+            <div style="background: #fdf2f8; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1.5rem; font-weight: bold; color: #9d174d;">
+                사례 : 배달 음식점의 주문량 예측으로 재료 낭비를 줄이고 매출 높이기
+            </div>
+        </section>
+
+        <!-- 슬라이드 2: CASE 배달 음식점 사장님의 고민 -->
+        <section>
+            <h2>💡 2. 배달 음식점 사장님의 고민</h2>
+            <div class="card" style="background: #f8fafc; border-left: 6px solid #f59e0b; padding: 1.5rem;">
+                <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 0;">
+                    "배달 음식점을 운영하는데, 어떤 날은 주문이 폭주해서 재료가 부족하고, 어떤 날은 손님이 적어서 식재료가 남아요.<br>
+                    신선한 재료는 다음 날 쓰기 어려워서 버리게 되는제, 매번 아깝습니다.<br><br>
+                    <strong>주문량을 미리 예측할 수 있다면 재료 준비를 효율적으로 할 수 있을 텐데...</strong>"
+                </p>
+            </div>
+            <div style="background: #fffbeb; border: 2px solid #fef3c7; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1rem; font-weight: bold; color: #b45309;">
+                💡 AI로 내일의 주문량을 예측해서 재료 낭비를 줄일 수 있지 않을까?
+            </div>
+        </section>
+
+        <!-- 슬라이드 3: STEP 1 문제 이해 - AI로 해결할 문제의 핵심 파악 -->
+        <section>
+            <h2>🎯 3. 문제 이해 - AI로 해결할 문제의 핵심 파악</h2>
+            <div class="grid-3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; text-align: center; margin-top: 1.5rem;">
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔴</div>
+                    <h3 style="margin: 0.5rem 0; color: #e11d48;">현재 상태</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin: 0;">배달 주문량을 예측하기 어려워 재료 준비에 어려움</p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🟢</div>
+                    <h3 style="margin: 0.5rem 0; color: #10b981;">목표 상태</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin: 0;">정확한 주문량 예측으로 재료 낭비 최소화</p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
+                    <h3 style="margin: 0.5rem 0; color: #2563eb;">해결할 문제</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin: 0;">내일의 배달 주문량을 사전에 예측하기</p>
+                </div>
+            </div>
+            <div style="background: #1e293b; color: white; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem;">
+                <h3 style="color: #f43f5e; margin-top: 0; font-size: 1.05rem;">✨ 문제 정의가 중요한 이유</h3>
+                <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.95rem;">
+                    <li>무엇을 예측할 것인지 명확히 정의 (주문량? 매출? 방문 고객수?)</li>
+                    <li>예측 결과를 어떻게 활용할 것인지 계획 (재료 주문, 인력 배치 등)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 슬라이드 4: STEP 2 데이터 수집 - 문제 해결에 필요한 정보 모으기 -->
+        <section>
+            <h2>📊 4. 데이터 수집 - 문제 해결에 필요한 정보 모으기</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: #2563eb; margin-top: 0;">내부 데이터 (가게에서 수집)</h3>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.95rem;">
+                        <li>📅 과거 일별/요일별 주문량</li>
+                        <li>⏰ 시간대별 주문 패턴</li>
+                        <li>🍜 메뉴별 판매량</li>
+                        <li>💰 주문 금액 이력</li>
+                        <li>⭐ 고객 리뷰/평점</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #db2777; margin-top: 0;">외부 데이터 (외부에서 수집)</h3>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.95rem;">
+                        <li>🌡️ 날씨 (기온, 강수량, 습도)</li>
+                        <li>🗓️ 휴일/공휴일 정보</li>
+                        <li>🎉 지역 행사/이벤트</li>
+                        <li>🏢 주변 경쟁 업체 현황</li>
+                        <li>👥 지역 유동 인구</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background: #fffbeb; border: 1px solid #fef3c7; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #b45309;">
+                💡 어떤 데이터가 필요한지 정답은 없다. 다양하게 수집해보고 분석 단계에서 유용한 데이터를 선별하는 것이 필요하다.<br>
+                시간과 비용에 따라 AI 학습에 사용할 속성 선택의 범위가 달라질 수 있다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 5: STEP 3 데이터 분석 - 패턴과 특성 발견하기 (4가지 그래프) -->
+        <section>
+            <h2>📈 5. 데이터 분석 - 패턴과 특성 발견하기</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="font-size: 1rem; margin-top: 0;">📊 요일별 주문량</h3>
+                    <p>주말 주문량이 평일의 약 1.8배</p>
+                    
+                    <div class="canvas-box"><canvas id="barChart" width="400" height="200"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size: 1rem; margin-top: 0;">📈 시간대별 주문량</h3>
+                     <p>점심(12시),저녁(18)시 피크</p>
+                    <div class="canvas-box"><canvas id="lineChart" width="400" height="200"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size: 1rem; margin-top: 0;">🌧️ 날씨별 평균 주문량</h3>
+                     <p>비 눈오는날 주문 30% 증가</p>
+                    <div class="canvas-box"><canvas id="hBarChart" width="400" height="200"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size: 1rem; margin-top: 0;">🌡️ 기온과 주문량 관계</h3>
+                    <p>너무 춥거나 더우면 주문량 증가</p>
+                    <div class="canvas-box"><canvas id="scatterChart" width="400" height="200"></canvas></div>
+                </div>
+            </div>
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1.5rem; font-weight: bold; color: #1e40af;">
+                🔍 분석 결론: 요일, 시간대, 날씨(기온, 강수량)가 주문량 예측에 중요한 속성
+            </div>
+        </section>
+
+        <!-- 슬라이드 6: STEP 4 데이터 가공 개요 -->
+        <section>
+            <h2>⚙️ 6. STEP 4 : 데이터 가공 - AI가 학습할 수 있는 형태로 변환</h2>
+            <div class="grid-4">
+                <div class="step4-card">
+                    <div class="step4-num">1</div>
+                    <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">결측치 처리</h3>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0 0 1rem 0;">누락된 데이터 처리</p>
+                    <div style="background: white; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; color: #e11d48;">삭제 또는 대체</div>
+                </div>
+                <div class="step4-card">
+                    <div class="step4-num">2</div>
+                    <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">이상치 처리</h3>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0 0 1rem 0;">비정상적 데이터 처리</p>
+                    <div style="background: white; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; color: #e11d48;">제거 또는 조정</div>
+                </div>
+                <div class="step4-card">
+                    <div class="step4-num">3</div>
+                    <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">인코딩</h3>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0 0 1rem 0;">범주형 데이터 변환</p>
+                    <div style="background: white; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; color: #e11d48;">문자 ➡️ 숫자</div>
+                </div>
+                <div class="step4-card">
+                    <div class="step4-num">4</div>
+                    <h3 style="margin: 0.5rem 0; font-size: 1.1rem;">스케일링</h3>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0 0 1rem 0;">데이터 범위 조정</p>
+                    <div style="background: white; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; color: #e11d48;">동일한 기준으로</div>
+                </div>
+            </div>
+            <div style="background: #fff1f2; border: 1px solid #fecdd3; padding: 1rem; border-radius: 8px; margin-top: 1.5rem; font-size: 0.9rem;">
+                <strong>⚠️ 왜 데이터 가공이 필요한가요?</strong><br>
+                인공지능은 숫자로 된 데이터를 학습한다. 문자, 누락값, 이상한 값이 있으면 제대로 학습하지 못한다.<br>
+                깨끗하고 정리된 데이터일수록 더 정확한 AI 모델을 만들 수 있다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: 결측치와 이상치 상세 처리 및 데이터 예시 -->
+        <section>
+            <h2>❓ 7. 결측치와 이상치 처리 (상세 및 데이터 예시)</h2>
+            <div class="grid-2" style="margin-bottom: 1.5rem;">
+                <div class="card">
+                    <h3 style="color: #e11d48; margin-top: 0;">? 결측치 (Missing Value)</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">데이터에서 값이 비어있는 경우<br>예: 기록하지 않아서 확인이 불가한 주문량</p>
+                    <p style="font-size: 0.9rem; font-weight: bold; margin-top: 0.5rem;">처리 방법:</p>
+                    <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: #475569;">
+                        <li>삭제: 결측치가 적을 때</li>
+                        <li>대체: 평균값, 중앙값, 최빈값으로</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #ea580c; margin-top: 0;">⚡ 이상치 (Outlier)</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">일반적인 패턴에서 크게 벗어난 값<br>예: 평소 50건인데 특정 날 500건</p>
+                    <p style="font-size: 0.9rem; font-weight: bold; margin-top: 0.5rem;">처리 방법:</p>
+                    <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: #475569;">
+                        <li>제거: AI 학습에 방해될 때</li>
+                        <li>유지: 의미 있는 이상치일 때</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 결측치 처리 방법 구조도 마인드맵 -->
+            <div class="card" style="background: #f8fafc; margin-bottom: 1.5rem;">
+                <h3 style="margin-top: 0; font-size: 1rem; text-align: center;">결측치 처리 방법 구조도</h3>
+                <div class="canvas-box" style="background: white;"><canvas id="missingTree" width="750" height="200"></canvas></div>
+            </div>
+
+            <!-- 배달 주문 데이터 예시 테이블 -->
+            <div style="background: #1e293b; color: rgb(15, 11, 11); padding: 1.2rem; border-radius: 8px;">
+                <h3 style="color: #f43f5e; margin-top: 0; font-size: 1.05rem;">📦 배달 주문 데이터 예시</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>날짜</th>
+                            <th>주문량</th>
+                            <th>기온</th>
+                            <th>날씨</th>
+                            <th>비고 (데이터 상태)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2026-01-01</td>
+                            <td>45</td>
+                            <td>5°C</td>
+                            <td>맑음</td>
+                            <td>정상 데이터</td>
+                        </tr>
+                        <tr>
+                            <td>2026-01-02</td>
+                            <td style="color: #f43f5e; font-weight: bold;">???</td>
+                            <td>3°C</td>
+                            <td>흐림</td>
+                            <td style="color: #f43f5e; font-weight: bold;">← 결측치 (주문량 - 기록 누락)</td>
+                        </tr>
+                        <tr>
+                            <td>2026-01-03</td>
+                            <td style="color: #ea580c; font-weight: bold;">520</td>
+                            <td>4°C</td>
+                            <td>눈</td>
+                            <td style="color: #ea580c; font-weight: bold;">← 이상치 (주문량 - 특별 이벤트)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 슬라이드 8: 박스차트와 이상치 시각화 -->
+        <section>
+            <h2>⚡ 8. 결측치와 이상치 처리 (박스차트)</h2>
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <h3 style="color: #ea580c; margin-top: 0;">박스차트로 이상치 탐색</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; color: #475569;">
+                        <li>박스차트의 상위경계 또는 하위경계를 벗어난 값은 이상치(점)로 표시됩니다.</li>
+                    </ul>
+                    <div style="background: #fff7ed; padding: 1rem; border-radius: 8px; border-left: 4px solid #ea580c; margin-top: 1rem; font-size: 0.9rem;">
+                        • <strong>상위경계(upper fence):</strong> 이상치를 결정하는 상한 경계선<br>
+                        • <strong>하위경계(lower fence):</strong> 이상치를 결정하는 하한 경계선<br>
+                        ※ <strong>이상치:</strong> 점으로 표시된 값
+                    </div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 1rem; margin-top: 0;">박스차트와 이상치 시각화</h3>
+                    <div class="canvas-box"><canvas id="boxPlot" width="350" height="260"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 9: 인코딩 - 문자를 숫자로 변환 -->
+        <section>
+            <h2>🔤 9. 인코딩 - 문자를 숫자로 변환</h2>
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem; font-weight: bold; color: #1e40af;">
+                🤖 AI는 숫자만 이해해요! '맑음', '흐림', '비' 같은 문자는 숫자로 바꿔야 한다.
+            </div>
+            <div class="grid-2">
+                <div class="card" style="border-top: 5px solid #2563eb;">
+                    <h3 style="color: #2563eb; margin-top: 0;">레이블 인코딩 (Label Encoding)</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">순서가 있는 데이터에 사용</p>
+                    <div style="background: white; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-top: 0.5rem;">
+                        배달시간: 빠름 ➡️ 1, 보통 ➡️ 2, 느림 ➡️ 3<br>
+                        고객등급: 일반 ➡️ 1, VIP ➡️ 2, VVIP ➡️ 3
+                    </div>
+                    <p style="font-size: 0.85rem; color: #16a34a; margin-top: 0.5rem; font-weight: bold;">✓ 순서의 의미가 숫자에 반영됨</p>
+                </div>
+                <div class="card" style="border-top: 5px solid #db2777;">
+                    <h3 style="color: #db2777; margin-top: 0;">원-핫 인코딩 (One-Hot Encoding)</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">순서가 없는 데이터에 사용</p>
+                    <div style="background: white; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; margin-top: 0.5rem;">
+                        날씨: 맑음 [1,0,0], 흐림 [0,1,0], 비 [0,0,1]<br>
+                        요일: 월 [1,0,0,...], 화 [0,1,0,...]...
+                    </div>
+                    <p style="font-size: 0.85rem; color: #16a34a; margin-top: 0.5rem; font-weight: bold;">✓ 날씨/요일 간 우열 관계 없음</p>
+                </div>
+            </div>
+            <div style="background: #fffbeb; border: 1px solid #fef3c7; padding: 1rem; border-radius: 8px; margin-top: 1.5rem; font-size: 0.9rem; color: #b45309;">
+                ⚠️ <strong>잘못된 예 :</strong> 맑음=1, 흐림=2, 비=3으로 레이블 인코딩하면?<br>
+                AI가 '비(3)가 맑음(1)보다 크다'고 오해할 수 있다! ➡️ 날씨는 원-핫 인코딩 사용
+            </div>
+        </section>
+
+        <!-- 슬라이드 10: 스케일링 - 데이터 범위 통일 -->
+        <section>
+            <h2>⚖️ 10. 스케일링 - 데이터 범위 통일</h2>
+            <div class="card" style="background: #fff7ed; border-left: 6px solid #ea580c; margin-bottom: 1.5rem;">
+                <h3 style="color: #ea580c; margin-top: 0;">😟 스케일링이 필요한 이유</h3>
+                <p style="margin: 0; font-size: 0.95rem; color: #475569;">
+                    기온: -10°C ~ 35°C (범위 45) vs 강수량: 0mm ~ 300mm (범위 300)<br>
+                    AI가 숫자가 큰 강수량을 더 중요하다고 착각할 수 있다.
+                </p>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: #2563eb; margin-top: 0;">정규화 (Min-Max)</h3>
+                    <p style="font-size: 0.9rem; font-weight: bold;">데이터 범위를 0~1 사이로 변환</p>
+                    <p style="font-size: 0.85rem; color: #64748b;">공식: (값-최소)/(최대-최소)</p>
+                    <div style="background: white; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem;">
+                        기온 25°C ➡️ (25-(-10))/(35-(-10)) = 35/45 = 0.78
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="color: #10b981; margin-top: 0;">표준화 (Z-score)</h3>
+                    <p style="font-size: 0.9rem; font-weight: bold;">데이터 범위를 평균 0, 표준편차 1로 변환</p>
+                    <p style="font-size: 0.85rem; color: #64748b;">공식: (값-평균)/표준편차</p>
+                    <div style="background: white; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem;">
+                        기온 25°C ➡️ (25-15)/10 = 1.0
+                    </div>
+                </div>
+            </div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1.5rem; font-weight: bold; color: #166534;">
+                ✅ 스케일링 후: 모든 속성이 비슷한 범위를 가지므로 AI가 공정하게 학습할 수 있다.
+            </div>
+        </section>
+
+        <!-- 슬라이드 11: STEP 5 모델 학습 - AI가 패턴을 배우는 과정 (수정 완료) -->
+        <section>
+            <h2>🧠 11.  모델 학습 - AI가 패턴을 배우는 과정</h2>
+            <div class="grid-2" style="margin-bottom: 1.5rem;">
+                <div class="card">
+                    <h3 style="color: #e11d48; margin-top: 0;">🌸 AI 학습이란?</h3>
+                    <p style="font-size: 0.95rem; color: #475569;">데이터 속 규칙을 찾아가는 과정</p>
+                    <div style="background: white; padding: 0.75rem; border-radius: 6px; font-size: 0.9rem; margin-top: 0.75rem;">
+                        예: 3 ➡️ 9, 4 ➡️ 16, 5 ➡️ ?<br>
+                        AI가 찾은 규칙: x²<br>
+                        <strong>➡️ 출력: 25</strong>
+                    </div>
+                </div>
+                <!-- 🤖 딥러닝 신경망 구조 (수도꼭지 비유) 카드: AI 학습이란 아래로 이동 배치 -->
+                <div class="card">
+                    <h3 style="color: #2563eb; margin-top: 0;">🤖 딥러닝 신경망 구조 (수도꼭지 비유)</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">가족들이 샤워할 때, 구성원별 날씨에 따른 선호 수량과 온도를 맞춰주는 인공지능 예시</p>
+                    <div style="background: #f1f5f9; padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; text-align: center;">
+                        입력층(기온, 수온, 수량) ➡️ 은닉층(Hidden Layer - 패턴 학습) ➡️ 출력층(가족이 선호하는 샤워기 수량과 온도)
+                    </div>
+                </div>
+            </div>
+
+            <!-- 기존 수도꼭지 비유 자리에 입력층-은닉층 3개-출력층 노드 시각화 구조 배치 -->
+            <div class="card" style="margin-bottom: 1.5rem; background: #ffffff;">
+                <h3 style="color: #2563eb; margin-top: 0; text-align: center; font-size: 1.05rem;">🧬 심층 신경망(Deep Neural Network) 구조도</h3>
+                <p style="text-align: center; font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">입력층(5개) ➡️ 은닉층 3개(데이터학습) ➡️ 출력층(1개)</p>
+                <div class="canvas-box" style="background: #f8fafc; padding: 1rem;">
+                    <canvas id="neuralNetworkCanvas" width="700" height="200"></canvas>
+                </div>
+            </div>
+
+<!--수도꼬지-->
+           <!-- 🤖 딥러닝 신경망 구조 (수도꼭지 비유) 카드 수정본 -->
+                <div class="card" style="margin-bottom: 1.5rem; background: #ffffff;">
+                    <h3 style="color: #2563eb; margin-top: 0; font-size: 1.1rem;">
+                        <i class="fa-solid fa-faucet" style="color:#0ea5e9;"></i> 딥러닝 신경망 구조 (수도꼭지 비유)
+                    </h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin-bottom: 1rem;">
+                        가족들이 샤워할 때, 날씨에 따른 선호 수량과 온도를 맞춰주는 인공지능 예시입니다.
+                    </p>
+                    
+                    <!-- 수도꼭지 신경망 구조 캔버스 박스 -->
+                    <div class="canvas-box" style="background: #f8fafc; padding: 1rem; position: relative;">
+                        <canvas id="faucetNetworkCanvas" width="750" height="240"></canvas>
+                    </div>
+                </div>
+
+            <div style="background: #1e293b; color: white; padding: 1.2rem; border-radius: 8px;">
+                <h3 style="color: #f43f5e; margin-top: 0; font-size: 1.05rem;">🔥 배달 주문량 예측 모델</h3>
+                <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.95rem;">
+                    <li><strong>입력:</strong> 요일, 시간대, 기온, 강수량, 휴일 여부</li>
+                    <li><strong>출력:</strong> 예상 주문량</li>
+                    <li>과거 데이터로 학습 ➡️ 새로운 날의 조건을 입력하면 주문량 예측!</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 슬라이드 12: STEP 6 모델 활용 - 실제 문제 해결에 적용 -->
+        <section>
+            <h2>🚀 12. 모델 활용 - 실제 문제 해결에 적용</h2>
+            <div class="card" style="background: #f8fafc; border-left: 6px solid #2563eb; margin-bottom: 1.5rem;">
+                <h3 style="color: #2563eb; margin-top: 0;">📱 실제 활용 예시</h3>
+                <p style="margin: 0; font-size: 0.95rem; color: #475569;">
+                    내일 조건: 토요일, 기온 28°C, 맑음<br><br>
+                    &rarr; <strong>AI 예측:</strong> 점심 시간대 85건, 저녁 시간대 120건 예상<br>
+                    &rarr; <strong>활용:</strong> 평소보다 재료 30% 더 준비, 배달 라이더 추가 배치
+                </p>
+            </div>
+            <div class="grid-3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; text-align: center;">
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">💰</div>
+                    <h3 style="margin: 0.5rem 0; color: #e11d48;">비용 절감</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin: 0;">재료 낭비 감소<br>합리적 지출</p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">😊</div>
+                    <h3 style="margin: 0.5rem 0; color: #10b981;">고객 만족</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin: 0;">품절 상황 감소<br>더 빠른 배달</p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📈</div>
+                    <h3 style="margin: 0.5rem 0; color: #2563eb;">매출 증가</h3>
+                    <p style="font-size: 0.9rem; color: #475569; margin: 0;">피크 타임 대비<br>주문 기회 확보</p>
+                </div>
+            </div>
+            <div style="background: #fff1f2; border: 1px solid #fecdd3; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1.5rem; font-weight: bold; color: #9f1239;">
+                🎯 AI는 도구일 뿐! 최종 의사결정은 사람이 합니다.
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>AICE Junior  | Hangang Media High School</p>
+    </footer>
+
+    <script>
+        // DOM 로드 완료 후 안전하게 그래프 렌더링 실행
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. 요일별 주문량 (막대 그래프)
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['월', '화', '수', '목', '금', '토', '일'],
+                    datasets: [{
+                        label: '주문량',
+                        data: [45, 42, 48, 50, 62, 85, 90],
+                        backgroundColor: '#0d9488'
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // 2. 시간대별 주문량 (꺾은선 그래프)
+            const lineCtx = document.getElementById('lineChart').getContext('2d');
+            new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: ['9시', '10시', '11시', '12시', '13시', '14시', '15시', '16시', '17시', '18시', '19시', '20시', '21시'],
+                    datasets: [{
+                        label: '주문량',
+                        data: [5, 8, 25, 45, 30, 15, 12, 15, 20, 52, 48, 35, 18],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // 3. 날씨별 평균 주문량 (가로 막대 그래프)
+            const hBarCtx = document.getElementById('hBarChart').getContext('2d');
+            new Chart(hBarCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['맑음', '흐림', '비', '눈'],
+                    datasets: [{
+                        label: '평균 주문량',
+                        data: [52, 65, 75, 82],
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // 4. 기온과 주문량 관계 (산점도/선 그래프)
+            const scatterCtx = document.getElementById('scatterChart').getContext('2d');
+            new Chart(scatterCtx, {
+                type: 'line',
+                data: {
+                    labels: ['-5°C', '0°C', '5°C', '10°C', '15°C', '20°C', '25°C', '30°C', '35°C'],
+                    datasets: [{
+                        label: '주문량',
+                        data: [70, 65, 55, 50, 48, 52, 58, 68, 75],
+                        borderColor: '#f43f5e',
+                        backgroundColor: '#f43f5e',
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // 5. 박스차트 (이상치 시각화) 캔버스
+            const boxCanvas = document.getElementById('boxPlot');
+            if (boxCanvas) {
+                const boxCtx = boxCanvas.getContext('2d');
+                boxCtx.clearRect(0, 0, boxCanvas.width, boxCanvas.height);
+
+                // 배경 가로 격자선 그리기
+                boxCtx.strokeStyle = '#e2e8f0'; 
+                boxCtx.lineWidth = 1;
+                for (let y = 30; y <= 210; y += 36) {
+                    boxCtx.beginPath(); boxCtx.moveTo(25, y); boxCtx.lineTo(215, y); boxCtx.stroke();
+                }
+
+                // 토요일 & 일요일 박스 및 수염
+                boxCtx.fillStyle = 'rgba(56, 189, 248, 0.25)'; boxCtx.strokeStyle = '#0284c7'; boxCtx.lineWidth = 2;
+                boxCtx.fillRect(50, 115, 40, 55); boxCtx.strokeRect(50, 115, 40, 55);
+                boxCtx.beginPath(); 
+                boxCtx.moveTo(70, 75); boxCtx.lineTo(70, 115);
+                boxCtx.moveTo(70, 170); boxCtx.lineTo(70, 195);
+                boxCtx.moveTo(60, 75); boxCtx.lineTo(80, 75);
+                boxCtx.moveTo(60, 195); boxCtx.lineTo(80, 195);
+                boxCtx.stroke();
+                boxCtx.strokeStyle = '#0369a1'; boxCtx.lineWidth = 2;
+                boxCtx.beginPath(); boxCtx.moveTo(50, 142); boxCtx.lineTo(90, 142); boxCtx.stroke();
+
+                boxCtx.fillStyle = 'rgba(244, 114, 182, 0.25)'; boxCtx.strokeStyle = '#db2777'; boxCtx.lineWidth = 2;
+                boxCtx.fillRect(125, 125, 40, 45); boxCtx.strokeRect(125, 125, 40, 45);
+                boxCtx.beginPath();
+                boxCtx.moveTo(145, 90); boxCtx.lineTo(145, 125);
+                boxCtx.moveTo(145, 170); boxCtx.lineTo(145, 190);
+                boxCtx.moveTo(135, 90); boxCtx.lineTo(155, 90);
+                boxCtx.moveTo(135, 190); boxCtx.lineTo(155, 190);
+                boxCtx.stroke();
+                boxCtx.strokeStyle = '#be185d';
+                boxCtx.beginPath(); boxCtx.moveTo(125, 150); boxCtx.lineTo(165, 150); boxCtx.stroke();
+
+                boxCtx.fillStyle = '#0284c7';
+                boxCtx.beginPath(); boxCtx.arc(70, 42, 4, 0, Math.PI*2); boxCtx.fill();
+                boxCtx.fillStyle = '#f43f5e';
+                boxCtx.beginPath(); boxCtx.arc(145, 58, 4, 0, Math.PI*2); boxCtx.fill();
+
+                boxCtx.strokeStyle = '#ef4444'; boxCtx.lineWidth = 2.5;
+                boxCtx.beginPath(); boxCtx.arc(108, 50, 50, 0, Math.PI*2); boxCtx.stroke();
+
+                boxCtx.font = 'bold 11px sans-serif';
+                boxCtx.fillStyle = '#1e293b';
+                boxCtx.fillText('상위경계', 2, 78);
+                boxCtx.fillText('하위경계', 2, 198);
+
+                function drawTooltip(ctx, text, x, y, bgColor = '#0ea5e9') {
+                    ctx.font = 'bold 9.5px sans-serif';
+                    const paddingX = 5, paddingY = 3;
+                    const width = ctx.measureText(text).width + paddingX * 2;
+                    const height = 16;
+                    ctx.fillStyle = bgColor;
+                    ctx.beginPath();
+                    ctx.roundRect(x, y - height / 2, width, height, 3);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x - 4, y - 3);
+                    ctx.lineTo(x - 4, y + 3);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(text, x + paddingX, y + 3.5);
+                }
+
+                drawTooltip(boxCtx, '(토, max: 52.31k)', 162, 42, '#0ea5e9');
+                drawTooltip(boxCtx, '(일, max: 48.12k)', 162, 60, '#0ea5e9');
+                drawTooltip(boxCtx, '(토, upper fence: 33.655k)', 162, 78, '#0ea5e9');
+                drawTooltip(boxCtx, '(토, q3: 15.428k)', 162, 122, '#0ea5e9');
+                drawTooltip(boxCtx, '(토, median: 6236)', 162, 142, '#0ea5e9');
+                drawTooltip(boxCtx, '(토, q1: 2059)', 162, 160, '#0ea5e9');
+                drawTooltip(boxCtx, '(토, min: 521)', 162, 195, '#0ea5e9');
+
+                boxCtx.font = 'bold 12px sans-serif';
+                boxCtx.fillStyle = '#334155';
+                boxCtx.fillText('토', 67, 218);
+                boxCtx.fillText('일', 142, 218);
+
+                boxCtx.fillStyle = '#f8fafc'; boxCtx.strokeStyle = '#cbd5e1'; boxCtx.lineWidth = 1;
+                boxCtx.fillRect(295, 20, 48, 115); boxCtx.strokeRect(295, 20, 48, 115);
+
+                boxCtx.font = 'bold 11px sans-serif'; boxCtx.fillStyle = '#1e293b';
+                boxCtx.fillText('요일', 307, 35);
+
+                const legendColors = ['#93c5fd', '#fca5a5', '#6ee7b7', '#d8b4fe', '#fdba74', '#38bdf8', '#f43f5e'];
+                const legendTexts = ['월', '화', '수', '목', '금', '토', '일'];
+                
+                for(let i=0; i<7; i++) {
+                    let ly = 50 + (i * 11.5);
+                    boxCtx.fillStyle = legendColors[i];
+                    boxCtx.fillRect(302, ly - 7, 9, 9);
+                    boxCtx.font = '9.5px sans-serif'; boxCtx.fillStyle = '#334155';
+                    boxCtx.fillText(legendTexts[i], 318, ly);
+                }
+            }
+
+            // 6. 딥러닝 신경망 구조 (입력층 - 은닉층 3개 - 출력층) 캔버스 렌더링
+            const nnCanvas = document.getElementById('neuralNetworkCanvas');
+            if (nnCanvas) {
+                const nnCtx = nnCanvas.getContext('2d');
+                nnCtx.clearRect(0, 0, nnCanvas.width, nnCanvas.height);
+
+                // 층별 노드 좌표 정의 (입력층 5개, 은닉층1 5개, 은닉층2 4개, 은닉층3 3개, 출력층 1개)
+                const layers = [
+                    { name: '입력층', x: 70, nodes: [35, 70, 105, 140, 175], color: '#2563eb' },
+                    { name: '제1 은닉층', x: 210, nodes: [35, 70, 105, 140, 175], color: '#8b5cf6' },
+                    { name: '제2 은닉층', x: 350, nodes: [50, 85, 120, 155], color: '#ec4899' },
+                    { name: '제3 은닉층', x: 490, nodes: [65, 105, 145], color: '#f97316' },
+                    { name: '출력층', x: 630, nodes: [105], color: '#10b981' }
+                ];
+
+                // 연결선(Weights) 먼저 그리기
+                nnCtx.strokeStyle = '#cbd5e1';
+                nnCtx.lineWidth = 1;
+                for (let i = 0; i < layers.length - 1; i++) {
+                    let currLayer = layers[i];
+                    let nextLayer = layers[i+1];
+                    currLayer.nodes.forEach(y1 => {
+                        nextLayer.nodes.forEach(y2 => {
+                            nnCtx.beginPath();
+                            nnCtx.moveTo(currLayer.x, y1);
+                            nnCtx.lineTo(nextLayer.x, y2);
+                            nnCtx.stroke();
+                        });
+                    });
+                }
+
+                // 노드 및 층 이름 그리기
+                layers.forEach((layer, idx) => {
+                    // 상단 층 이름 레이블
+                    nnCtx.font = 'bold 11px sans-serif';
+                    nnCtx.fillStyle = layer.color;
+                    nnCtx.textAlign = 'center';
+                    nnCtx.fillText(layer.name, layer.x, 15);
+
+                    // 노드 원 그리기
+                    layer.nodes.forEach(y => {
+                        nnCtx.beginPath();
+                        nnCtx.arc(layer.x, y, 12, 0, Math.PI * 2);
+                        nnCtx.fillStyle = '#ffffff';
+                        nnCtx.fill();
+                        nnCtx.strokeStyle = layer.color;
+                        nnCtx.lineWidth = 2;
+                        nnCtx.stroke();
+
+                        // 노드 안의 텍스트 기호
+                        nnCtx.font = 'bold 9px sans-serif';
+                        nnCtx.fillStyle = layer.color;
+                        nnCtx.textAlign = 'center';
+                        nnCtx.textBaseline = 'middle';
+                        let label = idx === 0 ? 'I' : (idx === 4 ? 'O' : 'H' + idx);
+                        nnCtx.fillText(label, layer.x, y);
+                    });
+                });
+                nnCtx.textBaseline = 'alphabetic'; // 초기화
+            }
+
+            // 7. 결측치 처리 방법 구조도 (마인드맵) 캔버스
+            // 6. 결측치 처리 방법 구조도 (마인드맵) 캔버스 - 이미지 완벽 일치 버전
+            const treeCanvas = document.getElementById('missingTree');
+            if (treeCanvas) {
+                const treeCtx = treeCanvas.getContext('2d');
+                treeCtx.clearRect(0, 0, treeCanvas.width, treeCanvas.height);
+                treeCtx.font = 'bold 11px sans-serif';
+                treeCtx.textAlign = 'left';
+
+                // 루트: 결측치 처리 방법
+                treeCtx.fillStyle = '#0f172a';
+                treeCtx.fillText('결측치 처리 방법', 20, 105);
+
+                // 루트에서 '대체', '삭제'로 뻗는 선
+                treeCtx.strokeStyle = '#8b5cf6'; treeCtx.lineWidth = 2;
+                treeCtx.beginPath(); 
+                treeCtx.moveTo(125, 100); treeCtx.lineTo(190, 55);  // 대체
+                treeCtx.moveTo(125, 100); treeCtx.lineTo(190, 160); // 삭제
+                treeCtx.stroke();
+
+                // 1단계 가지: 대체 / 삭제
+                treeCtx.fillStyle = '#7c3aed';
+                treeCtx.fillText('대체', 200, 60);
+                treeCtx.fillText('삭제', 200, 165);
+
+                // --- [대체] 하위 가지 (수치형 / 범주형) ---
+                treeCtx.strokeStyle = '#94a3b8'; treeCtx.lineWidth = 1.5;
+                treeCtx.beginPath(); 
+                treeCtx.moveTo(230, 57); treeCtx.lineTo(290, 30);  // 수치형
+                treeCtx.moveTo(230, 57); treeCtx.lineTo(290, 105); // 범주형
+                treeCtx.stroke();
+
+                treeCtx.fillStyle = '#6d28d9';
+                treeCtx.fillText('수치형', 300, 35);
+                treeCtx.fillText('범주형', 300, 110);
+
+                // --- [수치형] 하위 가지 (평균 / 중앙값 / 상수) ---
+                treeCtx.beginPath(); 
+                treeCtx.moveTo(340, 32); treeCtx.lineTo(410, 12);  // 평균
+                treeCtx.moveTo(340, 32); treeCtx.lineTo(410, 52);  // 중앙값
+                treeCtx.moveTo(340, 32); treeCtx.lineTo(410, 92);  // 상수
+                treeCtx.stroke();
+
+                treeCtx.fillStyle = '#475569';
+                treeCtx.font = '10px sans-serif';
+                treeCtx.fillText('평균', 420, 15);
+                treeCtx.fillText('중앙값', 420, 55);
+                treeCtx.fillText('상수', 420, 95);
+
+                // 평균 세부 설명
+                treeCtx.beginPath(); treeCtx.moveTo(450, 12); treeCtx.lineTo(480, 12); treeCtx.stroke();
+                treeCtx.fillText('이상치에 영향을 많이 받음', 490, 15);
+
+                // 중앙값 세부 설명 (3갈래 가지)
+                treeCtx.beginPath(); 
+                treeCtx.moveTo(460, 52); treeCtx.lineTo(490, 32);  // 이상치가 많은 경우 사용
+                treeCtx.moveTo(460, 52); treeCtx.lineTo(490, 52);  // 이상치의 영향을 받지 않음
+                treeCtx.moveTo(460, 52); treeCtx.lineTo(490, 72);  // 데이터를 순서대로 나열한 후 중앙의 값을 취하는 방식
+                treeCtx.stroke();
+
+                treeCtx.fillText('이상치가 많은 경우 사용', 500, 35);
+                treeCtx.fillText('이상치의 영향을 받지 않음', 500, 55);
+                treeCtx.fillText('데이터를 순서대로 나열한 후 중앙의 값을 취하는 방식', 500, 75);
+
+                // --- [범주형] 하위 가지 (최빈값 / 상수) ---
+                treeCtx.beginPath(); 
+                treeCtx.moveTo(340, 107); treeCtx.lineTo(410, 125); // 최빈값
+                treeCtx.moveTo(340, 107); treeCtx.lineTo(410, 145); // 상수
+                treeCtx.stroke();
+
+                treeCtx.font = '10px sans-serif';
+                treeCtx.fillText('최빈값', 420, 128);
+                treeCtx.fillText('상수', 420, 148);
+
+                // 최빈값 세부 설명
+                treeCtx.beginPath(); treeCtx.moveTo(455, 125); treeCtx.lineTo(480, 125); treeCtx.stroke();
+                treeCtx.fillText('가장 많이 등장한 값을 취하는 방식', 490, 128);
+
+                // --- [삭제] 하위 가지 (세부 설명 2개) ---
+                treeCtx.strokeStyle = '#94a3b8'; treeCtx.lineWidth = 1.5;
+                treeCtx.beginPath(); 
+                treeCtx.moveTo(230, 162); treeCtx.lineTo(290, 175); // 데이터 손실이 있지만 간단함
+                treeCtx.moveTo(230, 162); treeCtx.lineTo(290, 195); // 결측치가 있는 행 또는 열 전체 삭제
+                treeCtx.stroke();
+
+                treeCtx.font = '10px sans-serif';
+                treeCtx.fillStyle = '#475569';
+                treeCtx.fillText('데이터 손실이 있지만 간단함', 300, 178);
+                treeCtx.fillText('결측치가 있는 행 또는 열 전체 삭제', 300, 198);
+            }
+
+            //
+            // 수도꼭지 비유 딥러닝 신경망 구조 캔버스 렌더링
+            const faucetCanvas = document.getElementById('faucetNetworkCanvas');
+            if (faucetCanvas) {
+                const fCtx = faucetCanvas.getContext('2d');
+                fCtx.clearRect(0, 0, faucetCanvas.width, faucetCanvas.height);
+
+                // 1. 층별 좌표 및 구성 정의
+                // 입력층(노드 3개: 기온, 수온, 수량), 은닉층1(수도꼭지 4개), 은닉층2(수도꼭지 4개), 출력층(결과 1개)
+                const inputNodes = [
+                    { label: '기온', y: 50 },
+                    { label: '수온', y: 120 },
+                    { label: '수량', y: 190 }
+                ];
+                
+                const hidden1Y = [35, 95, 155, 215];
+                const hidden2Y = [35, 95, 155, 215];
+                const outputY = 120;
+
+                const xInput = 70;
+                const xHidden1 = 230;
+                const xHidden2 = 430;
+                const xOutput = 620;
+
+                // 2. 연결선(Weights) 그리기
+                fCtx.strokeStyle = '#cbd5e1';
+                fCtx.lineWidth = 1;
+
+                // 입력층 ➡️ 은닉층 1
+                inputNodes.forEach(inp => {
+                    hidden1Y.forEach(h1 => {
+                        fCtx.beginPath(); fCtx.moveTo(xInput, inp.y); fCtx.lineTo(xHidden1, h1); fCtx.stroke();
+                    });
+                });
+
+                // 은닉층 1 ➡️ 은닉층 2
+                hidden1Y.forEach(h1 => {
+                    hidden2Y.forEach(h2 => {
+                        fCtx.beginPath(); fCtx.moveTo(xHidden1, h1); fCtx.lineTo(xHidden2, h2); fCtx.stroke();
+                    });
+                });
+
+                // 은닉층 2 ➡️ 출력층
+                hidden2Y.forEach(h2 => {
+                    fCtx.beginPath(); fCtx.moveTo(xHidden2, h2); fCtx.lineTo(xOutput, outputY); fCtx.stroke();
+                });
+
+                // 3. 입력층 노드 (까만 동그라미 + 레이블)
+                inputNodes.forEach(inp => {
+                    // 동그라미
+                    fCtx.fillStyle = '#1e293b';
+                    fCtx.beginPath(); fCtx.arc(xInput, inp.y, 14, 0, Math.PI * 2); fCtx.fill();
+                    
+                    // 레이블 텍스트 (왼쪽에 배치)
+                    fCtx.font = 'bold 13px sans-serif';
+                    fCtx.fillStyle = '#1e293b';
+                    fCtx.textAlign = 'right';
+                    fCtx.fillText(inp.label, xInput - 22, inp.y + 4);
+                });
+
+                // 4. 층 상단 타이틀 레이블
+                fCtx.font = 'bold 11px sans-serif';
+                fCtx.fillStyle = '#64748b';
+                fCtx.textAlign = 'center';
+                fCtx.fillText('Input Layer', xInput, 15);
+                fCtx.fillText('Hidden Layer', xHidden1, 15);
+                fCtx.fillText('Hidden Layer', xHidden2, 15);
+
+                // 5. 은닉층 수도꼭지 아이콘 및 물줄기 효과 그리기 함수
+                function drawFaucet(x, y, hasRedDrops) {
+                    // 수도꼭지 본체 몸통 (회색 사각형 및 곡선 대체 간이 드로잉)
+                    fCtx.fillStyle = '#94a3b8';
+                    fCtx.fillRect(x - 12, y - 8, 24, 12);
+                    // 손잡이
+                    fCtx.fillRect(x - 6, y - 16, 12, 8);
+                    // 물 나오는 입구
+                    fCtx.fillRect(x + 4, y + 4, 8, 8);
+
+                    // 물줄기 (빨간색 혹은 파란색 선)
+                    fCtx.lineWidth = 2;
+                    for(let i=0; i<3; i++) {
+                        fCtx.strokeStyle = hasRedDrops ? '#f43f5e' : '#3b82f6';
+                        fCtx.beginPath();
+                        fCtx.moveTo(x + 8 + (i*3), y + 14);
+                        fCtx.lineTo(x + 8 + (i*3), y + 24);
+                        fCtx.stroke();
+                    }
+                }
+
+                // 제1 은닉층 수도꼭지 배치 (교대로 빨간물/파란물 연출)
+                hidden1Y.forEach((y, idx) => {
+                    drawFaucet(xHidden1, y, idx % 2 === 0);
+                });
+
+                // 제2 은닉층 수도꼭지 배치
+                hidden2Y.forEach((y, idx) => {
+                    drawFaucet(xHidden2, y, idx % 2 !== 0);
+                });
+
+                // 6. 출력층 노드 및 최종 설명 텍스트
+                fCtx.fillStyle = '#1e293b';
+                fCtx.beginPath(); fCtx.arc(xOutput, outputY, 16, 0, Math.PI * 2); fCtx.fill();
+
+                // 출력층 설명 텍스트 (오른쪽에 배치)
+                fCtx.font = 'bold 12px sans-serif';
+                fCtx.fillStyle = '#1e293b';
+                fCtx.textAlign = 'left';
+                fCtx.fillText('가족이 선호하는', xOutput + 22, outputY - 6);
+                fCtx.fillText('샤워기의 수량과 온도', xOutput + 22, outputY + 10);
+            }
+        });
+    </script>
+</body>
+</html>

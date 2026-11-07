@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - 데이터의 이해 최종 완벽 통합 교재</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #ec4899;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --accent-blue: #0ea5e9;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #e11d48, #fb7185);
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: #be123c;
+            border-bottom: 2px solid #fecdd3;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: #fff1f2;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 5px solid #e11d48;
+        }
+
+        .card h3 { margin-top: 0; color: #881337; }
+
+        /* 테이블 디자인 및 레이아웃 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .table-layout-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .row-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #0d9488;
+            font-weight: bold;
+            font-size: 0.95rem;
+            background: #f0fdfa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #14b8a6;
+        }
+
+        .table-container {
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        /* 화살표 및 하단 설명 컨테이너 */
+        .flow-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .flow-arrow-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 0.5rem;
+        }
+
+        .arrow-down {
+            font-size: 1.5rem;
+            color: #2563eb;
+            text-align: center;
+        }
+        .arrow-down.orange { color: #ea580c; }
+
+        /* 3가지 데이터 유형 레이아웃 */
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .type-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-top: 6px solid var(--primary);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .type-card.semi { border-top-color: var(--accent-orange); }
+        .type-card.unstruct { border-top-color: var(--accent-red); }
+
+        .badge {
+            background: #e2e8f0;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* 번호가 매겨진 특징 목록 스타일 */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .feature-num {
+            background: #f43f5e;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        /* 코드 박스 스타일 (반정형 데이터용) */
+        .code-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        /* 비정형 데이터 항목 스타일 */
+        .unstruct-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--accent-red);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* 캔버스 영역 */
+        .canvas-box {
+            text-align: center;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📊 AICE Junior: 데이터의 이해 최종 완벽 교재</h1>
+        <p>데이터 개념부터 정형·반정형·비정형 데이터의 세부 특징까지 완벽 정리</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. 데이터란 무엇인가? -->
+        <section>
+            <h2>💡 1. 데이터(Data)의 개념</h2>
+            <p>관찰이나 측정을 통해 수집한 사실이나 값입니다. 자동차가 연료 없이 달릴 수 없듯, 인공지능은 <strong>데이터 없이 작동할 수 없습니다.</strong></p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3>🌡️ 주변의 데이터 예시</h3>
+                    <ul style="margin: 0; padding-left: 1.2rem;">
+                        <li><strong>오늘 기온:</strong> 23°C (기상청 측정 수치)</li>
+                        <li><strong>편의점 구매 기록:</strong> 언제, 무엇을, 얼마에 샀는지</li>
+                        <li><strong>건강검진 결과:</strong> 혈압, 심박수, 혈당 수치</li>
+                        <li><strong>GPS 위치 정보:</strong> 위도와 경도 좌표</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🎨 데이터의 형태</h3>
+                    <p>데이터는 숫자에만 국한되지 않으며, <strong>숫자, 문자, 이미지, 소리</strong> 등 다양한 형태로 존재합니다.</p>
+                    <p style="font-size: 0.9rem; color: #9f1239; margin-top: 1rem;">✨ <em>우리는 매일 데이터를 만들고 사용하고 있습니다!</em></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 형태별 데이터 유형 개요 -->
+        <section>
+            <h2>🗂️ 2. 데이터의 유형 (형태별 분류 개요)</h2>
+            <p>데이터는 구조와 형태에 따라 크게 3가지로 나뉩니다. (전 세계 데이터의 약 80%는 비정형 데이터입니다.)</p>
+            
+            <div class="type-grid">
+                <!-- 정형 데이터 -->
+                <div class="type-card">
+                    <span class="badge" style="background:#e0e7ff; color:#3730a3;">점유율 20%</span>
+                    <h3 style="color:#3730a3; margin-top:0.5rem;">📊 정형 데이터 (Structured)</h3>
+                    <p>행과 열로 깔끔하게 정리되어 미리 정해진 형식(스키마)이 있는 데이터</p>
+                    <p><strong>예시:</strong> 엑셀, 성적표, 매출 기록</p>
+                </div>
+
+                <!-- 반정형 데이터 -->
+                <div class="type-card semi">
+                    <span class="badge" style="background:#ffedd5; color:#9a3412;">점유율 10%</span>
+                    <h3 style="color:#9a3412; margin-top:0.5rem;">🏷️ 반정형 데이터 (Semi-Structured)</h3>
+                    <p>일정한 규칙(태그/키 구조)은 있으나 표로 정형화하기는 어려운 데이터</p>
+                    <p><strong>예시:</strong> JSON, XML, HTML, 이메일</p>
+                </div>
+
+                <!-- 비정형 데이터 -->
+                <div class="type-card unstruct">
+                    <span class="badge" style="background:#fee2e2; color:#991b1b;">점유율 70%</span>
+                    <h3 style="color:#991b1b; margin-top:0.5rem;">🖼️ 비정형 데이터 (Unstructured)</h3>
+                    <p>정해진 구조 없이 자유로운 형태로, AI가 처리하려면 숫자로 변환하는 전처리가 필요함</p>
+                    <p><strong>예시:</strong> 사진, 영상, 음성, SNS 글</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 정형 데이터 상세 및 특징 (슬라이드 02 반영) -->
+        <section>
+            <h2>02 📊 정형 데이터 Structured Data</h2>
+            <p>행(Row)과 열(Column)로 깔끔하게 정리된 데이터</p>
+
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>이름</th>
+                                <th>나이</th>
+                                <th>키(cm)</th>
+                                <th>좋아하는 과목</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>김민수</td><td>15</td><td>168</td><td>수학</td></tr>
+                            <tr><td>이서연</td><td>16</td><td>155</td><td>과학</td></tr>
+                            <tr><td>박지호</td><td>15</td><td>172</td><td>영어</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.9rem; color: #475569; margin-top: 0.75rem;">
+                        ➡️ <strong>열(Column)</strong> = 속성 (이름, 나이 등)<br>
+                        ➡️ <strong>행(Row)</strong> = 개별 데이터 한 건
+                    </p>
+                </div>
+
+                <div class="card" style="background:#f8fafc; border-left-color:#3b82f6;">
+                    <h3 style="color:#1e293b; margin-bottom: 0.5rem;">정형 데이터의 특징</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#3b82f6;">1</div>
+                            <div><strong>규칙적 구조</strong><br><span style="font-size:0.85rem; color:#64748b;">미리 정해진 형식(스키마)이 있다</span></div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#3b82f6;">2</div>
+                            <div><strong>빠른 검색</strong><br><span style="font-size:0.85rem; color:#64748b;">특정 값을 빠르게 찾을 수 있다</span></div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#3b82f6;">3</div>
+                            <div><strong>분석 편리</strong><br><span style="font-size:0.85rem; color:#64748b;">통계, 그래프 등으로 바로 활용 가능</span></div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#3b82f6;">4</div>
+                            <div><strong>대표 저장소</strong><br><span style="font-size:0.85rem; color:#64748b;">데이터베이스(DB), 엑셀, CSV</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 데이터 테이블 용어 추가 정리 -->
+            <div style="margin-top: 2rem; border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;">
+                <p style="font-weight: bold; color: #1e293b;">📌 데이터 테이블 용어 및 입력/출력 변수 정리</p>
+                <div class="table-layout-wrapper">
+                    <div class="row-indicator">
+                        📌 행 = 케이스 = 관측치 = 샘플 = 레코드
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>이름</th>
+                                    <th>키(cm)</th>
+                                    <th>몸무게(kg)</th>
+                                    <th>공부시간(h)</th>
+                                    <th style="background:#ea580c;">합격여부</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>김철수</td><td>175</td><td>68</td><td>5</td><td><strong style="color:blue;">합격</strong></td></tr>
+                                <tr><td>이영희</td><td>162</td><td>55</td><td>3</td><td><strong style="color:red;">불합격</strong></td></tr>
+                                <tr><td>박민수</td><td>180</td><td>75</td><td>7</td><td><strong style="color:blue;">합격</strong></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-row">
+                    <div class="arrow-down">⬇️<br><span style="font-size:0.8rem; color:#2563eb; font-weight:bold;">입력(독립) 변수 (X) : 속성 = 특성 = 변수 = 피처(Feature) = 컬럼</span></div>
+                    <div class="arrow-down orange">⬇️<br><span style="font-size:0.8rem; color:#ea580c; font-weight:bold;">출력(종속) 변수 (y) : 속성 = 레이블 = 타겟(Target)</span></div>
+                </div>
+
+                <div class="flow-section" style="margin-top: 0.5rem;">
+                    <div class="card" style="background:#eff6ff; border-left-color:#2563eb; margin:0;">
+                        <h3 style="color:#1d4ed8;">📥 입력 변수 (X)</h3>
+                        <p style="margin: 0; font-size: 0.9rem;">AI가 학습에 사용하는 정보 (예: 키, 몸무게, 공부시간)</p>
+                    </div>
+                    <div class="card" style="background:#fff7ed; border-left-color:#ea580c; margin:0;">
+                        <h3 style="color:#ea580c;">📤 출력 변수 (y)</h3>
+                        <p style="margin: 0; font-size: 0.9rem;">AI가 맞추려 하는 정답 (예: 합격 여부)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 반정형 데이터 상세 및 특징 (슬라이드 03 반영) -->
+        <section>
+            <h2>03 🏷️ 반정형 데이터 Semi-structured Data</h2>
+            <p>키(Key)와 값(Value) 쌍으로 구성된 데이터 (대표 예시: JSON, XML, HTML, 이메일, 로그 파일)</p>
+
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <div class="code-box">
+<span style="color:#cbd5e1;">{</span><br>
+&nbsp;&nbsp;<span style="color:#f43f5e;">name</span> &nbsp;&nbsp;&nbsp;: <span style="color:#38bdf8;">"김민수"</span>,<br>
+&nbsp;&nbsp;<span style="color:#f43f5e;">age</span> &nbsp;&nbsp;&nbsp;&nbsp;: <span style="color:#38bdf8;">15</span>,<br>
+&nbsp;&nbsp;<span style="color:#f43f5e;">scores</span> : <span style="color:#cbd5e1;">[</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cbd5e1;">{</span> <span style="color:#f43f5e;">subject</span> : <span style="color:#38bdf8;">"수학"</span>, <span style="color:#f43f5e;">score</span> : <span style="color:#38bdf8;">92</span> <span style="color:#cbd5e1;">}</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cbd5e1;">{ ... }</span><br>
+&nbsp;&nbsp;<span style="color:#cbd5e1;">]</span><br>
+<span style="color:#cbd5e1;">}</span>
+                    </div>
+                    <p style="text-align: center; font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">data.json 구조 예시</p>
+                </div>
+
+                <div class="card" style="background:#fff7ed; border-left-color:#ea580c;">
+                    <h3 style="color:#9a3412; margin-bottom: 0.5rem;">반정형 데이터의 특징</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#ea580c;">1</div>
+                            <div><strong>태그/키 구조</strong><br><span style="font-size:0.85rem; color:#64748b;">데이터에 이름표(태그)가 붙어 있음</span></div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#ea580c;">2</div>
+                            <div><strong>유연한 구조</strong><br><span style="font-size:0.85rem; color:#64748b;">항목마다 필드가 다를 수 있음</span></div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#ea580c;">3</div>
+                            <div><strong>중첩 가능</strong><br><span style="font-size:0.85rem; color:#64748b;">데이터 안에 데이터를 넣을 수 있음</span></div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-num" style="background:#ea580c;">4</div>
+                            <div><strong>변환 필요</strong><br><span style="font-size:0.85rem; color:#64748b;">분석하려면 정형으로 변환해야 함</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 비정형 데이터 상세 및 특징 (슬라이드 04 반영) -->
+        <section>
+            <h2>04 🖼️ 비정형 데이터 Unstructured Data</h2>
+            <p>정해진 구조 없이 자유로운 형태의 데이터</p>
+
+            <div class="grid-2">
+                <div class="card" style="background:#fef2f2; border-left-color:#ef4444;">
+                    <h3 style="color:#991b1b;">비정형 데이터의 종류</h3>
+                    <div class="unstruct-item">
+                        <span style="font-size:1.5rem;">📷</span>
+                        <div><strong>이미지:</strong> 사진, 그림, 스캔 문서<br><span style="font-size:0.85rem; color:#64748b;">픽셀 단위 색상 정보 (얼굴 사진, X-ray 등)</span></div>
+                    </div>
+                    <div class="unstruct-item">
+                        <span style="font-size:1.5rem;">📄</span>
+                        <div><strong>텍스트:</strong> 자연어로 쓰인 문서<br><span style="font-size:0.85rem; color:#64748b;">길이와 구조가 자유로움 (뉴스 기사, 리뷰)</span></div>
+                    </div>
+                    <div class="unstruct-item">
+                        <span style="font-size:1.5rem;">🎵</span>
+                        <div><strong>음성:</strong> 소리의 파동을 기록한 시계열 데이터<br><span style="font-size:0.85rem; color:#64748b;">통화 녹음, 음악, 팟캐스트</span></div>
+                    </div>
+                    <div class="unstruct-item">
+                        <span style="font-size:1.5rem;">🎬</span>
+                        <div><strong>영상:</strong> 이미지 + 음성이 결합된 시간 흐름 데이터<br><span style="font-size:0.85rem; color:#64748b;">유튜브, CCTV, 드라마</span></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; justify-content: center; gap: 1rem;">
+                    <div class="card" style="background:#fefce8; border-left-color:#eab308;">
+                        <h3 style="color:#a16207;">⚠️ 핵심 포인트</h3>
+                        <p style="margin: 0; font-size: 1.05rem; font-weight: bold; color: #854d0e;">
+                            "인공지능이 비정형 데이터를 처리하려면, 먼저 숫자로 변환하는 전처리(Preprocessing) 과정이 필요함!"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. 성질별 데이터 유형 (수치형 vs 범주형) -->
+        <section>
+            <h2>📐 6. 성질별 데이터 유형 (수치형 vs 범주형)</h2>
+            <p>데이터의 값이 어떤 성질을 가지느냐에 따라 2가지로 나뉩니다.</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📏 수치 데이터 (Numerical)</h3>
+                    <p>크기 비교와 수학 연산이 가능한 데이터</p>
+                    <ul>
+                        <li><strong>연속형 (Continuous):</strong> 키(168.5cm), 몸무게, 기온 등 소수점 가능</li>
+                        <li><strong>이산형 (Discrete):</strong> 학생 수(35명), 형제 수 등 정수만 가능</li>
+                    </ul>
+                </div>
+                <div class="card" style="background:#fdf4ff; border-left-color:#a855f7;">
+                    <h3 style="color:#7e22ce;">🏷️ 범주 데이터 (Categorical)</h3>
+                    <p>종류나 그룹을 구분하는 데이터</p>
+                    <ul>
+                        <li><strong>명목형 (Nominal):</strong> 혈액형(A, B, O, AB), 성별 (순서 없음)</li>
+                        <li><strong>순서형 (Ordinal):</strong> 학점(A > B > C), 만족도 (순서 있음)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- HTML5 캔버스를 이용한 시각화 다이어그램 -->
+            <div class="canvas-box">
+                <p style="color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem;">🎨 [캔버스 시각화] 데이터 구조 요약 다이어그램</p>
+                <canvas id="dataCanvas" width="850" height="150"></canvas>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>AICE Junior 학습  | Hangang Media High School</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('dataCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawDiagram() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#4f46e5';
+            ctx.roundRect(350, 15, 150, 40, 8);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 15px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('데이터 (Data)', 425, 40);
+
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(425, 55);
+            ctx.lineTo(425, 80);
+            ctx.moveTo(200, 80);
+            ctx.lineTo(650, 80);
+            ctx.stroke();
+
+            const categories = [
+                { text: '정형 (Structured)', x: 120, color: '#2563eb' },
+                { text: '반정형 (Semi)', x: 425, color: '#ea580c' },
+                { text: '비정형 (Unstructured)', x: 730, color: '#dc2626' }
+            ];
+
+            categories.forEach(cat => {
+                ctx.beginPath();
+                ctx.moveTo(cat.x, 80);
+                ctx.lineTo(cat.x, 100);
+                ctx.stroke();
+
+                ctx.fillStyle = cat.color;
+                ctx.roundRect(cat.x - 75, 100, 150, 35, 6);
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '13px sans-serif';
+                ctx.fillText(cat.text, cat.x, 122);
+            });
+        }
+
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.beginPath();
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            };
+        }
+
+        drawDiagram();
+    </script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - 인공지능의 학습 방법 (지도학습 vs 비지도학습)</title>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --supervised-color: #ea580c;
+            --unsupervised-color: #2563eb;
+            --reinforce-color: #64748b;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #fecdd3;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .method-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-top: 6px solid #cbd5e1;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+        .method-card.sup { border-top-color: var(--supervised-color); background: #fff7ed; }
+        .method-card.unsup { border-top-color: var(--unsupervised-color); background: #eff6ff; }
+        .method-card.ref { border-top-color: var(--reinforce-color); background: #f8fafc; }
+
+        .method-card h3 {
+            margin-top: 0;
+            font-size: 1.25rem;
+        }
+
+        /* 비교 섹션 스타일 */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+
+        .compare-box {
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+        .compare-box.sup { background: #fffbeb; border-left: 6px solid #f59e0b; }
+        .compare-box.unsup { background: #eff6ff; border-left: 6px solid #3b82f6; }
+
+        .animal-badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.2rem 0;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .animal-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .sub-type-box {
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-top: 0.75rem;
+            border-left: 4px solid #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        /* 캔버스 영역 */
+        .canvas-box {
+            text-align: center;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📖 AICE Junior: 인공지능의 학습 방법과 유형</h1>
+        <p>머신러닝의 3가지 학습 방식(지도학습, 비지도학습, 강화학습) 완벽 정리</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. 인공지능의 학습 방법 구조도 -->
+        <section>
+            <h2>🧠 1. 인공지능의 학습 방법 (머신러닝의 3대 축)</h2>
+            <p>머신러닝 알고리즘은 데이터를 학습하는 방식에 따라 크게 세 가지로 분류됩니다</p>
+
+            <div class="grid-3">
+                <!-- 지도학습 -->
+                <div class="method-card sup">
+                    <h3 style="color: var(--supervised-color);">지도학습 (Supervised)</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; margin-bottom: 0;">
+                        <li><strong>문제와 정답(레이블)</strong>을 학습하고 문제에 대한 정답을 맞추게 하는 방식</li>
+                        <li>엄마가 아이에게 꽃, 기린 등을 가르치는 방식</li>
+                    </ul>
+                </div>
+
+                <!-- 비지도학습 -->
+                <div class="method-card unsup">
+                    <h3 style="color: var(--unsupervised-color);">비지도학습 (Unsupervised)</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; margin-bottom: 0;">
+                        <li><strong>문제만 학습</strong>하여 문제의 특징을 스스로 찾게 하는 방식</li>
+                        <li>꽃, 기린 등을 정답 없이 서로 다른 특징을 스스로 학습하게 하는 방식</li>
+                    </ul>
+                </div>
+
+                <!-- 강화학습 -->
+                <div class="method-card ref">
+                    <h3 style="color: var(--reinforce-color);">강화학습 (Reinforcement)</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; margin-bottom: 0;">
+                        <li>주어진 환경에 대한 <strong>보상을 최대화</strong>하는 방향으로 행동을 결정하게 하는 방식</li>
+                        <li>게임 승률 향상 등</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- HTML5 캔버스를 이용한 머신러닝 분류 다이어그램 -->
+            <div class="canvas-box">
+                <p style="color: #94a3b8; margin-bottom: 0.75rem; font-size: 0.9rem;">🎨 [캔버스 시각화] 머신러닝 학습 방법 구조도</p>
+                <canvas id="methodCanvas" width="850" height="150" style="background: #1e293b;"></canvas>
+            </div>
+        </section>
+
+        <!-- 2. 학습 유형 상세 비교: 지도학습 vs 비지도학습 -->
+        <section>
+            <h2>⚖️ 2. 학습 유형 : 지도학습 vs 비지도학습</h2>
+            
+            <div class="compare-grid">
+                <!-- 지도학습 상세 -->
+                <div class="compare-box sup">
+                    <h3 style="color: var(--supervised-color); margin-top: 0;">지도학습 (Supervised)</h3>
+                    <p style="font-weight: bold; margin-bottom: 0.5rem;">선생님이 정답을 알려주며 가르침</p>
+                    <p style="font-size: 0.9rem; color: #475569; margin-top: 0;">정답(레이블)이 있는 데이터로 학습</p>
+
+                    <!-- 강아지/고양이 이미지 및 정답 영역 -->
+                    <div class="animal-badge-container">
+                        <div class="animal-item">
+                            <span style="font-size: 1.8rem;">🐶</span>
+                            <div>정답: 강아지</div>
+                        </div>
+                        <div class="animal-item">
+                            <span style="font-size: 1.8rem;">🐱</span>
+                            <div>정답: 고양이</div>
+                        </div>
+                    </div>
+
+                    <p style="font-weight: bold; margin-bottom: 0.25rem;">두 가지 유형:</p>
+                    <div class="sub-type-box" style="border-left-color: #f43f5e;">
+                        <strong>분류</strong> — 카테고리 맞추기 (예: 스팸 / 정상)
+                    </div>
+                    <div class="sub-type-box" style="border-left-color: #f59e0b;">
+                        <strong>회귀</strong> — 연속적인 숫자 예측 (예: 집값, 성적)
+                    </div>
+                </div>
+
+                <!-- 비지도학습 상세 -->
+                <div class="compare-box unsup">
+                    <h3 style="color: var(--unsupervised-color); margin-top: 0;">비지도학습 (Unsupervised)</h3>
+                    <p style="font-weight: bold; margin-bottom: 0.5rem;">정답 없이 스스로 패턴을 찾아냄[cite: 32]</p>
+                    <p style="font-size: 0.9rem; color: #475569; margin-top: 0;">AI가 스스로: "비슷한 것끼리 묶자!"</p>
+
+                    <!-- 강아지/고양이 이미지 및 정답없음 영역 -->
+                    <div class="animal-badge-container">
+                        <div class="animal-item">
+                            <span style="font-size: 1.8rem;">🐶</span>
+                            <div style="color: #64748b;">정답없음</div>
+                        </div>
+                        <div class="animal-item">
+                            <span style="font-size: 1.8rem;">🐱</span>
+                            <div style="color: #64748b;">정답없음</div>
+                        </div>
+                    </div>
+
+                    <p style="font-weight: bold; margin-bottom: 0.25rem;">유형:</p>
+                    <div class="sub-type-box" style="border-left-color: #3b82f6;">
+                        <strong>군집화</strong> — 비슷한 데이터끼리 자동 그룹핑]<br>
+                        <span style="font-size: 0.85rem; color: #64748b;">(예: 고객 유형 분류, 뉴스 기사 묶기)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>AICE Junior 학습 | Hangang Media High School</p>
+    </footer>
+
+    <script>
+        // HTML5 Canvas를 활용한 머신러닝 학습방법 트리 구조 다이어그램 드로잉
+        const canvas = document.getElementById('methodCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawTreeDiagram() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 상단 머신러닝 박스
+            ctx.fillStyle = '#dc2626';
+            roundRect(ctx, 350, 15, 150, 35, 6);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('머신러닝', 425, 37);
+
+            // 연결선 (세 갈래)
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            // 수직 아래로
+            ctx.moveTo(425, 50);
+            ctx.lineTo(425, 75);
+            // 가로 분기선
+            ctx.moveTo(140, 75);
+            ctx.lineTo(710, 75);
+            // 각 항목으로 내리는 선
+            ctx.moveTo(140, 75); ctx.lineTo(140, 95);
+            ctx.moveTo(425, 75); ctx.lineTo(425, 95);
+            ctx.moveTo(710, 75); ctx.lineTo(710, 95);
+            ctx.stroke();
+
+            // 하단 3개 학습 방식 박스
+            // 1. 지도학습
+            ctx.fillStyle = '#ea580c';
+            roundRect(ctx, 65, 95, 150, 35, 6);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('지도학습', 140, 117);
+
+            // 2. 비지도학습
+            ctx.fillStyle = '#2563eb';
+            roundRect(ctx, 350, 95, 150, 35, 6);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('비지도학습', 425, 117);
+
+            // 3. 강화학습
+            ctx.fillStyle = '#64748b';
+            roundRect(ctx, 635, 95, 150, 35, 6);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('강화학습', 710, 117);
+        }
+
+        function roundRect(ctx, x, y, w, h, r) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        drawTreeDiagram();
+    </script>
+</body>
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - AI 문제 해결 방법 마스터 교재</title>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --reg-color: #ea580c;
+            --clf-color: #2563eb;
+            --clu-color: #db2777;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #fecdd3;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.75rem 0;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #334155;
+            color: white;
+        }
+
+        .master-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .master-table th { background: #1e293b; color: white; padding: 12px; }
+        .master-table th:nth-child(2) { background: var(--reg-color); }
+        .master-table th:nth-child(3) { background: var(--clf-color); }
+        .master-table th:nth-child(4) { background: var(--clu-color); }
+        .master-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+
+        .canvas-container {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.5rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .badge-box {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .shape-canvas-box {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 4px;
+            display: inline-block;
+            margin: 0 2px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎯 AICE Junior: AI가 해결하는 세 가지 문제 마스터</h1>
+        <p>회귀, 분류, 군집의 개념부터 구체적 예시, 학습 유형, 그리고 도형 및 동물 캐릭터 분석까지 완벽 정리</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 슬라이드 1: AI가 해결하는 세 가지 문제 -->
+        <section>
+            <h2>🤖 1. AI가 해결하는 세 가지 문제</h2>
+            <div class="grid-3">
+                <div class="card" style="background: #fff7ed; border-top: 5px solid var(--reg-color);">
+                    <h3 style="color: var(--reg-color); margin-top:0;">회귀 (Regression)</h3>
+                    <p style="font-size: 1.2rem; font-weight: bold; margin: 0.25rem 0;">"얼마?"</p>
+                    <p style="font-size: 0.9rem; color: #475569;">연속적인 숫자 값을 예측</p>
+                    <div class="canvas-container"><canvas id="s1Reg" width="260" height="110"></canvas></div>
+                    <p style="font-size: 0.85rem; margin:0;"><strong>예:</strong> 집값, 온도, 매출 예측<br><span style="color:var(--reg-color);">정답: 숫자(연속값) ➡️ 지도학습</span></p>
+                </div>
+
+                <div class="card" style="background: #eff6ff; border-top: 5px solid var(--clf-color);">
+                    <h3 style="color: var(--clf-color); margin-top:0;">분류 (Classification)</h3>
+                    <p style="font-size: 1.2rem; font-weight: bold; margin: 0.25rem 0;">"어디에 속해?"</p>
+                    <p style="font-size: 0.9rem; color: #475569;">정해진 카테고리 중 하나</p>
+                    <div class="canvas-container"><canvas id="s1Clf" width="260" height="110"></canvas></div>
+                    <p style="font-size: 0.85rem; margin:0;"><strong>예:</strong> 합격/불합격, 개/고양이<br><span style="color:var(--clf-color);">정답: 범주(카테고리) ➡️ 지도학습</span></p>
+                </div>
+
+                <div class="card" style="background: #fdf2f8; border-top: 5px solid var(--clu-color);">
+                    <h3 style="color: var(--clu-color); margin-top:0;">군집 (Clustering)</h3>
+                    <p style="font-size: 1.2rem; font-weight: bold; margin: 0.25rem 0;">"누가 비슷해?"</p>
+                    <p style="font-size: 0.9rem; color: #475569;">비슷한 데이터끼리 자동</p>
+                    <div class="canvas-container"><canvas id="s1Clu" width="260" height="110"></canvas></div>
+                    <p style="font-size: 0.85rem; margin:0;"><strong>예:</strong> 고객 세분화, 문서 분류<br><span style="color:var(--clu-color);">정답: 없음(탐색형) ➡️ 비지도학습</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 2: 지도학습 - 회귀(Regression) -->
+        <section>
+            <h2>📈 2. 지도학습 — 회귀 (Regression)</h2>
+            <div class="grid-2">
+                <div class="card" style="background: #fff7ed;">
+                    <h3 style="color: var(--reg-color); margin-top:0;">예시 1 : 학습시간 ➡️ 시험 점수</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">공부를 많이 할수록 점수가 올라갈까?</p>
+                    <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between;">
+                        <table style="width: 50%;">
+                            <tr><th>학습시간(h)</th><th>시험점수</th></tr>
+                            <tr><td>2</td><td>55</td></tr>
+                            <tr><td>4</td><td>65</td></tr>
+                            <tr><td>6</td><td>78</td></tr>
+                            <tr><td>8</td><td>90</td></tr>
+                        </table>
+                        <div class="canvas-container" style="margin: 0; width: 45%;">
+                            <canvas id="regGraph1" width="150" height="110"></canvas>
+                        </div>
+                    </div>
+                    <div style="background:white; padding:0.75rem; border-radius:6px; text-align:center; margin-top:0.75rem; font-weight:bold; font-size:0.9rem;">
+                        ⬇️ 학습 완료 ➡️ 새 데이터 입력되면?<br>
+                        학습시간: 5h &nbsp;➡️&nbsp; <span style="color:var(--reg-color);">약 72점! 📊</span>
+                    </div>
+                </div>
+
+                <div class="card" style="background: #fff7ed;">
+                    <h3 style="color: var(--reg-color); margin-top:0;">예시 2 : 기온 ➡️ 아이스크림 판매량</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">날씨가 더울수록 아이스크림이 잘 팔릴까?</p>
+                    <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between;">
+                        <table style="width: 50%;">
+                            <tr><th>기온(°C)</th><th>판매량(개)</th></tr>
+                            <tr><td>15</td><td>120</td></tr>
+                            <tr><td>22</td><td>250</td></tr>
+                            <tr><td>28</td><td>380</td></tr>
+                            <tr><td>33</td><td>500</td></tr>
+                        </table>
+                        <div class="canvas-container" style="margin: 0; width: 45%;">
+                            <canvas id="regGraph2" width="150" height="110"></canvas>
+                        </div>
+                    </div>
+                    <div style="background:white; padding:0.75rem; border-radius:6px; text-align:center; margin-top:0.75rem; font-weight:bold; font-size:0.9rem;">
+                        ⬇️ 학습 완료 ➡️ 새 데이터 입력되면?<br>
+                        기온: 25°C &nbsp;➡️&nbsp; <span style="color:var(--reg-color);">약 310개! 🍦</span>
+                    </div>
+                </div>
+            </div>
+            <div style="background: #ffedd5; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1rem; font-weight: bold; color: #9a3412;">
+                회귀의 핵심: 출력이 "숫자" ➡️ 55점, 72점, 310개 처럼 연속적인 값을 예측 &nbsp;|&nbsp; 실제값에서 오차가 작은 숫자 값을 맞추는 것이 목표!
+            </div>
+        </section>
+
+        <!-- 슬라이드 3: 지도학습 - 분류(Classification) -->
+        <section>
+            <h2>🏷️ 3. 지도학습 — 분류 (Classification)</h2>
+            <p style="text-align: center; font-weight: bold; color: #475569;">분류의 핵심: 미리 정해진 카테고리 중 하나에 "배정"</p>
+
+            <div class="grid-2" style="margin-top: 1rem;">
+                <div class="card" style="background: #fdf2f8;">
+                    <h3 style="color: var(--clu-color); margin-top:0;">STEP 1 학습 데이터 (정답 포함)</h3>
+                    <div class="badge-box">
+                        <img src="images/20261101_002556.png" alt="강아지">
+                    </div>
+                    <p style="text-align: center; font-size: 0.85rem; color: #475569; margin:0;">모든 데이터에 정답을 알려주며 학습시킴.</p>
+                </div>
+
+                <div class="card" style="background: #eff6ff;">
+                    <h3 style="color: var(--clf-color); margin-top:0;">STEP 2 학습 완료 ➡️ 예측!</h3>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 1rem 0;">
+                        <div style="text-align: center;">
+                            <img src="images/20261101_002533.png" alt="새로운 고양이">
+                            <div style="font-size: 0.8rem; font-weight: bold; margin-top:0.25rem;"><br>(새로운 고양이)</div>
+                        </div>
+                        <div style="font-size: 1.5rem; color: red;">➡️</div>
+                        <div>
+                            <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px; border: 2px solid #22c55e; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                <strong>"고양이!" ✓</strong><br><span style="font-size: 0.75rem; color: #64748b;">95% 확률로 배정</span>
+                            </div>
+                            <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.9rem; opacity: 0.7;">
+                                <strong>"강아지!" x</strong><br><span style="font-size: 0.75rem; color: #64748b;">5% 확률</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 4: 비지도학습 - 군집(Clustering) 예시 -->
+        <section>
+            <h2>🧩 4. 비지도학습 — 군집 (Clustering) 예시</h2>
+            <p style="text-align: center; font-weight: bold; color: #475569;">군집의 핵심: 비슷한 것끼리 스스로 "발견"</p>
+
+            <div class="grid-2" style="margin-top: 1rem;">
+                <div class="card" style="background: #fdebff;">
+                    <h3 style="color: #334155; margin-top:0;">STEP 1 데이터 (정답 없음 X)</h3>
+                    <div class="badge-box">
+                        <img src="images/20261101_003111.png" alt="데이터">
+                    </div>
+                    <p style="text-align: center; font-size: 0.85rem; color: #475569; margin:0;">인공지능은 이 이미지들이 무엇인지 모름.</p>
+                </div>
+
+                <div class="card" style="background: #fdf2f8;">
+                    <h3 style="color: var(--clu-color); margin-top:0;">STEP 2 AI가 스스로 묶음</h3>
+                    <div style="display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0;">
+                       <img src="images/20261101_003136.png" alt="그룹화">
+                    </div>
+                    <p style="text-align: center; font-size: 0.8rem; color: #64748b; margin:0;">※ 그룹 이름은 AI가 모름</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 5: 분류 vs 군집 - 핵심 차이 (Canvas 스크립트 도형 렌더링 적용) -->
+        <section>
+            <h2>⚖️ 5. 분류 vs 군집 - 핵심 차이는?</h2>
+            <div class="grid-2">
+                <div class="card" style="background: #eff6ff; border-top: 5px solid var(--clf-color);">
+                    <h3 style="color: var(--clf-color); margin-top:0;">분류 (Classification)</h3>
+                    <p style="font-size: 0.95rem; margin:0.25rem 0;">정답이 있다 ➡️ "어디에 속해?"</p>
+                    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.5rem;">학습 데이터 (정답 레이블 있음)</p>
+                    
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; margin: 0.5rem 0; align-items: center;">
+                        <span class="shape-canvas-box"><canvas id="clfStar1" width="24" height="24"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="clfStar2" width="24" height="24"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="clfTri1" width="24" height="24"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="clfTri2" width="24" height="24"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="clfSq1" width="24" height="24"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="clfSq2" width="24" height="24"></canvas></span>
+                    </div>
+
+                    <p style="text-align:center; font-size:0.85rem; margin:0.25rem 0;">⬇️ 학습 완료 ➡️ 새 도형이 오면?</p>
+                    <div style="background: white; padding: 0.5rem; border-radius: 6px; text-align: center; border: 1px solid #cbd5e1; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                        <canvas id="clfNewTri" width="20" height="20" style="vertical-align: middle;"></canvas> <span style="color: #64748b; font-size:0.8rem;">???</span> &nbsp;➡️&nbsp; <strong>"삼각형이다!" ✓</strong>
+                    </div>
+                    <p style="background:white; padding:0.5rem; border-radius:6px; text-align:center; margin-top:0.5rem; font-size:0.85rem; color:var(--clf-color);">
+                        이미 정해진 카테고리(별/삼각형/사각형)에 새 도형을 "배정" 하는 것
+                    </p>
+                </div>
+
+                <div class="card" style="background: #fff7ed; border-top: 5px solid var(--clu-color);">
+                    <h3 style="color: var(--clu-color); margin-top:0;">군집 (Clustering)</h3>
+                    <p style="font-size: 0.95rem; margin:0.25rem 0;">정답이 없다 ➡️ "누가 비슷해?"</p>
+                    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.5rem;">데이터 (정답 없음 X)</p>
+                    
+                    <div style="display: flex; gap: 0.3rem; justify-content: center; margin: 0.5rem 0; align-items: center;">
+                        <span class="shape-canvas-box"><canvas id="cluMix1" width="22" height="22"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="cluMix2" width="22" height="22"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="cluMix3" width="22" height="22"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="cluMix4" width="22" height="22"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="cluMix5" width="22" height="22"></canvas></span>
+                        <span class="shape-canvas-box"><canvas id="cluMix6" width="22" height="22"></canvas></span>
+                    </div>
+
+                    <p style="text-align:center; font-size:0.85rem; margin:0.25rem 0;">⬇️ 모양 기준(각 그룹별 2개씩, 서로 다른 색상)으로 묶으면?</p>
+                    <div style="display: flex; justify-content: space-around; background:white; padding:0.4rem; border-radius:6px; font-size:0.8rem; font-weight:bold; align-items: center;">
+                        <span style="display:flex; align-items:center; gap:2px;"><canvas id="cluGroupStar1" width="18" height="18"></canvas><canvas id="cluGroupStar2" width="18" height="18"></canvas> 별</span>
+                        <span style="display:flex; align-items:center; gap:2px;"><canvas id="cluGroupTri1" width="18" height="18"></canvas><canvas id="cluGroupTri2" width="18" height="18"></canvas> 삼각형</span>
+                        <span style="display:flex; align-items:center; gap:2px;"><canvas id="cluGroupSq1" width="18" height="18"></canvas><canvas id="cluGroupSq2" width="18" height="18"></canvas> 사각형</span>
+                    </div>
+                    <p style="background:white; padding:0.5rem; border-radius:6px; text-align:center; margin-top:0.5rem; font-size:0.85rem; color:var(--clu-color);">
+                        같은 데이터도 어떤 특징에 주목하느냐에 따라 군집 결과가 달라질 수 있다!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 6: 군집은 기준 특징에 따라 결과가 달라진다! (Canvas 스크립트 도형 렌더링 적용) -->
+        <section>
+            <h2>🎨 6. 군집은 기준 특징에 따라 결과가 달라진다!</h2>
+            <div class="card" style="background: #f8fafc;">
+                <p style="font-weight: bold; margin-top:0; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                    같은 데이터: 
+                    <span class="shape-canvas-box"><canvas id="s6Mix1" width="20" height="20"></canvas></span>
+                    <span class="shape-canvas-box"><canvas id="s6Mix2" width="20" height="20"></canvas></span>
+                    <span class="shape-canvas-box"><canvas id="s6Mix3" width="20" height="20"></canvas></span>
+                    <span class="shape-canvas-box"><canvas id="s6Mix4" width="20" height="20"></canvas></span>
+                    <span class="shape-canvas-box"><canvas id="s6Mix5" width="20" height="20"></canvas></span>
+                    <span class="shape-canvas-box"><canvas id="s6Mix6" width="20" height="20"></canvas></span>
+                    (모양과 색상이 섞임)
+                </p>
+                <div class="grid-2">
+                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid #cbd5e1;">
+                        <h3 style="color: var(--reg-color); margin-top:0; font-size:1rem;">기준 A : 모양별로 묶기</h3>
+                        <p style="font-size: 0.85rem; color: #64748b; margin:0 0 0.5rem 0;">"모양 같으면 같은 그룹"</p>
+                        <div style="display: flex; justify-content: space-around; font-size: 0.85rem; background:#f8fafc; padding:0.5rem; border-radius:6px; font-weight:bold; align-items: center;">
+                            <span style="display:flex; align-items:center; gap:2px;"><canvas id="s6A_star1" width="18" height="18"></canvas><canvas id="s6A_star2" width="18" height="18"></canvas> 별</span>
+                            <span style="display:flex; align-items:center; gap:2px;"><canvas id="s6A_tri1" width="18" height="18"></canvas><canvas id="s6A_tri2" width="18" height="18"></canvas> 삼각형</span>
+                            <span style="display:flex; align-items:center; gap:2px;"><canvas id="s6A_sq1" width="18" height="18"></canvas><canvas id="s6A_sq2" width="18" height="18"></canvas> 사각형</span>
+                        </div>
+                        <p style="text-align: center; font-weight: bold; font-size: 0.85rem; margin-top: 0.5rem;">➡️ 3개 그룹 (모양 기준)</p>
+                    </div>
+
+                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid #cbd5e1;">
+                        <h3 style="color: var(--clf-color); margin-top:0; font-size:1rem;">기준 B : 색깔별로 묶기</h3>
+                        <p style="font-size: 0.85rem; color: #64748b; margin:0 0 0.5rem 0;">"색깔이 같으면 같은 그룹"</p>
+                        <div style="display: flex; justify-content: space-around; font-size: 0.85rem; background:#f8fafc; padding:0.5rem; border-radius:6px; font-weight:bold; align-items: center;">
+                            <span style="display:flex; align-items:center; gap:2px;"><canvas id="s6B_red1" width="18" height="18"></canvas><canvas id="s6B_red2" width="18" height="18"></canvas> 빨강</span>
+                            <span style="display:flex; align-items:center; gap:2px;"><canvas id="s6B_blue1" width="18" height="18"></canvas><canvas id="s6B_blue2" width="18" height="18"></canvas> 파랑</span>
+                            <span style="display:flex; align-items:center; gap:2px;"><canvas id="s6B_other1" width="18" height="18"></canvas> 초록</span>
+                        <span style="display:flex; align-items:center; gap:2px;"><canvas id="s6B_other2" width="18" height="18"></canvas> 주황</span>
+                        </div>
+                        <p style="text-align: center; font-weight: bold; font-size: 0.85rem; margin-top: 0.5rem;">➡️ 4개 그룹 (색깔 기준)</p>
+                    </div>
+                </div>
+            </div>
+            <div style="background: #e2e8f0; padding: 0.75rem; border-radius: 6px; text-align: center; margin-top: 1rem; font-weight: bold; font-size: 0.9rem; color: #334155;">
+                군집화는 "어떤 특징(피처)에 주목하느냐"에 따라 결과가 완전히 달라진다 ➡️ 좋은 피처 선택이 중요!
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: 회귀 · 분류 · 군집 비교 정리 -->
+        <section>
+            <h2>📋 7. 회귀 · 분류 · 군집 비교 정리</h2>
+            <table class="master-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>회귀 (Regression)</th>
+                        <th>분류 (Classification)</th>
+                        <th>군집 (Clustering)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>목표</strong></td>
+                        <td>연속적 숫자 예측</td>
+                        <td>카테고리 예측</td>
+                        <td>유사 데이터 묶기</td>
+                    </tr>
+                    <tr>
+                        <td><strong>정답 유무</strong></td>
+                        <td>있음 (숫자)</td>
+                        <td>있음 (범주)</td>
+                        <td>없음</td>
+                    </tr>
+                    <tr>
+                        <td><strong>학습 유형</strong></td>
+                        <td>지도학습</td>
+                        <td>지도학습</td>
+                        <td>비지도학습</td>
+                    </tr>
+                    <tr>
+                        <td><strong>예시</strong></td>
+                        <td>집값, 온도, 매출</td>
+                        <td>스팸 판별, 질병 진단</td>
+                        <td>고객 세분화, 문서 묶기</td>
+                    </tr>
+                    <tr>
+                        <td><strong>출력</strong></td>
+                        <td>숫자 (예: 3.5억원)</td>
+                        <td>범주 (예: 합격)</td>
+                        <td>그룹 (예: 그룹A)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>핵심 질문</strong></td>
+                        <td><span style="color:var(--reg-color);">"값이 얼마야?"</span></td>
+                        <td><span style="color:var(--clf-color);">"어디에 속해?"</span></td>
+                        <td><span style="color:var(--clu-color);">"누가 비슷해?"</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="background: #fdf2f8; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                <strong>&lt;분류 vs 군집 핵심 차이&gt;</strong><br>
+                분류는 정답을 알려주고 학습 ➡️ 카테고리에 "배정" | 군집은 정답 없이 "비슷한 것끼리 발견"
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>AICE Junior 학습  | Hangang Media High School</p>
+    </footer>
+
+    <script>
+        // 도형 그리기 공통 헬퍼 함수
+        function drawShape(canvasId, type, color) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const x = w / 2;
+            const y = h / 2;
+            const size = Math.min(w, h) * 0.38;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.save();
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+
+            if (type === 'star') {
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(x + Math.cos((18 + i * 72) * Math.PI / 180) * size,
+                               y - Math.sin((18 + i * 72) * Math.PI / 180) * size);
+                    ctx.lineTo(x + Math.cos((54 + i * 72) * Math.PI / 180) * (size / 2.2),
+                               y - Math.sin((54 + i * 72) * Math.PI / 180) * (size / 2.2));
+                }
+                ctx.closePath();
+                ctx.fill();
+            } else if (type === 'triangle') {
+                ctx.moveTo(x, y - size);
+                ctx.lineTo(x + size, y + size * 0.9);
+                ctx.lineTo(x - size, y + size * 0.9);
+                ctx.closePath();
+                ctx.fill();
+            } else if (type === 'square') {
+                ctx.fillRect(x - size * 0.85, y - size * 0.85, size * 1.7, size * 1.7);
+            }
+            ctx.restore();
+        }
+
+        function drawMiniGraphs() {
+            // 1. 슬라이드 1: 회귀 그래프
+            const rCtx = document.getElementById('s1Reg').getContext('2d');
+            rCtx.strokeStyle = '#cbd5e1'; rCtx.lineWidth = 1;
+            rCtx.beginPath(); rCtx.moveTo(20, 95); rCtx.lineTo(240, 95); rCtx.moveTo(20, 15); rCtx.lineTo(20, 95); rCtx.stroke();
+            rCtx.fillStyle = '#10b981';
+            [[40, 80], [70, 70], [100, 55], [130, 45], [160, 35], [190, 30]].forEach(p => {
+                rCtx.beginPath(); rCtx.arc(p[0], p[1], 4, 0, Math.PI*2); rCtx.fill();
+            });
+            rCtx.strokeStyle = '#ea580c'; rCtx.lineWidth = 2; rCtx.setLineDash([3,3]);
+            rCtx.beginPath(); rCtx.moveTo(30, 85); rCtx.lineTo(210, 25); rCtx.stroke();
+
+            // 2. 슬라이드 1: 분류 그래프
+            const cCtx = document.getElementById('s1Clf').getContext('2d');
+            cCtx.strokeStyle = '#cbd5e1'; cCtx.lineWidth = 1;
+            cCtx.beginPath(); cCtx.moveTo(20, 95); cCtx.lineTo(240, 95); cCtx.moveTo(20, 15); cCtx.lineTo(20, 95); cCtx.stroke();
+            cCtx.fillStyle = '#2563eb';
+            [[45, 50], [65, 40], [85, 60]].forEach(p => { cCtx.beginPath(); cCtx.arc(p[0], p[1], 4, 0, Math.PI*2); cCtx.fill(); });
+            cCtx.fillStyle = '#dc2626';
+            [[160, 75], [180, 65], [170, 85], [195, 75]].forEach(p => {
+                cCtx.fillRect(p[0]-3, p[1]-3, 7, 7);
+            });
+
+            // 3. 슬라이드 1: 군집 그래프
+            const uCtx = document.getElementById('s1Clu').getContext('2d');
+            uCtx.strokeStyle = '#cbd5e1'; uCtx.lineWidth = 1;
+            uCtx.beginPath(); uCtx.moveTo(20, 95); uCtx.lineTo(240, 95); uCtx.moveTo(20, 15); uCtx.lineTo(20, 95); uCtx.stroke();
+            uCtx.fillStyle = '#dc2626';
+            [[45, 50], [60, 40], [50, 65]].forEach(p => { uCtx.beginPath(); uCtx.arc(p[0], p[1], 4, 0, Math.PI*2); uCtx.fill(); });
+            uCtx.fillStyle = '#2563eb';
+            [[140, 75], [155, 60]].forEach(p => { uCtx.beginPath(); uCtx.arc(p[0], p[1], 4, 0, Math.PI*2); uCtx.fill(); });
+            uCtx.fillStyle = '#10b981';
+            [[200, 45], [215, 55], [210, 35]].forEach(p => { uCtx.beginPath(); uCtx.arc(p[0], p[1], 4, 0, Math.PI*2); uCtx.fill(); });
+
+            // 4. 슬라이드 2: 회귀 예시 1 추세선 그래프
+            const g1Ctx = document.getElementById('regGraph1').getContext('2d');
+            g1Ctx.clearRect(0, 0, 150, 110);
+            g1Ctx.strokeStyle = '#cbd5e1'; g1Ctx.lineWidth = 1;
+            g1Ctx.beginPath(); g1Ctx.moveTo(15, 95); g1Ctx.lineTo(135, 95); g1Ctx.moveTo(15, 15); g1Ctx.lineTo(15, 95); g1Ctx.stroke();
+            g1Ctx.strokeStyle = '#dc2626'; g1Ctx.lineWidth = 2;
+            g1Ctx.beginPath(); g1Ctx.moveTo(20, 85); g1Ctx.lineTo(125, 25); g1Ctx.stroke();
+            g1Ctx.fillStyle = '#1e293b';
+            [[35, 75], [65, 60], [95, 45], [120, 32]].forEach(p => {
+                g1Ctx.beginPath(); g1Ctx.arc(p[0], p[1], 3.5, 0, Math.PI*2); g1Ctx.fill();
+            });
+
+            // 5. 슬라이드 2: 회귀 예시 2 추세선 그래프
+            const g2Ctx = document.getElementById('regGraph2').getContext('2d');
+            g2Ctx.clearRect(0, 0, 150, 110);
+            g2Ctx.strokeStyle = '#cbd5e1'; g2Ctx.lineWidth = 1;
+            g2Ctx.beginPath(); g2Ctx.moveTo(15, 95); g2Ctx.lineTo(135, 95); g2Ctx.moveTo(15, 15); g2Ctx.lineTo(15, 95); g2Ctx.stroke();
+            g2Ctx.strokeStyle = '#dc2626'; g2Ctx.lineWidth = 2;
+            g2Ctx.beginPath(); g2Ctx.moveTo(20, 85); g2Ctx.lineTo(125, 25); g2Ctx.stroke();
+            g2Ctx.fillStyle = '#ea580c';
+            [[35, 75], [65, 60], [95, 45], [120, 32]].forEach(p => {
+                g2Ctx.beginPath(); g2Ctx.arc(p[0], p[1], 3.5, 0, Math.PI*2); g2Ctx.fill();
+            });
+
+            // --- 슬라이드 5 & 6 도형 렌더링 (서로 다른 색상의 별 2개, 세모 2개, 네모 2개) ---
+            // 분류 카드 도형
+            drawShape('clfStar1', 'star', '#dc2626');
+            drawShape('clfStar2', 'star', '#2563eb');
+            drawShape('clfTri1', 'triangle', '#2563eb');
+            drawShape('clfTri2', 'triangle', '#dc2626');
+            drawShape('clfSq1', 'square', '#10b981');
+            drawShape('clfSq2', 'square', '#f97316');
+            drawShape('clfNewTri', 'triangle', '#2563eb');
+
+            // 군집 카드 도형 (데이터 혼합)
+            drawShape('cluMix1', 'star', '#dc2626');
+            drawShape('cluMix2', 'star', '#2563eb');
+            drawShape('cluMix3', 'triangle', '#2563eb');
+            drawShape('cluMix4', 'triangle', '#dc2626');
+            drawShape('cluMix5', 'square', '#10b981');
+            drawShape('cluMix6', 'square', '#f97316');
+
+            // 군집 카드 그룹화 (모양 기준)
+            drawShape('cluGroupStar1', 'star', '#dc2626');
+            drawShape('cluGroupStar2', 'star', '#2563eb');
+            drawShape('cluGroupTri1', 'triangle', '#2563eb');
+            drawShape('cluGroupTri2', 'triangle', '#dc2626');
+            drawShape('cluGroupSq1', 'square', '#10b981');
+            drawShape('cluGroupSq2', 'square', '#f97316');
+
+            // 슬라이드 6 혼합 데이터
+            drawShape('s6Mix1', 'star', '#dc2626');
+            drawShape('s6Mix2', 'star', '#2563eb');
+            drawShape('s6Mix3', 'triangle', '#2563eb');
+            drawShape('s6Mix4', 'triangle', '#dc2626');
+            drawShape('s6Mix5', 'square', '#10b981');
+            drawShape('s6Mix6', 'square', '#f97316');
+
+            // 슬라이드 6 기준 A (모양별)
+            drawShape('s6A_star1', 'star', '#dc2626');
+            drawShape('s6A_star2', 'star', '#2563eb');
+            drawShape('s6A_tri1', 'triangle', '#2563eb');
+            drawShape('s6A_tri2', 'triangle', '#256326');
+            drawShape('s6A_sq1', 'square', '#10b981');
+            drawShape('s6A_sq2', 'square', '#f97316');
+
+            // 슬라이드 6 기준 B (색깔별)
+            drawShape('s6B_red1', 'star', '#dc2626');
+            drawShape('s6B_red2', 'triangle', '#dc2626');
+            drawShape('s6B_blue1', 'star', '#2563eb');
+            drawShape('s6B_blue2', 'triangle', '#2563eb');
+            drawShape('s6B_other1', 'square', '#10b981');
+            drawShape('s6B_other2', 'square', '#f97316');
+        }
+
+        drawMiniGraphs();
+    </script>
+</body>
+</html>

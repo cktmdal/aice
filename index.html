@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE 학습 페이지 메인</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        /* 탭 메뉴 컨테이너 */
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            max-width: 800px;
+            margin-bottom:30px;
+        }
+        /* 개별 탭 버튼 디자인 */
+        .tab-btn {
+            background-color: #ffffff;
+            color: #2980b9;
+            border: 2px solid #3498db;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .tab-btn:hover {
+            background-color: #3498db;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.2);
+        }
+         footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        section h3{display:block; text-align:center; color:#999}
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>AICE 학습 페이지[이론]</h1>
+        <p>원하시는 페이지 번호 탭을 클릭하여 이동하세요.</p>
+    </header>
+      <section>
+          <h3>📒 이론</h3>
+    <div class="tab-container">
+       
+        <a href="page1.html" class="tab-btn">Page 1-인공지능 개념과 특성</a>
+        <a href="page2.html" class="tab-btn">Page 2-데이터 이해 </a>
+        <a href="page3.html" class="tab-btn">Page 3-데이터 역할</a>
+        <a href="page4.html" class="tab-btn">Page 4-AI 학습과 원리</a>
+        <a href="page5.html" class="tab-btn">Page 5-인공지능 학습 방법과 유형</a>
+        <a href="page6.html" class="tab-btn">Page 6-회귀 분류 군집</a>
+        <a href="page7.html" class="tab-btn">Page 7-AI 문제재결 과정</a>
+        <a href="page8.html" class="tab-btn">Page 8-딥러닝 원리 및 퍼셉트론</a>
+        <a href="page9.html" class="tab-btn">Page 9-입력층 은닉층 출력층과 인공신경망 구조</a>
+        <a href="page10.html" class="tab-btn">Page 10-딥러닝 학습방법</a>
+        <a href="page11.html" class="tab-btn">Page 11-활성화 함수</a>
+        <a href="page12.html" class="tab-btn">Page 12-오버피팅</a>
+    </div>
+          </section>
+    
+     <section>
+          <h3>​💻​ 실습</h3>
+    <div class="tab-container">
+
+        <a href="penguin/index.html" class="tab-btn">펭귄 분류 회귀</a>
+       
+    
+          
+        
+  
+
+        <a href="titanic/index.html" class="tab-btn">타이타닉 연습 문제</a>
+       
+   
+      
+         
+   
+
+        <a href="gpa/index.html" class="tab-btn">생활습관 데이터 분석</a>
+       
+    </div>
+            </section>
+<footer>
+        <p>AICE Junior 학습  | Hangang Media High School</p> 
+    </footer>
+</body>
+</html>

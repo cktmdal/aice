@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이타닉 머신러닝 문제 출제 관리자</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            height: 100vh;
+            color: #333;
+        }
+
+        /* 왼쪽 사이드바 영역 */
+        aside {
+            width: 280px;
+            background-color: #1e293b;
+            color: #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #334155;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #0f172a;
+            border-bottom: 1px solid #334155;
+        }
+
+        .menu-container {
+            padding: 15px 10px;
+        }
+
+        /* 최상위 분류 스타일 */
+        .category-group {
+            margin-bottom: 15px;
+        }
+
+        .category-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #94a3b8;
+            padding: 8px 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 대분류(데이터 분석 등) 스타일 */
+        .sub-category-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            padding: 8px 12px;
+            margin-top: 5px;
+        }
+
+        /* 자식 요소 (문제 1~4) 목록 */
+        .problem-list {
+            list-style: none;
+            padding-left: 15px;
+            margin-top: 4px;
+        }
+
+        .problem-item {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .problem-item:hover {
+            background-color: #334155;
+            color: #ffffff;
+        }
+
+        .problem-item.active {
+            background-color: #2563eb;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* 오른쪽 본문 영역 */
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .content-section {
+            display: none;
+            max-width: 800px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            color: #1e293b;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+
+        /* textarea 대신 변경된 편집 가능 div 스타일 */
+        .editable-div, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background-color: #ffffff;
+        }
+
+        .editable-div {
+            min-height: 80px;
+            max-height: 200px;
+            overflow-y: auto;
+            outline: none;
+        }
+
+        /* 빈 상태일 때 플레이스홀더처럼 보이게 처리하는 스타일 */
+        .editable-div:empty:before {
+            content: attr(data-placeholder);
+            color: #94a3b8;
+            pointer-events: none;
+            display: block;
+        }
+
+        .editable-div:focus, input[type="text"]:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-save {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-save:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 왼쪽 사이드바 -->
+    <aside>
+        <div class="sidebar-header">Titanic AI Quiz 관리자</div>
+        <div class="menu-container">
+            
+            <!-- 분류: 회귀 (예시용 공간) -->
+            <div class="category-group">
+                <div class="category-title">📁 회귀 (Regression)</div>
+                <div class="sub-category-title">추후 오픈 예정</div>
+            </div>
+
+            <!-- 분류: 분류 (Classification) -->
+            <div class="category-group">
+                <div class="category-title">📂 분류 (Classification)</div>
+
+                <!-- 1. 데이터 분석 -->
+                <div class="sub-category-title">데이터 분석</div>
+                <ul class="problem-list">
+                    <li class="problem-item active" onclick="switchTab('da-1', this)">문제 1</li>
+                    <li class="problem-item" onclick="switchTab('da-2', this)">문제 2</li>
+                    <li class="problem-item" onclick="switchTab('da-3', this)">문제 3</li>
+                    <li class="problem-item" onclick="switchTab('da-4', this)">문제 4</li> 
+                    <li class="problem-item" onclick="switchTab('da-5', this)">문제 5</li>
+                    <li class="problem-item" onclick="switchTab('da-6', this)">문제 6</li>
+                    <li class="problem-item" onclick="switchTab('da-7', this)">문제 7</li>
+                </ul>
+
+                <!-- 2. 데이터 전처리 -->
+                <div class="sub-category-title" style="margin-top: 15px;">데이터 전처리</div>
+                <ul class="problem-list">
+                    <li class="problem-item" onclick="switchTab('dp-1', this)">문제 1</li>
+                    <li class="problem-item" onclick="switchTab('dp-2', this)">문제 2</li>
+                    <li class="problem-item" onclick="switchTab('dp-3', this)">문제 3</li>
+                    <li class="problem-item" onclick="switchTab('dp-4', this)">문제 4</li>
+                </ul>
+
+                <!-- 3. AI 모델 및 성능 평가 -->
+                <div class="sub-category-title" style="margin-top: 15px;">AI 모델 및 성능 평가</div>
+                <ul class="problem-list">
+                    <li class="problem-item" onclick="switchTab('ai-1', this)">문제 1</li>
+                    <li class="problem-item" onclick="switchTab('ai-2', this)">문제 2</li>
+                    <li class="problem-item" onclick="switchTab('ai-3', this)">문제 3</li>
+                    <li class="problem-item" onclick="switchTab('ai-4', this)">문제 4</li>
+                </ul>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- 오른쪽 본문 영역 -->
+    <main>
+        <!-- 데이터 분석 문제들 -->
+        <section id="da-1" class="content-section active">
+            <h1>[데이터 분석] 문제 1</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >기초정보분석-타이타닉 데이터셋의 생존 여부(survived) 특성에 대한 요약 통계 결과, 생존하지 못한 승객의 인원수는 총 몇 명이며 전체 승객 대비 비율은 약 몇 %인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="생존하지 못한 승객의 비율만 작성하세요">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="da-2" class="content-section">
+            <h1>[데이터 분석] 문제 2</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >기초정보분석-타이타닉 데이터셋의 승선 항구(embark_town) 특성에 대한 분석 결과, 'Southampton' 항구에서 승선한 승객 수는 총 몇 명인가요?   </div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="da-3" class="content-section">
+            <h1>[데이터 분석] 문제 3</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >기초정보분석-나이(age) 히스토그램에서 17.4세 이상 ~ 22.4세 미만 구간에 속하는 승객은 총 몇 명인가요? </div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="결측치 개수와 전체비율 입력해주세요 입력예시: 결측치,  비율%">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="da-4" class="content-section">
+            <h1>[데이터 분석] 문제 4</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >기초정보분석-타이타닉 데이터셋의 나이(age) 특성에 대한 기술통계 결과, 데이터의 결측치(missing) 개수는 총 몇 개이며 전체 대비 비율은 약 몇 %인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="결측치,비율% 로 입력해 주세요">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+         <section id="da-5" class="content-section">
+            <h1>[데이터 분석] 문제 5</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >히트맵-타이타닉 데이터셋의 수치형 변수들 간의 상관관계 분석 결과, 자기 자신을 제외하고 **가장 높은 음의 상관관계(-0.549)**를 보여주는 두 변수는 무엇인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="영문으로 입력">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+         <section id="da-6" class="content-section">
+            <h1>[데이터 분석] 문제 6</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >박스차트-승선 항구(embark_town)별 나이(age) 박스차트 분석 결과, Southampton 항구에서 Maximum을 벗어나 점으로 표시된 이상치(Outlier) 중 가장 높은 나이(값)는 몇 살인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="가장 높은 답을 찾아서 작성 하세요">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+         <section id="da-7" class="content-section">
+            <h1>[데이터 분석] 문제 7</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >분포차트-생존 여부(survived)와 객실 등급(pclass) 간의 관계를 보여주는 분포차트 분석 결과, 사망자(0) 중 2등급(pclass=2) 승객의 인원수는 총 몇 명인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="결측치,비율% 로 입력해 주세요">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <!-- 데이터 전처리 문제들 -->
+        <section id="dp-1" class="content-section">
+            <h1>[데이터 전처리] 문제 1</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >타이타닉 데이터 전처리를 수행할 때, 수치형 데이터인 나이(age)의 결측치는 데이터의 편향과 이상치 영향을 줄이기 위해 **( ① )**으로 대체하고, 범주형 데이터인 승선 항구(embark_town)의 결측치는 가장 많이 등장하는 **( ② )**으로 대체하는 것이 효과적이다. ①과 ②에 들어갈 올바른 전처리 전략은 무엇인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="영어, 한글 모두  입력 가능 합니다.">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="dp-3" class="content-section">
+            <h1>[데이터 전처리] 문제 2</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >타이타닉 승객의 생존 여부를 맞추기 위해 딥러닝 모델을 학습시킨 결과, 전체 테스트 데이터 중 모델이 정답을 맞춘 비율인 **Accuracy(정확도)**는 약 얼마인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="dp-2" class="content-section">
+            <h1>[데이터 전처리] 문제 3</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >타이타닉 승객의 생존 여부(survived, 0 또는 1)처럼 정답이 여러 그룹(카테고리)으로 나뉘는 분류 문제를 풀기 위해 딥러닝 학습을 설정할 때,
+
+데이터 유형은 **( ① )**로 선택하고,
+
+데이터를 그룹별로 짝지어 분류해 주는 디코더는 **( ② )**를 선택하며,
+
+각 그룹에 속할 확률을 공평하게 나누어 계산해 주는 활성화 함수는 **( ③ )**를 사용하는 것이 적절하다.
+
+빈칸 ①, ②, ③에 들어갈 올바른 설정값은 무엇인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="dp-4" class="content-section">
+            <h1>[데이터 전처리] 문제 4</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >딥러닝 학습 설정에서 최대 학습 횟수(Epochs)를 100으로 넉넉하게 설정했음에도 불구하고, 학습 결과 화면을 보면 **4번째(epoch: 4)**에서 학습이 일찍 끝났습니다. 이렇게 설정한 횟수보다 훨씬 빨리 학습이 멈춘 결정적인 이유와, 그 작동에 관여한 기능의 이름은 무엇인가요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <!-- AI 모델 및 성능 평가 문제들 -->
+        <section id="ai-1" class="content-section">
+            <h1>[AI 모델 및 성능 평가] 문제 1</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" >age_IM :17, embark_town_IM: Southnmpton, fare:1, parch:1, pclass:1, sex:male, slbsp:2  일경우 survived_predictions는 사망(0)과 생존(1)중 무엇으로 판정 되었나요?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="ai-2" class="content-section">
+            <h1>[AI 모델 및 성능 평가] 문제 2</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div">age_IM :17, embark_town_IM: Southnmpton, fare:1, parch:1, pclass:1, sex:male, slbsp:2  일경우 이 승객이 생존할 확률(survived_probabilities_1)은 약 몇 %인가요 (소수점 아래 첫째 자리까지 또는 소수로 표기)?</div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="ai-3" class="content-section">
+            <h1>[AI 모델 및 성능 평가] 문제 3</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" ></div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+
+        <section id="ai-4" class="content-section">
+            <h1>[AI 모델 및 성능 평가] 문제 4</h1>
+            <div class="form-group">
+                <label>문제 내용 (Q)</label>
+                <div class="editable-div" ></div>
+            </div>
+            <div class="form-group">
+                <label>정답 입력</label>
+                <input type="text" placeholder="정답을 입력하세요...">
+            </div>
+            <button class="btn-save" onclick="alert('저장되었습니다!')">저장하기</button>
+        </section>
+    </main>
+
+    <!-- 탭 전환 스크립트 -->
+    <script>
+        function switchTab(sectionId, element) {
+            // 모든 본문 영역 숨기기
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // 선택한 본문 영역만 보이기
+            document.getElementById(sectionId).classList.add('active');
+
+            // 모든 메뉴 항목에서 active 클래스 제거
+            const items = document.querySelectorAll('.problem-item');
+            items.forEach(item => item.classList.remove('active'));
+
+            // 클릭한 메뉴에 active 클래스 추가
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>

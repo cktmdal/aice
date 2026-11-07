@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDU - AICE JUNIOR 실기준비</title>
+    <style>
+        /* 초기화 및 레이아웃 기본 설정 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* 왼쪽 사이드바 메뉴 영역 */
+        aside {
+            width: 260px;
+            background-color: #2c3e50;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #1a252f;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .menu-container {
+            list-style: none;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* 상위 메뉴 항목 */
+        .menu-item {
+            border-bottom: 1px solid #34495e;
+        }
+
+        .menu-title {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+            font-weight: 500;
+        }
+
+        .menu-title:hover {
+            background-color: #34495e;
+        }
+
+        /* 하위 메뉴 접이식 디자인 */
+        .submenu {
+            list-style: none;
+            background-color: #34495e;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .submenu li a {
+            display: block;
+            padding: 12px 20px 12px 35px;
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .submenu li a:hover,
+        .submenu li a.active {
+            color: #fff;
+            background-color: #2980b9;
+        }
+
+        /* 상위 메뉴가 열렸을 때 클래스 제어 */
+        .menu-item.open .submenu {
+            max-height: 300px;
+        }
+
+        .menu-item.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .arrow {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        /* 오른쪽 콘텐츠 섹션 영역 */
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .content-section h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+
+        .content-section p {
+            line-height: 1.6;
+            color: #666;
+        }
+        a { color:#333; text-decoration: none; }
+        .imgbox { margin-bottom: 20px; background-color:#f1f1f1; padding:10px; border-radius: 10px; }
+        img { border-radius: 10px; border:1px solid #34495e; max-width: 100%; height: auto; }
+        .textbox { font-size: 20px; font-weight: 500; margin-bottom: 10px; color: #2c3e50; }
+
+        /* 문제풀이 입력 및 채점 스타일 추가 */
+        .quiz-box {
+            background: #f9fbfd;
+            border: 1px solid #e1e8ed;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .answer-area {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .answer-area input {
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .answer-area button {
+            padding: 10px 20px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .answer-area button:hover {
+            background-color: #1f618d;
+        }
+        .result-msg {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .result-msg.correct {
+            color: #27ae60;
+        }
+        .result-msg.incorrect {
+            color: #c0392b;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 왼쪽 사이드바 메뉴 -->
+    <aside>
+        <div class="sidebar-header">AICE JUNIOR 실기</div>
+        <ul class="menu-container">
+            
+            <!-- 첫 번째 상위 메뉴 -->
+            <li class="menu-item ">
+                <div class="menu-title">
+                    <span>다운로드</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <ul class="submenu">
+                    <li><a href="#" data-target="section-home" class="active">다운로드</a></li>
+                    <li><a href="#" data-target="section-notice">데이터 받아오기</a></li>
+                    <li><a href="#" data-target="section-notice1">펭귄종류 분류</a></li>
+                    <li><a href="#" data-target="section-notice2">펭귄 데이터 확인</a></li>
+                </ul>
+            </li>
+
+            <!-- 두 번째 상위 메뉴 -->
+            <li class="menu-item">
+                <div class="menu-title">
+                    <span>AIDU</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <ul class="submenu">
+                    <li><a href="#" data-target="section-users">데이터 가져오기</a></li>
+                    <li><a href="#" data-target="section-register">기초정보분석</a></li>
+                    <li><a href="#" data-target="section-users2">시각화분석</a></li>
+                    <li><a href="#" data-target="section-register2">문제풀이</a></li>
+                </ul>
+            </li>
+
+            <!-- 세 번째 상위 메뉴 -->
+            <li class="menu-item">
+                <div class="menu-title">
+                    <span>[분류]AI 모델학습</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <ul class="submenu">
+                    <li><a href="#" data-target="section-settings">딥러닝 모델 학습 순서</a></li>
+                    <li><a href="#" data-target="section-settings1">데이터 가공</a></li>
+                     <li><a href="#" data-target="section-settings2">딥러닝 학습</a></li>
+                </ul>
+            </li>
+
+
+ <!-- 네 번째 상위 메뉴 -->
+
+            <li class="menu-item">
+                <div class="menu-title">
+                    <span>[분류]AI 모델활용</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <ul class="submenu">
+                 
+                    <li><a href="#" data-target="section-settings3">AI 모델활용</a></li>
+                   
+                </ul>
+            </li>
+
+
+ <!-- 회귀 -->
+
+  <li class="menu-item">
+                <div class="menu-title">
+                    <span>[회귀]모델 학습</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <ul class="submenu">
+                    <li><a href="#" data-target="section-settings4">회귀문제분석</a></li>
+                     <li><a href="#" data-target="section-settings5">딥러닝학습</a></li>
+                     <li><a href="#" data-target="section-settings6"> AI 모델학습</a></li>
+                    
+                   
+                </ul>
+            </li>
+
+        </ul>
+
+
+
+    </aside>
+
+    <!-- 오른쪽 콘텐츠 영역 -->
+    <main>
+        <!-- 각 섹션별 콘텐츠 -->
+        <section id="section-home" class="content-section active">
+            <h2>AIDU 다운로드 및 데이터 수집</h2>
+            <div>
+                <a href="https://aice.study/intro"><img src="images/aidu.png" alt=""></a>
+            </div>
+            <p>이미지를 클릭하면 다운로드 페이지로 이동합니다<br>
+                win x64와 macOS 버전으로 다운로드 가능합니다. 설치하면 바탕화면에 아이콘이 생성됩니다.</p>
+        </section>
+
+        <section id="section-notice" class="content-section">
+            <h2>kaggle</h2>
+            <div class="imgbox">
+                <a href="https://www.kaggle.com/datasets"><img src="images/1.png" alt=""></a>
+            </div>
+            <div class="imgbox">
+                <a href="https://www.kaggle.com/datasets"><img src="images/2-1.png" alt=""></a>
+            </div>
+            <p>이미지를 클릭하면 다운로드 페이지로 이동합니다<br>
+                펭귄 데이터를 클릭하여 페이지로 이동하면 오른쪽에 penguins_size.csv 파일을 다운로드 받습니다</p>
+        </section>
+
+        <section id="section-notice1" class="content-section">
+            <h2>kaggle</h2>
+            <div class="imgbox">
+                <a href="https://www.kaggle.com/datasets"><img src="images/3.png" alt=""></a><br/>
+                <img src="images/5.png" alt="">
+            </div>
+            <p>펭귄 데이터의 펭귄 종류 분석입니다 세가지의 펭귄으로 분류 됩니다 턱끈펭귄, 젠투펭귄, 아델리펭귄입니다</p>
+        </section>
+
+        <section id="section-notice2" class="content-section">
+            <h2>kaggle</h2>
+            <div class="imgbox">
+                <img src="images/4.png" alt="">
+            </div>
+            <p>변수의 종류를 확인하고 종속변수와 독립변수를 구분합니다.</p>
+        </section>
+
+        <section id="section-users" class="content-section">
+            <h2>데이터 가져오기</h2>
+            <div class="imgbox"><img src="images/6.png" alt=""></div>
+            <div class="imgbox"><img src="images/7.png" alt=""></div>
+            <div class="imgbox"><img src="images/8.png" alt=""></div>
+            <p>다운받은 데이터를 가져오기 -> 인코딩, 구분자 설정하기 -> 데이터 목록 파일 확인</p>
+        </section>
+
+        <section id="section-register" class="content-section">
+            <h2>기초정보분석</h2>
+            <div class="imgbox"><img src="images/10.png" alt=""></div>
+            <div class="imgbox"><img src="images/11.png" alt=""></div>
+            <p>데이터 범위는 끝까지 선택 합니다. 분석하기 클릭하여 데이터 분석 결과를 확인</p>
+        </section>
+
+        <section id="section-users2" class="content-section">
+            <h2>시각화분석</h2>
+            <div class="imgbox"><img src="images/13.png" alt=""></div>
+            <div class="imgbox"><img src="images/14.png" alt=""></div>
+            <div class="imgbox"><img src="images/18.png" alt=""></div>
+            <div class="imgbox"><img src="images/19.png" alt=""></div>
+            <p>시각화 유형을 선택해서 유형별 데이터 확인</p>
+        </section>
+
+        <!-- 문제풀이 영역 (정답 입력 및 채점 기능 추가) -->
+        <section id="section-register2" class="content-section">
+            <h2>문제풀이</h2>
+
+            <!-- 문제 1 -->
+            <div class="quiz-box">
+                <div class="textbox">📖 젠투(Gentoo)펭귄의 <b>최빈값 비율(%)을</b> 작성하시오</div>
+                <div class="imgbox"><img src="images/20.png" alt=""></div>
+                <div class="imgbox"><img src="images/31.png" alt=""></div>
+                <div class="answer-area">
+                    <input type="text" id="answer1" placeholder="정답 입력">
+                    <button onclick="checkAnswer(1, '2.91')">정답 확인</button>
+                    <span id="result1" class="result-msg"></span>
+                </div>
+            </div>
+
+            <!-- 문제 2 -->
+            <div class="quiz-box">
+                <div class="textbox">📖 몸무게(body_mass_g)값이 3500~3990의 개수(count)를 작성하시오.</div>
+                <div class="imgbox"><img src="images/24.png" alt=""></div>
+                <div class="answer-area">
+                    <input type="text" id="answer2" placeholder="정답 입력">
+                    <button onclick="checkAnswer(2, '9')">정답 확인</button>
+                    <span id="result2" class="result-msg"></span>
+                </div>
+            </div>
+
+            <!-- 문제 3 -->
+            <div class="quiz-box">
+                <div class="textbox">📖 날개의 길이(flipper_lengh_mm)의 결측값을 최빈값(most_frequent)으로 처리할 때 변경되는 값을 작성하시오.</div>
+                <div class="imgbox"><img src="images/26.png" alt=""></div>
+                <div class="answer-area">
+                    <input type="text" id="answer3" placeholder="정답 입력">
+                    <button onclick="checkAnswer(3, '190')">정답 확인</button>
+                    <span id="result3" class="result-msg"></span>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        <section id="section-settings" class="content-section">
+            <h2>딥러닝학습순서 </h2>
+             <div class="imgbox"><img src="images/27.png" alt=""></div>
+             
+        </section>
+
+      <section id="section-settings1" class="content-section">
+            <h2>데이터 가공 </h2>
+                 <div class="textbox">📖 다음 제시된 설정으로 딥러닝 모델 학습을 하고,모델의 정확도(Accuracy)를 작성하시오<br>
+                (정답은 반올림하여 소수점2자리까지 작성)</div>
+          
+                <div class="imgbox"><img src="images/4.png" alt=""></div>
+                <div class="imgbox"><img src="images/28.png" alt=""></div>
+             <div class="imgbox"><img src="images/데이터가공단계1.png" alt="">
+             <P>4개의 칼럼의 최빈값을 선택하여 데이터 가공한다</P>
+            </div>
+             <div class="imgbox"><img src="images/가공2.png" alt=""></div>
+             <div class="imgbox"><img src="images/가공3.png" alt="">
+            <P>데이터 가공이 완료되면 가공데이터 저장 한다</P>
+            </div>
+             
+               <div class="imgbox"><img src="images/가공데이터생성.png" alt="">
+                 <P>데이터 가공이 완료되면  기존 데이터와 가공데이터(sex_IM)가 보여진다</P>
+            </div>
+     
+        </section>
+        
+          <section id="section-settings2" class="content-section">
+            <h2>딥러닝 학습</h2>
+                 <div class="textbox"></div>
+          
+                <div class="imgbox"><img src="images/딥러닝1.png" alt=""></div>
+             <div class="imgbox"><img src="images/딥러닝2.png" alt="">
+             <P>4개의 칼럼의 최빈값을 선택하여 데이터 가공한다</P>
+            </div>
+             <div class="imgbox"><img src="images/딥러닝3.png" alt=""></div>
+             <div class="imgbox"><img src="images/딥러닝4.png" alt="">
+            <P>데이터 가공이 완료되면 가공데이터 저장 한다</P>
+            </div>
+             
+              
+     
+        </section>
+
+         <section id="section-settings3" class="content-section">
+            <h2>AI 모델활용</h2>
+                 <div class="textbox"></div>
+<!-- 문제 -->
+          <div class="simulation-box" style="border: 2px solid #ff6b4a; border-radius: 12px; padding: 20px; max-width: 700px; background-color: #fff9f8;">
+    <h3 style="color: #333; margin-top: 0; margin-bottom: 15px; font-size: 22px;">
+        시뮬레이션에 다음과 같이 변수를 입력했을 때 펭귄의 종류는?
+    </h3>
+    <ul style="list-style-type: none; padding-left: 0; margin: 0; color: #444; font-size: 15px; line-height: 1.8;">
+        <li><strong>- Body_mass_g :</strong> 5200</li>
+        <li><strong>- culmen_depth_mm :</strong> 15.3</li>
+        <li><strong>- culmen_lengh_mm :</strong> 46.7</li>
+        <li><strong>- flipper_length_mm :</strong> 219</li>
+        <li><strong>- island :</strong> <span style="color: #e65c00; font-weight: bold;">Biscoe</span></li>
+    </ul>
+</div>
+
+
+            <div class="imgbox"><img src="images/ai모델1.png" alt=""></div>
+            <div class="imgbox"><img src="images/ai모델2.png" alt=""></div>
+            <div class="imgbox"><img src="images/ai모델3.png" alt=""></div>
+            <div class="imgbox"><img src="images/ai모델완료.png" alt=""></div>   
+            </div>
+             
+              
+     
+        </section>
+
+
+
+        <!-- 회귀 분석 -->
+
+     <section id="section-settings4" class="content-section">
+            <h2>[회귀] 모델 학습</h2>
+            <div class="textbox">📖 다음 제시된 설정으로 딥러닝 모델 학습을 하고, MSE를 작성하시오(정답은 반올림하여 소수점2자리 까지 작성)
+                 <div class="answer-area">
+                    <input type="text" id="answer3" placeholder="정답 입력">
+                    <button onclick="checkAnswer(3, '0.16')">정답 확인</button>
+                    <span id="result3" class="result-msg"></span>
+                </div>
+
+            </div>
+            <div class="imgbox"><img src="images/회귀표.png" alt=""></div>
+            <div class="imgbox"><img src="images/회귀작업순서.png" alt=""></div>
+           
+        </section>
+
+        <section id="section-settings5" class="content-section">
+            <h2>[회귀] 딥러닝 학습</h2>
+            <div class="imgbox"><img src="images/회귀 딥러닝학습1.png" alt="">
+           
+            <P>body_mass_g_IM을 OUTPUT 컬럼으로 이동하고(독립변수), 제외컬럼에는 가공전 데이터를 이동한다.</P>
+            </div>
+            <div class="imgbox"><img src="images/회귀 딥러닝학습2.png" alt="">
+            <P>species, istand 는 object-> 인코더 선택을  sparse로 변경한다.</P>
+            </div>
+            <div class="imgbox"><img src="images/회귀딥러닝3.png" alt="">
+             <P>output칼럼을 선택하고 디코더와(regressor) 활성화 함수를(linear) 선택한다</P>
+            </div>
+            <div class="imgbox"><img src="images/회귀딥러닝4-1.png" alt="">
+                <P>mean_squared_error값이 0.1568...  ->0.16</P>
+                
+            </div>   
+
+            <div class="imgbox"><img src="images/회귀딥러닝5.png" alt="">
+             <P>모델을 다른이름 으로 저장한다.</P>
+            </div>   
+        </section>
+
+        <section id="section-settings6" class="content-section">
+            <h2>[회귀] AI 모델 활용</h2>
+            <!-- 문제 -->
+          <div class="simulation-box" style="border: 2px solid #ff6b4a; border-radius: 12px; padding: 20px; max-width: 700px; background-color: #fff9f8;">
+    <h3 style="color: #333; margin-top: 0; margin-bottom: 15px; font-size: 22px;">
+        시뮬레이션에 다음과 같이 변수를 입력했을 때 펭귄의 몸무게는?(정답은 반올림하여 소수점2자리까지 작성)
+    </h3>
+    <ul style="list-style-type: none; padding-left: 0; margin: 0; color: #444; font-size: 15px; line-height: 1.8;">
+       
+        <li><strong>- culmen_depth_mm :</strong> 15.3</li>
+        <li><strong>- culmen_lengh_mm :</strong> 46.7</li>
+        <li><strong>- flipper_length_mm :</strong> 219</li>
+        <li><strong>- island :</strong> <span style="color: #e65c00; font-weight: bold;">Dream</span></li>
+        <li><strong>- species :</strong> <span style="color: #e65c00; font-weight: bold;">Adelie</span></li>
+    </ul>
+</div>
+<div class="answer-area">
+                    <input type="text" id="answer3" placeholder="정답 입력">
+                    <button onclick="checkAnswer(3, '4527.11')">정답 확인</button>
+                    <span id="result3" class="result-msg"></span>
+                </div>
+            <div class="imgbox"><img src="images/회귀시뮬레이션1.png" alt=""></div>
+            <div class="imgbox"><img src="images/회귀시뮬레이션2.png" alt=""></div>
+        </section>
+
+       
+
+    </main>
+
+    <!-- JavaScript 기능 구현 -->
+    <script>
+        // 1. 상위 메뉴 클릭 시 하위 메뉴 토글 (접기/펼치기)
+        const menuTitles = document.querySelectorAll('.menu-title');
+
+        menuTitles.forEach(title => {
+            title.addEventListener('click', () => {
+                const parentItem = title.parentElement;
+                parentItem.classList.toggle('open');
+            });
+        });
+
+        // 2. 하위 메뉴 클릭 시 우측 섹션 전환 및 활성 스타일 변경
+        const submenuLinks = document.querySelectorAll('.submenu a');
+        const sections = document.querySelectorAll('.content-section');
+
+        submenuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                submenuLinks.forEach(item => item.classList.remove('active'));
+                link.classList.add('active');
+
+                sections.forEach(sec => sec.classList.remove('active'));
+
+                const targetId = link.getAttribute('data-target');
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            });
+        });
+
+        // 3. 정답 확인 함수 (정답 판별 로직)
+        function checkAnswer(questionNum, correctAnswer) {
+            const userInputValue = document.getElementById('answer' + questionNum).value.trim();
+            const resultElement = document.getElementById('result' + questionNum);
+
+            if (userInputValue === "") {
+                resultElement.textContent = "정답을 입력해주세요!";
+                resultElement.className = "result-msg incorrect";
+                return;
+            }
+
+            
+        }
+    </script>
+</body>
+</html>

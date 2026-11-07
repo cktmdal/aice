@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 학습 플랫폼 대시보드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 왼쪽 메뉴 영역 */
+        aside {
+            width: 280px;
+            background-color: #1e293b;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #cbd5e1;
+            overflow-y: auto;
+        }
+
+        .logo-area {
+            padding: 24px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #0f172a;
+            border-bottom: 1px solid #334155;
+            letter-spacing: -0.5px;
+        }
+
+        .menu-container {
+            padding: 20px 0;
+        }
+
+        .menu-category {
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submenu-list {
+            list-style: none;
+        }
+
+        .submenu-item a {
+            display: block;
+            padding: 10px 20px 10px 32px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .submenu-item a:hover,
+        .submenu-item a.active {
+            color: #ffffff;
+            background-color: #334155;
+            border-left-color: #3b82f6;
+        }
+
+        /* 오른쪽 컨텐츠 SECTION 영역 */
+        main {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+            max-width: 900px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .card-grid {
+            display: grid;
+            /* grid-template-columns: repeat(2, 1fr); */
+            gap: 20px;
+        }
+
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color:orangered
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 8px;
+
+        }
+
+        .card p {
+            font-size:1.2rem;
+            color: #272e38;
+            line-height: 1.4;
+            padding-left: 20px;
+        }
+        ol{padding-left: 70px; list-style-type: none; }
+         ol li{line-height: 30px;}
+      ol li span {
+    border: 1px solid #262626;
+    border-radius: 100%;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;       /* inline-block 대신 inline-flex 사용 */
+    align-items: center;        /* 수직 중앙 정렬 */
+    justify-content: center;    /* 수평 중앙 정렬 */
+    margin-right: 5px;
+    font-size: 14px;            /* 원 크기(22px)에 맞게 폰트 크기 조정 (선택 사항) */
+}
+.card .hide{background-color: #0f172a; color:#000}
+.card .hide:hover{color:#fff}
+input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-block; margin-top:10px; padding-left: 10px; }
+    
+    /* 1. 힌트 기본 영역을 숨기고, .point 글자에 손가락 커서 추가 */
+    .hint { display: none; margin-top: 10px; }
+    .point { cursor: pointer; color: #3b82f6; margin-left: 10px; font-weight: bold; }
+    
+    textarea{width: 80%; height: 100px; overflow: auto;}
+
+
+    </style>
+</head>
+<body>
+
+    <!-- 왼쪽 메뉴 영역 -->
+    <aside>
+        <div class="logo-area">AI & Data Platform</div>
+        <div class="menu-container">
+            
+            <!-- 1. 데이터 가져오기 -->
+            <div class="menu-category">
+                <div class="menu-title">1. 데이터 가져오기</div>
+                <ul class="submenu-list">
+                    <li class="submenu-item"><a href="#import-file" class="active" onclick="switchSection('import-file', event)">문제정의</a></li>
+                    <li class="submenu-item"><a href="#import-db" onclick="switchSection('import-db', event)">테이터가져오기</a></li>
+                </ul>
+            </div>
+
+            <!-- 2. 데이터 분석 -->
+            <div class="menu-category">
+                <div class="menu-title">2. 데이터 분석</div>
+                <ul class="submenu-list">
+                    <li class="submenu-item"><a href="#analysis-summary" onclick="switchSection('analysis-summary', event)">기초정보분석</a></li>
+                    <li class="submenu-item"><a href="#analysis-missing" onclick="switchSection('analysis-missing', event)">시각화분석</a></li>
+                    <li class="submenu-item"><a href="#analysis-corr" onclick="switchSection('analysis-corr', event)">비지도학습분석</a></li>
+                    <li class="submenu-item"><a href="#analysis-vis" onclick="switchSection('analysis-vis', event)">데이터샘플보기</a></li>
+                  
+                </ul>
+            </div>
+
+            <!-- 3. 데이터 가공 -->
+            <div class="menu-category">
+                <div class="menu-title">3. 데이터 가공</div>
+                <ul class="submenu-list">
+                    <li class="submenu-item"><a href="#process-clean" onclick="switchSection('process-clean', event)">데이터가공</a></li>
+                              
+                </ul>
+            </div>
+
+            <!-- 4. AI 모델 학습 -->
+            <div class="menu-category">
+                <div class="menu-title">4. AI 모델 학습</div>
+                <ul class="submenu-list">
+                    <li class="submenu-item"><a href="#train-select" onclick="switchSection('train-select', event)">머신러닝학습</a></li>
+                    <li class="submenu-item"><a href="#train-hyper" onclick="switchSection('train-hyper', event)">딥러닝학습</a></li>  
+
+                </ul>
+            </div>
+
+            <!-- 5. AI 모델 활용 -->
+            <div class="menu-category">
+                <div class="menu-title">5. AI 모델 활용</div>
+                <ul class="submenu-list">
+                    <li class="submenu-item"><a href="#use-predict" onclick="switchSection('use-predict', event)">AI 모델 활용</a></li>
+          
+                </ul>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- 오른쪽 SECTION 영역 -->
+    <main>
+        <!-- 1. 데이터 가져오기 섹션들 -->
+        <section id="import-file" class="content-section active">
+            <h1>파일 업로드 (CSV/Excel)</h1>
+            <p class="section-desc">로컬 저장소에 있는 CSV, Excel, JSON 등의 정형 데이터 파일을  업로드.</p>
+            <div class="card-grid">
+                <div class="card"><h3 class="card_h3">어떤 데이터가 필요할까?</h3><p class="care_p">Student_GPA.csv</P></div>
+                <div class="card"><h3>생활 습관 데이터와 학점</h3><p>공부시간, 수면시간, 과외활동시간, 사교활동시간, 신체활동시간, 스트레스 수준 ==> <b style="color:orangered">GPA(평균학점)</b></p></div>
+                <div class="card"><h3>문제를 정의해보자</h3><p>생활 습관 데이터를 수집해서<b style="color:orangered" > GPA(평균학점)을 예측하는GPA예측 회귀모델</b>을 구현해보자.</p></div>
+            </div>
+        </section>
+
+        <section id="import-db" class="content-section">
+            <h1>데이터 가져오기</h1>
+            <p class="section-desc">분석 데이터 문제정의와 가져오기</p>
+            <div class="card-grid">
+            
+                <div class="card"><h3>어떤 데이터가 필요할까?</h3><p>Student_GPA.csv</p></div>
+                <div class="card"><h3>데이터 가져오기</h3><p><img src="images/5(한글이 있는경우 오류가 나면 cp949).png" alt=""></p>
+                <p class="card_p">🍄데이터가 한글인경우 업로드시 오류의 원인이 될수 있습니다. 인코딩을 CP494(한글)로 변경!!</p>
+                </div>
+                <div class="card"><h3>🧯 종속변수는?</h3><p class="hide"> GPA(평균학점)</p></div>
+
+            </div>
+        </section>
+
+        <!-- 2. 데이터 분석 섹션들 -->
+        <section id="analysis-summary" class="content-section">
+            <h1>기초정보 분석</h1>
+            <p class="section-desc">데이터의 평균, 중앙값, 최빈값, 표준편차 등 핵심 통계 지표를 한눈에 파악합니다.</p>
+            <div class="card-grid">
+                <div class="card"><h3>기초정보 분석</h3><p><img src="images/6-1.png" alt=""></p></div>
+                <div class="card"><h3>🧯문제</h3><p>전체 데이터 정보에 대한 설명으로 옳지 않은 것은? <span class="hide">5</span></p>
+                    <ol>
+                        <li><span>1</span>2000개의 관측치로 구성되어 있다</li>
+                        <li><span>2</span>34개의 결측치가 있다</li>
+                        <li><span>3</span>중복되는 관측치는 없다</li>
+                        <li><span>4</span>데이터 유형에서 수치형은 7개이다</li>
+                        <li><span>5</span>데이터 유형에서 범주형은 2개이다</li>
+                    </ol>
+                </div>
+
+                <div class="card"><h3>🧯문제</h3><p>신체활동시간 변수의 평균값(mean)은 얼마인가? </p>
+                   <p><input type="text" placeholder="값을 입력 하세요"><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/3-1.png" alt=""></p>
+                </div>
+
+                <div class="card"><h3>🧯문제</h3><p>스트레스 수준 변수의 최빈값은? </p>
+                   <p><input type="text" placeholder="값을 입력 하세요"><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/9-1.png" alt=""></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="analysis-missing" class="content-section">
+            <h1>시각화분석</h1>
+            <p class="section-desc">데이터 내 누락된 값(NaN)의 분포와 정상 범위를 벗어난 아웃라이어를 찾아냅니다.</p>
+            <div class="card-grid">
+
+
+                <div class="card"><h3>산점도</h3><p><img src="images/10(시각화 산점도1).png" alt=""></p>
+                    <h3>🧯문제</h3><p>산점도에서 공부시간과  GPA 관계를 설명하세요 </p>
+                  <textarea name="" id="" placeholder="이곳에 작성 하세요"> </textarea>
+                </div>
+                <div class="card"><h3>산점도</h3><p><img src="images/11(시각화 산점도2).png" alt=""></p></div>
+
+
+                <div class="card"><h3>히트맵</h3><p><img src="images/12-1.png" alt=""></p></div>
+                <div class="card"><h3>🧯문제</h3><p>GPA와 음의 상관관계가 가장 높은 있는 변수 이름과 상관관계수는 ?(반올림 하여 소수 둘째 자리 까지) </p>
+                   <p><input type="text" placeholder="음의 상관관계"><span class="point">💊힌트</span></p>
+                   <p class="hint">음수값 중 가장 작은값</p>
+                </div>
+                 <div class="card"><h3>🧯문제</h3><p>GPA와 양의 상관관계가 가장 높은 있는 변수 이름과 상관관계수는 ?(반올림 하여 소수 둘째 자리 까지) </p>
+                   <p><input type="text" placeholder="양의 상관관계"><span class="point">💊힌트</span></p>
+                   <p class="hint">양수값 중 가장 큰값</p>
+                </div>
+                
+               
+
+                <div class="card"><h3>박스차트</h3><p><img src="images/13.png" alt=""></p>
+                    <h3>🧯문제</h3><p>히트맵에서 공부시간과  GPA 관계를 설명하세요 </p>
+                  <textarea name="" id="" placeholder="이곳에 작성 하세요"> </textarea>
+                </div>
+                 <div class="card"><h3>🧯문제</h3><p>스트레스 시간이 High인 수면시간의 중앙값은? </p>
+                   <p><input type="text" placeholder=""><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/16.png" alt=""></p>
+                </div>
+
+                    <div class="card"><h3>🧯문제</h3><p>스트레스 시간이 Moderate인 신체활동 시간의 최댓값은? </p>
+                   <p><input type="text" placeholder=""><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/18.png" alt=""></p>
+                </div>
+
+
+                <div class="card"><h3>박스차트</h3><p><img src="images/14.png" alt=""></p>
+                    <h3>🧯문제</h3><p>박스차트를 보고 스트레스 수준과 공부시간 GPA 관계를  설명하세요 </p>
+                  <textarea name="" id="" placeholder="이곳에 작성 하세요"> </textarea>
+                </div>
+
+
+                 <div class="card"><h3>분포차트</h3><p><img src="images/20.png" alt=""></p>
+                    <h3>🧯문제</h3><p>수면시간이 8.0~8.1 구간의 학생수는? </p>
+                  <p><input type="text" placeholder=""><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/21.png" alt=""></p>
+                </div>
+                <div class="card"><h3>분포차트</h3><p><img src="images/19.png" alt=""></p>
+                    <h3>🧯문제</h3><p>분포차트를 보고 수면시간과 스트레스 간의 관계를 설명하세요 </p>
+                 <textarea name="" id="" placeholder="이곳에 작성 하세요"> </textarea>
+                  <h3>🧯문제</h3><p>스트레스 수준이 낮은 학생 중 사교 시간 활동이 3~3.1 구간의 학생 수는? </p>
+                  <p><input type="text" placeholder=""><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/22.png" alt=""></p>
+                </div>
+
+
+            </div>
+        </section>
+
+        
+
+        <section id="analysis-vis" class="content-section">
+            <h1>데이터 샘플보기</h1>
+            <p class="section-desc">데이터를 확인 할 수 있습니다.</p>
+            <div class="card-grid">
+                <div class="card"><h3>데이터샘플</h3><p><img src="images/1-1.png" alt=""></p></div>
+                
+            </div>
+        </section>
+
+
+        <!-- 3. 데이터 가공 섹션들 -->
+        <section id="process-clean" class="content-section">
+            <h1>데이터 가공</h1>
+            <p class="section-desc">결측치와 중복 데이터를 처리하고 정돈된 형태로 정제합니다.</p>
+            <div class="card-grid">
+                <div class="card"><h3>데이터 가공(스트레스 수준)</h3><p><img src="images/24.png" alt=""></p></div>
+               
+                <div class="card"><h3>데이터 가공 (사교 활동과 시간)</h3><p><img src="images/25.png" alt=""></p></div>
+                 <div class="card"><h3>데이터 가공 완료</h3><p><img src="images/24-IM 생성.png" alt="" style="border:1px solid #000; padding:10px; margin-right:20px">
+                    <img src="images/26-가공데이터 저장-PROCESSED 파일생성.png" alt="" style="border:1px solid #000; padding:10px; "></p>
+                </div>
+
+                  
+            </div>
+        </section>
+
+
+
+        <!-- 4. AI 모델 학습 섹션들 -->
+        <section id="train-select" class="content-section">
+            <h1>머신러닝 학습</h1>
+            <!-- <p class="section-desc">풀고자 하는 문제(회귀, 분류, 군집 등)에 적합한 머신러닝/딥러닝 모델을 선택합니다.</p>
+            <div class="card-grid">
+                <div class="card"><h3>분류 모델</h3><p>랜덤 포레스트, 로지스틱 회귀, XGBoost, 서포트 벡터 머신 등</p></div>
+                <div class="card"><h3>회귀 모델</h3><p>선형 회귀, 릿지/라쏘, 결정 트리 회귀 등</p></div>
+            </div> -->
+        </section>
+
+        <section id="train-hyper" class="content-section">
+            <h1>딥러닝 학습</h1>
+            <p class="section-desc">모델의 학습 성능에 영향을 주는 세부 파라미터 값(학습률, 트리 깊이 등)을 지정합니다.</p>
+            <div class="card-grid">
+                 <div class="card"><h3>딥러닝 학습</h3><p><img src="images/28(오브젝트데이터는 디코더변경).png" alt=""></p>
+                 <p class="section-desc">스트레스 수준은 "object"로 데이터 유형  category, 디코더 선택 sparse로 한다</p>
+                </div>
+            </div>
+            <div class="card-grid">
+                 <div class="card"><h3>딥러닝 학습</h3><p><img src="images/29(GPA설정).png" alt=""></p>
+                 <p class="section-desc">
+                     📌 GPA선택하고  "숫자형데이터" 데이터 유형  Numerical 디코더 선택 regressor(회귀모델), <br>
+                     📌 활성화 함수  linear(GPA처럼 연속된 숫자 점수를 그대로 정확하게 예측해서 출력해야 하기 때문에, 숫자를 변형 없이 그대로 통과시켜 주는 linear 함수를 사용하는 것 ),<br/>
+                     📌 FC 활성화 함수  relu(입력값이 0보다 작으면 0으로 만들어 버리고, 0보다 크면 입력된 값 그대로 통과시키는 아주 단순한 함수로 양수 영역에서는 입력값을 그대로 통과시키기 때문에 기울기가 항상 1로 일정하게 유지) <br>
+                     📌 FC 레이어수 2, FC 레이어 크기 2<br/>
+                     📌 Epochs 20, batch size 128, early stop 5<br>
+                     📌 Optimizer adam(학습을 진행할 때 방향과 보폭을 가장 효율적으로 찾아줌)  한다</p>
+                </div>
+
+                <div class="card"><h3>딥러닝 학습결과</h3><p><img src="images/30딥러닝 학습완.png" alt=""></p></div>
+
+                <div class="card"><h3>딥러닝 학습 문제</h3><p><img src="images/31.png" alt=""><span class="point">💊힌트</span></p>
+                    <p class="hint"><img src="images/32(31답).png" alt=""></p>
+                    
+                </div>  
+                
+
+            </div>
+        </section>
+
+   
+
+        <!-- 5. AI 모델 활용 섹션들 -->
+        <section id="use-predict" class="content-section">
+            <h1>AI 모델 활용</h1>
+            <p class="section-desc">새로운 대량의 데이터셋을 모델에 입력하여 일괄적인 예측 결과 값을 도출합니다.</p>
+            <div class="card-grid">
+                <div class="card"><h3>변수영향도 확인</h3><p><img src="images/34(처음 가공으로설정).png" alt=""></p>
+                
+                    <h3>🧯문제</h3><p> GPA를 결정하는데 가장 중요한 요소(변수)는 무엇인가요? </p>
+                  <p><input type="text" placeholder=""><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/34(처음 가공으로설정).png" alt=""></p>
+                </div>
+
+                <div class="card"><h3>시뮬레이션</h3><p><img src="images/36.png" alt=""></p>
+                
+                <h3>🧯문제</h3><p> 학습한 딥러닝 모델을 활요하여GPA를 예측해보자<br><img src="images/37.png" alt=""> </p>
+                  <p><input type="text" placeholder=""><span class="point">💊힌트</span></p>
+                   <p class="hint"><img src="images/38(답).png" alt=""></p>
+                
+                </div>
+
+
+            </div>
+        </section>
+
+       
+    </main>
+
+    <!-- 메뉴 클릭 시 오른쪽 섹션을 전환하는 자바스크립트 -->
+    <script>
+       function switchSection(targetId, event) {
+            event.preventDefault();
+
+            // 모든 섹션 비활성화
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // 선택한 섹션 활성화
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // 모든 하위메뉴 active 클래스 제거
+            const links = document.querySelectorAll('.submenu-item a');
+            links.forEach(link => link.classList.remove('active'));
+
+            // 클릭한 메뉴에 active 클래스 부여
+            event.currentTarget.classList.add('active');
+        }
+
+        // 2. 💊힌트(.point)를 클릭하면 바로 아래의 힌트(.hint)가 토글되도록 처리
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('point')) {
+                // .point 바로 다음에 오는 .hint 요소를 찾음
+                const hintElement = event.target.closest('p').nextElementSibling;
+                if (hintElement && hintElement.classList.contains('hint')) {
+                    // 현재 상태에 따라 보이기/숨기기 전환
+                    if (hintElement.style.display === 'block') {
+                        hintElement.style.display = 'none';
+                    } else {
+                        hintElement.style.display = 'block';
+                    }
+                }
+            }
+        });
+        
+    </script>
+</body>
+</html>

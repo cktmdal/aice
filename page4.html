@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - AI의 학습과 원리 완벽 교재</title>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --blue: #3b82f6;
+            --red: #ef4444;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #fecdd3;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: #fff1f2;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 5px solid var(--primary);
+        }
+
+        .card h3 { margin-top: 0; color: #881337; }
+
+        /* 테이블 디자인 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.5rem 0;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        /* 캔버스 영역 */
+        .canvas-box {
+            text-align: center;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        /* 비교 섹션 스타일 */
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .compare-container { grid-template-columns: 1fr; }
+        }
+
+        .rule-box {
+            background: #fff1f2;
+            border: 2px solid #f43f5e;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .learning-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        /* 프로세스 흐름 박스 */
+        .process-flow {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #334155;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📚 AICE Junior: AI의 학습과 원리 마스터 교재</h1>
+        <p>인공지능의 분류, 학습 원리, 그리고 딥러닝과 함수의 관계 완벽 정리</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 슬라이드 1: AI · 머신러닝 · 딥러닝의 관계 -->
+        <section>
+            <h2>🤖 1. AI · 머신러닝 · 딥러닝의 관계</h2>
+            <div class="grid-2">
+                <div>
+                    <div class="card" style="margin-bottom: 1rem; background: #eff6ff; border-left-color: #3b82f6;">
+                        <h3 style="color: #1d4ed8;">인공지능 (AI)</h3>
+                        <p style="margin: 0; font-size: 0.95rem;">사람의 지능을 모방하는 모든 기술<br>규칙 기반 + 학습 기반 모두 포함.</p>
+                    </div>
+                    <div class="card" style="margin-bottom: 1rem; background: #fdf4ff; border-left-color: #a855f7;">
+                        <h3 style="color: #7e22ce;">머신러닝 (ML)</h3>
+                        <p style="margin: 0; font-size: 0.95rem;">데이터로부터 스스로 학습<br>AI의 한 분야</p>
+                    </div>
+                    <div class="card" style="background: #fef2f2; border-left-color: #ef4444;">
+                        <h3 style="color: #991b1b;">딥러닝 (DL)</h3>
+                        <p style="margin: 0; font-size: 0.95rem;">인공 신경망 기반, 복잡한 패턴 학습<br>ML의 한 분야</p>
+                    </div>
+                </div>
+
+                <!-- 캔버스로 포함 관계(AI ⊃ ML ⊃ DL) 정밀 드로잉 -->
+                <div class="canvas-box" style="background: #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <p style="color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.85rem;">AI ⊃ ML ⊃ DL 포함 관계 다이어그램</p>
+                    <canvas id="vennCanvas" width="380" height="320" style="background: #ffffff;"></canvas>
+                </div>
+            </div>
+            <p style="text-align: center; font-weight: bold; color: #4f46e5; margin-top: 1rem; font-size: 1.1rem;">AI ⊃ ML ⊃ DL</p>
+        </section>
+
+        <!-- 슬라이드 2: 인공지능의 분류 (규칙 기반 vs 학습 기반) -->
+        <section>
+            <h2>⚖️ 2. 인공지능의 분류</h2>
+            <p style="text-align: center; font-weight: bold; color: #64748b; margin-bottom: 1.5rem;">"사람이 규칙을 입력하는가, 데이터에서 스스로 배우는가?"</p>
+
+            <div class="compare-container">
+                <!-- 규칙 기반 -->
+                <div class="rule-box">
+                    <h3 style="color: #be123c; margin-top: 0;">규칙 기반 (Rule-based)</h3>
+                    <div style="background: white; padding: 0.75rem; border-radius: 6px; text-align: center; margin-bottom: 1rem; font-weight: bold; font-size: 0.9rem;">
+                        사람이 규칙 작성 ➡️ 컴퓨터 실행
+                    </div>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>예: 스팸 필터</strong><br>
+                    IF "무료" in 제목 ➡️ 스팸<br>
+                    IF "당첨" in 본문 ➡️ 스팸</p>
+                    <div style="background: #ffe4e6; padding: 0.75rem; border-radius: 6px; margin-top: 1rem; font-size: 0.85rem;">
+                        <strong>한계:</strong><br>
+                        • 모든 규칙을 사람이 만들어야 함<br>
+                        • 복잡한 패턴은 규칙화가 불가능<br>
+                        • 새로운 패턴에 대응 어려움
+                    </div>
+                </div>
+
+                <!-- 학습 기반 -->
+                <div class="learning-box">
+                    <h3 style="color: #1d4ed8; margin-top: 0;">학습 기반 (Learning-based)</h3>
+                    <div style="background: white; padding: 0.75rem; border-radius: 6px; text-align: center; margin-bottom: 1rem; font-weight: bold; font-size: 0.9rem;">
+                        데이터 제공 ➡️ 인공지능이 규칙 발견
+                    </div>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>예:</strong> 수천 건의 메일 데이터를 주면 인공지능이 스스로 스팸의 패턴을 찾아냄.</p>
+                    <div style="background: #dbeafe; padding: 0.75rem; border-radius: 6px; margin-top: 1rem; font-size: 0.85rem;">
+                        <strong>장점:</strong><br>
+                        • 데이터만 있으면 복잡한 패턴도 학습<br>
+                        • 새로운 데이터에 유연하게 대응<br>
+                        • 사람이 발견 못한 패턴도 찾음
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 3: 인공지능에서의 학습 -->
+        <section>
+            <h2>🧠 3. 인공지능에서의 학습</h2>
+            <div style="background: #fdf2f8; border-left: 5px solid #db2777; padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <p style="margin: 0; font-size: 1.05rem;">
+                    <strong>학습(Learning)</strong> = 알고 있는 데이터를 통해 패턴을 파악하고, <span style="background: #fecdd3; padding: 2px 6px; border-radius: 4px;">모르는 것을 알아내는 것</span>
+                </p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; color: #475569;">
+                    인공지능이 수많은 데이터(경험)를 분석하여 데이터 속에 숨겨진 규칙(패턴)을 스스로 찾아내고, 이를 통해 <span style="background: #fecdd3; padding: 2px 6px; border-radius: 4px;">새로운 상황을 예측하거나 판단하는 능력</span>
+                </p>
+            </div>
+
+            <div class="process-flow" style="border-left-color: #881337; background: #fff1f2;">
+                <h3 style="color: #881337; margin-top: 0; font-size: 1rem;">사람의 학습 (경험이 많을수록 ➡️ 판단력 향상)</h3>
+                <div style="display: flex; justify-content: space-around; align-items: center; text-align: center; font-size: 0.9rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px;">📖 경험/공부 (책, 문제집)</div>
+                    <div>➡️</div>
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px;">🧠 뇌에서 이해 & 생각 (패턴 파악)</div>
+                    <div>➡️</div>
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px;">🎓 지능 향상 (새 문제 해결)</div>
+                </div>
+            </div>
+
+            <div class="process-flow" style="border-left-color: #1d4ed8; background: #eff6ff;">
+                <h3 style="color: #1d4ed8; margin-top: 0; font-size: 1rem;">인공지능의 학습 (데이터가 많을수록 ➡️ 예측력 향상)</h3>
+                <div style="display: flex; justify-content: space-around; align-items: center; text-align: center; font-size: 0.9rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px;">💾 데이터 입력 (Input Data)</div>
+                    <div>➡️</div>
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px;">🤖 모델 학습 (Training) 패턴 학습</div>
+                    <div>➡️</div>
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px;">📈 예측/판단 새 데이터 예측</div>
+                </div>
+            </div>
+
+            <p style="text-align: center; font-weight: bold; color: #1e293b; margin-top: 1rem;">
+                사람 : 경험 ➡️ 능력치의 뇌 &nbsp;&nbsp;≈&nbsp;&nbsp; 인공지능 : 데이터 ➡️ 모델
+            </p>
+        </section>
+
+        <!-- 슬라이드 4: 학습 원리 : 수학의 함수 -->
+       
+
+        <!-- 슬라이드 5: 딥러닝은 왜 이슈일까? (성능 그래프) -->
+        <section>
+            <h2>📈 4. 딥러닝은 왜 이슈일까?</h2>
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <div class="card" style="background: #fff1f2; border-left-color: #e11d48; margin-bottom: 1rem;">
+                        <h3 style="color: #be123c; margin:0;">비정형 데이터의 사용</h3>
+                    </div>
+                    <div class="card" style="background: #fff1f2; border-left-color: #e11d48;">
+                        <h3 style="color: #be123c; margin:0;">성능 향상</h3>
+                    </div>
+                </div>
+
+                <!-- 캔버스를 이용한 딥러닝 vs 머신러닝 성능 곡선 그래프 정밀 재현 -->
+                <div class="canvas-box" style="background: #ffffff; border: 1px solid #cbd5e1;">
+                    <p style="color: #334155; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">Performance vs Data 곡선 그래프</p>
+                    <canvas id="performanceCanvas" width="420" height="240" style="background: #ffffff;"></canvas>
+                </div>
+            </div>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 1rem;">• 출처: https://www.merkle.com/blog/dispelling-myths-deep-learning-vs-machine-learning</p>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>AICE Junior 학습 | Hangang Media High School</p>
+    </footer>
+
+    <script>
+        // 1. AI ⊃ ML ⊃ DL 벤다이어그램 캔버스 드로잉
+        const vennCanvas = document.getElementById('vennCanvas');
+        const vCtx = vennCanvas.getContext('2d');
+
+        function drawVenn() {
+            vCtx.clearRect(0, 0, vennCanvas.width, vennCanvas.height);
+
+            // AI 큰 원
+            vCtx.fillStyle = '#eff6ff';
+            vCtx.strokeStyle = '#3b82f6';
+            vCtx.lineWidth = 2;
+            vCtx.beginPath();
+            vCtx.arc(190, 160, 130, 0, Math.PI * 2);
+            vCtx.fill();
+            vCtx.stroke();
+
+            vCtx.fillStyle = '#1e3a8a';
+            vCtx.font = 'bold 14px sans-serif';
+            vCtx.textAlign = 'center';
+            vCtx.fillText('인공지능 (AI)', 190, 50);
+
+            // 머신러닝 중간 원
+            vCtx.fillStyle = '#fdf4ff';
+            vCtx.strokeStyle = '#a855f7';
+            vCtx.beginPath();
+            vCtx.arc(190, 175, 90, 0, Math.PI * 2);
+            vCtx.fill();
+            vCtx.stroke();
+
+            vCtx.fillStyle = '#6b21a8';
+            vCtx.font = 'bold 12px sans-serif';
+            vCtx.fillText('머신러닝 (ML)', 190, 105);
+
+            // 딥러닝 작은 원
+            vCtx.fillStyle = '#fee2e2';
+            vCtx.strokeStyle = '#ef4444';
+            vCtx.beginPath();
+            vCtx.arc(190, 195, 45, 0, Math.PI * 2);
+            vCtx.fill();
+            vCtx.stroke();
+
+            vCtx.fillStyle = '#991b1b';
+            vCtx.font = 'bold 11px sans-serif';
+            vCtx.fillText('딥러닝(DL)', 190, 198);
+        }
+        drawVenn();
+
+        // 2. 딥러닝 성능 그래프 캔버스 드로잉
+        const perfCanvas = document.getElementById('performanceCanvas');
+        const pCtx = perfCanvas.getContext('2d');
+
+        function drawPerformanceGraph() {
+            pCtx.clearRect(0, 0, perfCanvas.width, perfCanvas.height);
+
+            const startX = 50;
+            const startY = 200;
+            const endX = 380;
+            const endY = 30;
+
+            // 축 그리기 (Y축, X축)
+            pCtx.strokeStyle = '#334155';
+            pCtx.lineWidth = 2;
+            pCtx.beginPath();
+            // Y축
+            pCtx.moveTo(startX, startY);
+            pCtx.lineTo(startX, endY);
+            // X축
+            pCtx.moveTo(startX, startY);
+            pCtx.lineTo(endX, startY);
+            pCtx.stroke();
+
+            // 축 라벨
+            pCtx.fillStyle = '#1e293b';
+            pCtx.font = '12px sans-serif';
+            pCtx.save();
+            pCtx.translate(20, 120);
+            pCtx.rotate(-Math.PI / 2);
+            pCtx.textAlign = 'center';
+            pCtx.fillText('Performance', 0, 0);
+            pCtx.restore();
+
+            pCtx.textAlign = 'center';
+            pCtx.fillText('Data', 215, 225);
+
+            // 화살표 머리 추가
+            pCtx.beginPath();
+            pCtx.moveTo(startX, endY);
+            pCtx.lineTo(startX - 4, endY + 8);
+            pCtx.lineTo(startX + 4, endY + 8);
+            pCtx.fillStyle = '#334155';
+            pCtx.fill();
+
+            pCtx.beginPath();
+            pCtx.moveTo(endX, startY);
+            pCtx.lineTo(endX - 8, startY - 4);
+            pCtx.lineTo(endX - 8, startY + 4);
+            pCtx.fill();
+
+            // 1. Deep learning algorithms 곡선 (빨간색)
+            pCtx.strokeStyle = '#dc2626';
+            pCtx.lineWidth = 2.5;
+            pCtx.beginPath();
+            pCtx.moveTo(startX, startY);
+            // 이차 곡선 형태로 지속적 상승
+            pCtx.quadraticCurveTo(220, 170, endX - 20, 60);
+            pCtx.stroke();
+
+            pCtx.fillStyle = '#dc2626';
+            pCtx.font = 'bold 11px sans-serif';
+            pCtx.textAlign = 'left';
+            pCtx.fillText('Deep learning', 270, 75);
+            pCtx.fillText('algorithms', 270, 90);
+
+            // 2. Traditional machine learning algorithms 곡선 (파란색)
+            pCtx.strokeStyle = '#2563eb';
+            pCtx.lineWidth = 2;
+            pCtx.beginPath();
+            pCtx.moveTo(startX, startY);
+            // 완만하게 포화되는 곡선
+            pCtx.bezierCurveTo(150, 190, 250, 170, endX - 20, 160);
+            pCtx.stroke();
+
+            pCtx.fillStyle = '#2563eb';
+            pCtx.font = 'bold 11px sans-serif';
+            pCtx.fillText('Traditional machine', 260, 135);
+            pCtx.fillText('learning algorithms', 260, 150);
+        }
+        drawPerformanceGraph();
+    </script>
+</body>
+</html>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - 딥러닝의 원리 및 퍼셉트론 마스터 교재</title>
+    <!-- Chart.js 라이브러리 연동 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #fecdd3;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .canvas-box {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+        .data-table th, .data-table td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table th {
+            background-color: #334155;
+            color: white;
+        }
+
+        /* 퍼셉트론 계산 도식 스타일 */
+        .calc-diagram-box {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+            position: relative;
+        }
+        .step-tags {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+            gap: 3px;
+        }
+        .step-tags span {
+            flex: 1;
+            background: #10b981;
+            padding: 3px 2px;
+            border-radius: 4px;
+        }
+        .perceptron-visual {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            height: 120px;
+            padding: 0 10px;
+        }
+        .inputs-side {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 2;
+        }
+        .calc-node {
+            width: 38px;
+            height: 38px;
+            border: 2px solid #64748b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background: white;
+            color: #1e293b;
+        }
+        .sum-circle {
+            width: 44px;
+            height: 44px;
+            border: 2px solid #64748b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: white;
+            z-index: 2;
+            position: relative;
+        }
+        .activation-square {
+            width: 38px;
+            height: 38px;
+            border: 2px solid #64748b;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .output-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            z-index: 2;
+        }
+        .svg-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .w-label {
+            position: absolute;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #2563eb;
+            background: white;
+            padding: 0 3px;
+            z-index: 3;
+        }
+        .bias-num {
+            position: absolute;
+            bottom: 5px;
+            left: 55%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+        .formula-box {
+            margin-top: 12px;
+            background: #fef08a;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            color: #854d0e;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧠 AICE Junior: 딥러닝의 원리 및 퍼셉트론 마스터</h1>
+        <p>인공지능, 딥러닝의 역사부터 인공신경망, 퍼셉트론의 수학적 계산 구조 완벽 정리</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 섹션 1: 인공지능과 딥러닝의 개념 -->
+        <section>
+            <h2>📌 1. 인공지능 속의 딥러닝</h2>
+            <div class="grid-2" style="align-items: center;">
+                <div class="card" style="background: #f1f5f9; text-align: center; padding: 2rem;">
+                    <div style="font-size: 1.1rem; font-weight: bold; color: #475569; margin-bottom: 1rem;">인공지능 (Artificial Intelligence) - 1950년</div>
+                    <div style="background: #e2e8f0; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <div style="font-weight: bold; color: #334155; margin-bottom: 0.5rem;">머신러닝 (Machine Learning) - 1980년</div>
+                        <div style="background: #f43f5e; color: white; padding: 1rem; border-radius: 8px; font-weight: bold;">
+                            딥러닝 (Deep Learning) - 2010년 🚀
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #e11d48; margin-top: 0;">딥러닝 (Deep Learning) 이란?</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; color: #475569; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><strong>인공 신경망</strong>을 기반으로 하는 머신러닝의 한 분야입니다.</li>
+                        <li><strong>2010년 이후</strong> 빅데이터와 연산 능력이 발전하면서 널리 퍼지기 시작했습니다.</li>
+                        <li>인간의 뇌 신경세포(뉴런) 구조를 모방하여 스스로 학습하는 특징이 있습니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 2: 딥러닝의 역사와 황금기 -->
+        <section>
+            <h2>🏆 2. 딥러닝 시대의 황금기</h2>
+            <div class="grid-3">
+                <div class="card" style="border-top: 5px solid #2563eb;">
+                    <h3 style="color: #2563eb; margin-top: 0;">이미지넷 대회 (2012)</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">1000개의 다른 이미지를 인식하고 분류하는 대회로, 2012년 딥러닝이 기존의 방법보다 뛰어난 성능을 증명한 계기가 됨.</p>
+                </div>
+                <div class="card" style="border-top: 5px solid #10b981;">
+                    <h3 style="color: #10b981; margin-top: 0;">이세돌 vs 알파고 (2016)</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">대중에게 인공지능과 딥러닝이 널리 알려진 결정적 계기가 된 역사적인 세기의 대국.</p>
+                </div>
+                <div class="card" style="border-top: 5px solid #f43f5e;">
+                    <h3 style="color: #f43f5e; margin-top: 0;">생성형 AI (현재)</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">인공지능 연구에서 딥러닝이 사용되지 않는 영역이 없을 만큼 눈부신 황금기를 맞이하고 있음.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 3: 딥러닝으로 할 수 있는 일들 -->
+        <section>
+            <h2>✨ 3. 딥러닝으로 할 수 있는 일들</h2>
+            <p style="font-size: 1rem; font-weight: bold; color: #1e40af;">👉 이미지, 텍스트, 소리와 같은 데이터에서 뛰어난 성능을 보임</p>
+            <div class="grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-top: 1.5rem;">
+                <div class="card" style="text-align: center;">
+                    <div style="background: #f43f5e; color: white; padding: 0.5rem; border-radius: 6px; font-weight: bold; margin-bottom: 0.75rem;">대상탐지</div>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0;">하나의 이미지에서 여러 대상(자동차, 사람 등)을 정확하게 탐지</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="background: #f43f5e; color: white; padding: 0.5rem; border-radius: 6px; font-weight: bold; margin-bottom: 0.75rem;">언어이해</div>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0;">인간의 말과 문맥의 의미를 완벽하게 이해하고 대답</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="background: #f43f5e; color: white; padding: 0.5rem; border-radius: 6px; font-weight: bold; margin-bottom: 0.75rem;">이미지생성</div>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0;">상상 속의 세상이나 새로운 고화질 이미지를 척척 생성</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="background: #f43f5e; color: white; padding: 0.5rem; border-radius: 6px; font-weight: bold; margin-bottom: 0.75rem;">해상도조절</div>
+                    <p style="font-size: 0.85rem; color: #475569; margin: 0;">흐릿한 저해상도 사진을 선명한 고해상도로 변환</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 4: 인공신경망의 기본 개념 -->
+        <section>
+            <h2>🧬 4. 인공신경망의 기본 개념</h2>
+            <div style="background: #1e293b; color: white; padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.6;">
+                ⚡ <strong>전기 신호(데이터)</strong>가 <strong>수상 돌기(입력)</strong>를 통해 <strong>입력 신경 세포체(처리)</strong>에서 합하여 일정 수준 이상이 되면 <strong>축삭 돌기(출력)</strong>에서 다른 뉴런으로 전기 신호 내보내는 원리
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                <img src="images/page8-1.png" alt="생체 뉴런 구조">
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: #2563eb; margin-top: 0;">생체 뉴런 구조</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">수상돌기 ➡️ 세포핵 / 신경세포체 ➡️ 축삭돌기 ➡️ 축삭돌기 말단</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: #10b981; margin-top: 0;">인공 신경망 구조</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">입력 (in<sub>1</sub>, in<sub>2</sub>, ..., in<sub>n</sub>) ➡️ 처리 (신경세포체 Σ 와 활성화 함수 f, 편향 bias) ➡️ 출력 (out)</p>
+                </div>
+            </div>
+            <div style="background: #f8fafc; margin-top:20px; border: 1px solid #cbd5e1; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                <h3 style="color: #2563eb; margin-top: 0;">뉴런과 인공신경망</h3> 
+                <p>- 딥러닝은 머신러닝의 다양한 모델중 인공신경망을 기반으로 함</p>
+                <img src="images/page8-2.png" alt="인공신경망">
+            </div>
+        </section>
+
+        <!-- 섹션 5: 퍼셉트론의 기본 개념 및 구조 -->
+        <section>
+            <h2>🤖 5. 퍼셉트론의 기본 개념과 구조</h2>
+            <div class="grid-2">
+                <div>
+                    <h3 style="color: #e11d48; margin-top: 0;">프랭크 로젠블랫 (1957)</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; color: #475569; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>인공신경망의 기원이 되는 <strong>퍼셉트론</strong> 제안</li>
+                        <li>다수의 입력을 받아 하나의 신호를 출력 (1 또는 0)</li>
+                        <li>X<sub>1</sub>, X<sub>2</sub>는 입력값, y는 출력값, w<sub>1</sub>, w<sub>2</sub>는 가중치</li>
+                        <li>원을 <strong>뉴런</strong> 또는 <strong>노드</strong>라고 부름</li>
+                        <li>노드에서 전달받은 신호의 총 합이 임계값을 넘을 때만 1을 출력</li>
+                    </ul>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 1rem; margin-top: 0;">퍼셉트론 구조 다이어그램</h3>
+                    <img src="images/page8-3.png" alt="퍼셉트론 구조">
+                    <img src="images/page8-4.png" alt="간단하게 그린 퍼셉트론">
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 6: 퍼셉트론 계산 예시 -->
+        <section>
+            <h2>📊 6. 퍼셉트론 계산 예시</h2>
+            
+            <table class="data-table" style="margin-bottom: 1.5rem;">
+                <thead>
+                    <tr>
+                        <th>공부한 시간 (X<sub>1</sub>)</th>
+                        <th>게임을 한 시간 (X<sub>2</sub>)</th>
+                        <th>합격 (y)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10</td>
+                        <td>2</td>
+                        <td><strong style="color: #10b981;">1 (합격)</strong></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>4</td>
+                        <td><strong style="color: #e11d48;">0 (불합격)</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="grid-2">
+                <!-- 왼쪽: 가중치(W) 상세 설명 -->
+                <div class="card">
+                    <h3 style="color: #e11d48; margin-top: 0;">» 가중치(W)</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; color: #475569; display: flex; flex-direction: column; gap: 0.5rem; margin: 0;">
+                        <li>입력값과 연결된 노드 사이의 강도를 나타내는 값</li>
+                        <li>결과값에 영향을 미치는 입력값의 중요도에 따라 다름</li>
+                        <li>가중치 값만으로 출력값을 결정하기 힘들어 편향(bias)을 노드에 추가</li>
+                        <li>가중치와 편향의 값이 크면 출력값이 증가함</li>
+                    </ul>
+                    <div style="margin-top: 1rem;">
+                        <img src="images/page8-5.png" alt="가중치 설명 이미지">
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 파라미터 설명 -->
+                <div class="card">
+                    <h3 style="color: #2563eb; margin-top: 0;">» 파라미터 설명</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.95rem; color: #475569; display: flex; flex-direction: column; gap: 0.5rem; margin: 0;">
+                        <li>y=X<sub>1</sub>W<sub>1</sub>+X<sub>2</sub>W<sub>2</sub>+b</li>
+                        <li>X<sub>1</sub>, X<sub>2</sub>, y는 데이터에서 값이어지기 때문에 고정</li>
+                        <li>가중치 W<sub>1</sub>, W<sub>2</sub>, 바이어스는 값이 변경될 수 있으므로 <span style="color: #e11d48; font-weight: bold;">파라미터</span>라고 부름</li>
+                        <li><strong>파라미터:</strong> 학습에 의해 조정되는 값</li>
+                    </ul>
+                     <div style="margin-top: 1rem;">
+                        <img src="images/page8-6.png" alt="파라미터 설명 이미지">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 7: 활성화 함수 및 그래프 (계단 함수 & 시그모이드 함수 나란히 배치) -->
+        <section>
+            <h2>📈 7. 활성화 함수</h2>
+            
+            <ul style="padding-left: 1.2rem; font-size: 0.95rem; color: #475569; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <li>» 노드에서 입력의 합을 출력으로 변환하는 역할</li>
+                <li>» 활성화함수는 출력값을 내보낼지/내보내지 않을지 또는 얼마나 내보낼지 결정</li>
+                <li>» 활성화함수를 통해 복잡한 문제를 해결할 수 있게 되었음[cite: 4]</li>
+            </ul>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: #e11d48; margin-top: 0;">계단 함수 (Step Function)</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">입력된 총합이 임계값(0)을 넘으면 <strong>1</strong>을 출력하고, 넘지 못하면 <strong>0</strong>을 출력합니다.</p>
+                    <div style="background: #fff7ed; padding: 0.75rem; border-radius: 6px; border-left: 4px solid #f97316; font-size: 0.85rem; margin-bottom: 1rem;">
+                        • 총합이 0 이하 ➡️ 0 출력<br>
+                        • 총합이 0 초과 ➡️ 1 출력
+                    </div>
+                    <span style="background: #10b981; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">퍼셉트론에서 사용[cite: 4]</span>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: #2563eb; margin-top: 0;">시그모이드 함수 (Sigmoid Function)</h3>
+                    <p style="font-size: 0.9rem; color: #475569;">출력값이 0과 1 사이의 부드러운 연속적인 값(확률 등)으로 변환되는 활성화 함수입니다[cite: 4].</p>
+                    <div style="background: #eff6ff; padding: 0.75rem; border-radius: 6px; border-left: 4px solid #2563eb; font-size: 0.85rem; margin-bottom: 1rem;">
+                        • 0과 1 사이의 실수 값 출력[cite: 4]<br>
+                        • 부드러운 S자 형태의 곡선 그래프[cite: 4]
+                    </div>
+                    <span style="background: #10b981; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">초기 인공신경망에서부터 많이 사용[cite: 4]</span>
+                </div>
+            </div>
+
+            <!-- 그래프 영역: 계단 함수 그래프 & 시그모이드 함수 그래프 나란히 배치 -->
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 1rem; margin-top: 0;">계단 함수 그래프</h3>
+                    <div class="canvas-box"><canvas id="stepFunctionChart" width="300" height="160"></canvas></div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 1rem; margin-top: 0;">시그모이드 함수 그래프</h3>
+                    <div class="canvas-box"><canvas id="sigmoidFunctionChart" width="300" height="160"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 8: 퍼셉트론 계산 예시 상세 도식 -->
+        <section>
+            <h2>📐 8. 퍼셉트론 계산 예시 상세 도식</h2>
+            <div class="grid-2">
+                <!-- Case 1: 합격 예시 (10, 2) -->
+                <div class="card">
+                    <h3 style="color: #e11d48; margin-top: 0; font-size: 1rem;">Case 1: 공부 10시간, 게임 2시간 (합격)</h3>
+                    <div class="calc-diagram-box">
+                        <div class="step-tags">
+                            <span>입력</span>
+                            <span>가중치</span>
+                            <span>입력×가중치+편향(bias)</span>
+                            <span>활성화함수</span>
+                            <span>출력</span>
+                        </div>
+                        <div class="perceptron-visual">
+                            <svg class="svg-lines">
+                                <line x1="38" y1="30" x2="160" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                                <line x1="38" y1="90" x2="160" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                                <line x1="184" y1="60" x2="245" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                                <line x1="281" y1="60" x2="335" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                            </svg>
+                            <span class="w-label" style="top: 25px; left: 85px;">0.5</span>
+                            <span class="w-label" style="top: 70px; left: 85px;">-1.5</span>
+                            
+                            <div class="inputs-side">
+                                <div class="calc-node">10</div>
+                                <div class="calc-node">2</div>
+                            </div>
+                            <div class="sum-circle">3</div>
+                            <div class="activation-square">
+                                <div style="width: 20px; height: 16px; position: relative;">
+                                    <div style="position: absolute; bottom: 3px; left: 0; width: 8px; border-bottom: 2px solid #334155;"></div>
+                                    <div style="position: absolute; bottom: 3px; left: 8px; height: 12px; border-left: 2px solid #334155;"></div>
+                                    <div style="position: absolute; top: 1px; left: 8px; width: 10px; border-top: 2px solid #334155;"></div>
+                                </div>
+                            </div>
+                            <div class="output-circle">1</div>
+                            <div class="bias-num">1</div>
+                        </div>
+                        <div class="formula-box">10×0.5 + 2×(-1.5) + 1 = 3</div>
+                    </div>
+                </div>
+
+                <!-- Case 2: 불합격 예시 (2, 4) -->
+                <div class="card">
+                    <h3 style="color: #2563eb; margin-top: 0; font-size: 1rem;">Case 2: 공부 2시간, 게임 4시간 (불합격)</h3>
+                    <div class="calc-diagram-box">
+                        <div class="step-tags">
+                            <span>입력</span>
+                            <span>가중치</span>
+                            <span>입력×가중치+편향(bias)</span>
+                            <span>활성화함수</span>
+                            <span>출력</span>
+                        </div>
+                        <div class="perceptron-visual">
+                            <svg class="svg-lines">
+                                <line x1="38" y1="30" x2="160" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                                <line x1="38" y1="90" x2="160" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                                <line x1="184" y1="60" x2="245" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                                <line x1="281" y1="60" x2="335" y2="60" stroke="#94a3b8" stroke-width="1.5" />
+                            </svg>
+                            <span class="w-label" style="top: 25px; left: 85px;">0.5</span>
+                            <span class="w-label" style="top: 70px; left: 85px;">-1.5</span>
+                            
+                            <div class="inputs-side">
+                                <div class="calc-node">2</div>
+                                <div class="calc-node">4</div>
+                            </div>
+                            <div class="sum-circle">-4</div>
+                            <div class="activation-square">
+                                <div style="width: 20px; height: 16px; position: relative;">
+                                    <div style="position: absolute; bottom: 3px; left: 0; width: 8px; border-bottom: 2px solid #334155;"></div>
+                                    <div style="position: absolute; bottom: 3px; left: 8px; height: 12px; border-left: 2px solid #334155;"></div>
+                                    <div style="position: absolute; top: 1px; left: 8px; width: 10px; border-top: 2px solid #334155;"></div>
+                                </div>
+                            </div>
+                            <div class="output-circle" style="background: #2563eb;">0</div>
+                            <div class="bias-num">1</div>
+                        </div>
+                        <div class="formula-box">2×0.5 + 4×(-1.5) + 1 = -4</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션 9: 활성화 함수 바꾼 경우 (시그모이드 함수 적용 상세 도식) -->
+        <section>
+            <h2>📈 9. 활성화 함수 바꾼 경우 (시그모이드 함수 적용)</h2>
+            <div class="grid-2">
+                <!-- Case 1: 입력 (10, 2) -> 출력 0.95 -->
+                <div style="margin-top: 1rem;">
+                        <img src="images/page8-8.png" alt="파라미터 설명 이미">
+                    </div>
+
+               
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>AICE Junior 학습  | Hangang Media High School</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. 계단 함수 꺾은선 그래프
+            const stepCanvas = document.getElementById('stepFunctionChart').getContext('2d');
+            new Chart(stepCanvas, {
+                type: 'line',
+                data: {
+                    labels: ['-3', '-2', '-1', '0', '0+', '1', '2', '3'],
+                    datasets: [{
+                        label: '계단 함수',
+                        data: [0, 0, 0, 0, 1, 1, 1, 1],
+                        borderColor: '#f43f5e',
+                        backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                        borderWidth: 3,
+                        stepped: true,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { min: -0.2, max: 1.2, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+
+            // 2. 시그모이드 함수 부드러운 곡선 그래프
+            const sigmoidCanvas = document.getElementById('sigmoidFunctionChart').getContext('2d');
+            new Chart(sigmoidCanvas, {
+                type: 'line',
+                data: {
+                    labels: ['-4', '-3', '-2', '-1', '0', '1', '2', '3', '4'],
+                    datasets: [{
+                        label: '시그모이드 함수',
+                        data: [0.018, 0.047, 0.119, 0.269, 0.5, 0.731, 0.881, 0.953, 0.982],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { min: -0.2, max: 1.2, ticks: { stepSize: 0.5 } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

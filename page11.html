@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - 딥러닝의 학습 방법 및 활성화 함수</title>
+    <!-- Chart.js CDN 추가 (선명한 벡터 그래프용) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #666666;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 40px;
+        }
+
+        header h1 { 
+            margin: 0 0 0.5rem 0; 
+            font-size: 2.2rem; 
+            color: white !important; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        
+        header p { 
+            margin: 0; 
+            font-size: 1.1rem; 
+            opacity: 0.95; 
+        }
+
+        .container {
+            max-width: 1050px;
+            width: 90%;
+            margin: 0 auto 40px auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
+
+        /* 섹션 스타일 */
+        .section {
+            margin-bottom: 45px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            color: #1e293b;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sub-desc {
+            font-size: 1.05rem;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 활성화 함수 그리드 레이아웃 */
+        .activation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .activation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .activation-card {
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 12px;
+            box-sizing: border-box;
+        }
+
+        .activation-desc {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .activation-desc ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+        }
+
+        /* 그래프 목업 스타일 (Chart.js용) */
+        .graph-container {
+            position: relative;
+            height: 180px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .badge-epoch {
+            background: #ffe4e6;
+            color: var(--primary);
+            padding: 4px 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* 신경망 구조 시각화 래퍼 */
+        .nn-visualization-wrapper {
+            margin-top: 40px;
+            position: relative;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+
+        .nn-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+        }
+
+        .nn-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* 푸터 */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 헤더 영역 -->
+    <header>
+        <h1>딥러닝의 학습 방법 및 활성화 함수</h1>
+        <p class="subtitle">AICE Junior - 인공지능 모델이 스스로 똑똑해지는 원리</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- 활성화 함수 섹션 -->
+        <section class="section">
+            <h2>활성화 함수로 학습 문제 해결</h2>
+            <div class="sub-desc">
+                <span style="color: var(--primary);">»</span> relu, sigmoid는 은닉층에 많이 사용되는 활성화 함수
+            </div>
+            
+            <div class="activation-grid">
+                <!-- Sigmoid & Tanh 카드 -->
+                <div class="activation-card">
+                    <h3>» sigmoid</h3>
+                    <div class="activation-desc">
+                        은닉층과 출력층에 자주 사용되는 활성화 함수(Activation function)
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="sigmoidChart"></canvas>
+                    </div>
+
+                    <h3 style="margin-top: 25px;">» tanh</h3>
+                    <div class="activation-desc">
+                        -1에서 1 사이의 값을 출력하며, 0을 중심으로 대칭인 활성화 함수
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="tanhChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- ReLU 카드 -->
+                <div class="activation-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>» 제프리 힌턴(2010)의 relu</h3>
+                        <span class="badge-epoch">딥러닝 시대의 개막</span>
+                    </div>
+                    <div class="activation-desc">
+                        <ul>
+                            <li>양수는 그대로 출력</li>
+                            <li>음수는 0으로 출력</li>
+                        </ul>
+                    </div>
+                    <div class="graph-container" style="height: 410px;">
+                        <canvas id="reluChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 하단 신경망(Neural Network) 구조 시각화 박스 -->
+            <div class="nn-visualization-wrapper">
+                <div class="sub-desc" style="margin-bottom: 15px;">
+                    <span style="color: var(--primary);">»</span> 다층 퍼셉트론(MLP) 은닉층 구조 시각화
+                </div>
+                 <p>relu, sigmoid는 은닉층에 많이 사용되는 활성함수</p>
+                <div class="nn-container">
+                    <canvas id="nnCanvas" class="nn-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- 새로 추가된 출력층 활성화 함수 섹션 (표 포함) -->
+            <div style="margin-top: 50px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; box-sizing: border-box;">
+                <h2 style="font-size: 1.4rem; color: #2c3e50; display: flex; align-items: center; gap: 8px; border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom: 15px;">
+                    활성화 함수의 사용 (출력층)
+                </h2>
+                <p style="font-size: 1.05rem; color: #334155; font-weight: 600; margin-bottom: 25px;">
+                    출력층에 사용되는 활성화 함수는 정해져 있음
+                </p>
+                
+                <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background: var(--primary); color: white;">
+                            <th style="padding: 12px; border: 1px solid #cbd5e1; border-top-left-radius: 8px;">문제유형</th>
+                            <th style="padding: 12px; border: 1px solid #cbd5e1; border-top-right-radius: 8px;">output layer의 활성 함수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 12px; border: 1px solid #cbd5e1; font-weight: 600;">이진 분류</td>
+                            <td style="padding: 12px; border: 1px solid #cbd5e1;">sigmoid</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #cbd5e1; font-weight: 600;">다중 분류</td>
+                            <td style="padding: 12px; border: 1px solid #cbd5e1;">softmax</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 12px; border: 1px solid #cbd5e1; font-weight: 600;">회귀</td>
+                            <td style="padding: 12px; border: 1px solid #cbd5e1;">없음(linear)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 새로 추가된 이미지 기반 '이진분류인 경우' 시각화 섹션 -->
+            <div style="margin-top: 40px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; box-sizing: border-box;">
+                <h2 style="font-size: 1.4rem; color: #2c3e50; display: flex; align-items: center; gap: 8px; border-left: 4px solid var(--primary); padding-left: 12px; margin-bottom: 20px;">
+                    활성화 함수의 사용 (출력층)
+                </h2>
+                <div class="sub-desc" style="margin-bottom: 20px;">
+                    <span style="color: var(--primary);">»</span> 이진분류인 경우
+                </div>
+
+                <div style="position: relative; display: flex; align-items: center; justify-content: space-between; gap: 30px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 25px; box-sizing: border-box; flex-wrap: wrap;">
+                    <!-- 왼쪽: 이진분류 전체 신경망 및 출력층 화살표 캔버스 -->
+                    <div style="flex: 1; min-width: 320px; height: 260px; position: relative;">
+                        <canvas id="binaryCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                    </div>
+
+                    <!-- 오른쪽: Sigmoid 그래프 및 설명 -->
+                    <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px;">
+                        <div style="position: relative; height: 170px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px; box-sizing: border-box;">
+                            <canvas id="binarySigmoidChart" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                        <div style="font-size: 0.95rem; color: #475569; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px;">
+                            <span style="color: #64748b; font-weight: bold; margin-top: 2px;">▪</span>
+                            <span><strong>sigmoid</strong>는 0.5 이상이면 1, 0.5 미만이면 0으로 분류</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 이미지 박스 맞춤 스타일 적용 -->
+                <div style="margin-top: 25px; text-align: center; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 20px; box-sizing: border-box;">
+                    <img src="images/page11-2.png" alt="이진분류 상세 설명 이미지" style="max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px;">
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>활성화 함수 (relu)</h2>
+            <div class="sub-desc">
+                <span style="color: var(--primary);">»</span> 회귀인경우
+            </div>
+            <div class="nn-visualization-wrapper">
+                <div class="graphs-top-row">
+                   <img src="images/page12-1.png" alt="">
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>활성화 함수 사용(출력층)</h2>
+            <div class="sub-desc">
+                <span style="color: var(--primary);">»</span> 다중불류인경우
+            </div>
+            <div class="nn-visualization-wrapper">
+                <div class="graphs-top-row">
+                   <img src="images/page12-2.png" alt="">
+                </div>
+            </div>
+        </section>
+
+        <!-- 마지막 섹션: 배치 사이즈와 반복횟수 -->
+        <section class="section">
+            <h2>배치 사이즈와 반복횟수</h2>
+            
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; box-sizing: border-box;">
+                <div style="font-size: 1.05rem; color: #334155; line-height: 1.8; margin-bottom: 25px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="color: var(--primary); font-weight: bold;">»</span> 메모리의 한계 때문에 한번에 데이터를 처리할 수 없음
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="color: var(--primary); font-weight: bold;">»</span> 한번에 처리하는 양을 <strong style="color: var(--primary);">배치사이즈(Batch Size)</strong>라고 함
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="color: var(--primary); font-weight: bold;">»</span> 반복횟수는 에포크 (<strong style="color: #2563eb;">epochs</strong>) 라고 함
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="color: var(--primary); font-weight: bold;">»</span> 훈련데이터셋이 모델에 모두 입력되면 1 에포크가 완료된 것
+                    </div>
+                </div>
+
+                <!-- 동일한 카드 컨테이너(div) 안에서 배치 사이즈 영역, 여백 화살표, 딥러닝(입력-은닉1-은닉2-출력) 영역을 나란히 배치 -->
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 25px; box-sizing: border-box;">
+                    <div style="display: grid; grid-template-columns: 1fr auto 1.3fr; gap: 20px; align-items: center;">
+                        
+                        <!-- 1. 왼쪽: 훈련 데이터셋 설명 및 배치 블록 다이어그램 -->
+                        <div style="display: flex; flex-direction: column; justify-content: center; gap: 15px;">
+                            <div style="font-size: 0.93rem; color: #475569; line-height: 1.6;">
+                                <div style="margin-bottom: 6px;">
+                                    <span style="color: #64748b; font-weight: bold;">-</span> <strong>훈련 데이터셋</strong>: 총 315개라면 315 / 100 = 3.15 총 4번 모델에 입력됨
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="color: #64748b; font-weight: bold;">-</span> 한번에 100개씩 = <strong style="color: var(--primary);">배치사이즈</strong>
+                                </div>
+                                <div>
+                                    <span style="color: #64748b; font-weight: bold;">-</span> 315개가 모두 입력 완료 = <strong style="color: #2563eb;">1 에포크 완료</strong>
+                                </div>
+                            </div>
+
+                            <!-- 배치 블록 다이어그램 -->
+                            <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <div style="font-size: 0.8rem; color: #2563eb; font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                                    <span>◀</span> 1 에포크 <span>▶</span>
+                                </div>
+                                <div style="display: flex; border: 2px solid #10b981; border-radius: 4px; overflow: hidden; background: #ecfdf5; margin-bottom: 4px;">
+                                    <div style="width: 38px; height: 42px; border-right: 1px solid #10b981; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: #047857;">15</div>
+                                    <div style="width: 55px; height: 42px; border-right: 1px solid #10b981; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: #047857;">100</div>
+                                    <div style="width: 55px; height: 42px; border-right: 1px solid #10b981; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: #047857;">100</div>
+                                    <div style="width: 55px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: #047857;">100</div>
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--primary); font-weight: bold;">
+                                    배치 사이즈
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. 중앙 여백: 빨간색 입력 화살표 -->
+                        <div style="display: flex; align-items: center; justify-content: center; padding: 0 5px;">
+                            <div style="width: 38px; height: 16px; background: #e11d48; position: relative; display: flex; align-items: center; border-radius: 2px; box-shadow: 0 2px 4px rgba(225,29,72,0.2);">
+                                <div style="position: absolute; right: -10px; top: -6px; width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 14px solid #e11d48;"></div>
+                            </div>
+                        </div>
+
+                        <!-- 3. 오른쪽: 딥러닝 구조 (입력층, 은닉층1, 은닉층2, 출력층 구조: [6, 8, 8, 1]) -->
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center; position: relative; height: 230px; width: 100%; box-sizing: border-box;">
+                            <canvas id="batchNNCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            AICE Junior 학습 | Hangang Media High School
+        </footer>
+    </div>
+
+    <!-- 자바스크립트: 고해상도 Chart.js 그래프 및 신경망 구조 렌더링 -->
+    <script>
+        // 공통 Chart.js 옵션 (선명도 극대화)
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    ticks: { font: { size: 9, weight: '600' }, color: '#334155' },
+                    grid: { color: '#f1f5f9' }
+                },
+                y: {
+                    ticks: { font: { size: 9, weight: '600' }, color: '#334155' },
+                    grid: { color: '#f1f5f9' }
+                }
+            },
+            elements: { point: { radius: 0 } }
+        };
+
+        // 1. Sigmoid 그래프 데이터 (-8 ~ 8)
+        const sigmoidData = [];
+        for (let x = -8; x <= 8; x += 0.2) {
+            sigmoidData.push({x: x, y: 1 / (1 + Math.exp(-x))});
+        }
+        new Chart(document.getElementById('sigmoidChart'), {
+            type: 'line',
+            data: { datasets: [{ data: sigmoidData, borderColor: '#2563eb', borderWidth: 2 }] },
+            options: {
+                ...commonOptions,
+                scales: {
+                    x: { ...commonOptions.scales.x, min: -8, max: 8 },
+                    y: { ...commonOptions.scales.y, min: 0, max: 1, ticks: { stepSize: 0.2, font: { size: 9 } } }
+                }
+            }
+        });
+
+        // 2. Tanh 그래프 데이터 (-8 ~ 8)
+        const tanhData = [];
+        for (let x = -8; x <= 8; x += 0.2) {
+            tanhData.push({x: x, y: Math.tanh(x)});
+        }
+        new Chart(document.getElementById('tanhChart'), {
+            type: 'line',
+            data: { datasets: [{ data: tanhData, borderColor: '#2563eb', borderWidth: 2 }] },
+            options: {
+                ...commonOptions,
+                scales: {
+                    x: { ...commonOptions.scales.x, min: -8, max: 8 },
+                    y: { ...commonOptions.scales.y, min: -1, max: 1, ticks: { stepSize: 0.5, font: { size: 9 } } }
+                }
+            }
+        });
+
+        // 3. ReLU 그래프 데이터 (-5 ~ 5)
+        const reluData = [];
+        for (let x = -5; x <= 5; x += 0.2) {
+            reluData.push({x: x, y: Math.max(0, x)});
+        }
+        new Chart(document.getElementById('reluChart'), {
+            type: 'line',
+            data: { datasets: [{ data: reluData, borderColor: '#2563eb', borderWidth: 2 }] },
+            options: {
+                ...commonOptions,
+                scales: {
+                    x: { ...commonOptions.scales.x, min: -5, max: 5 },
+                    y: { ...commonOptions.scales.y, min: 0, max: 5, ticks: { stepSize: 1, font: { size: 9 } } }
+                }
+            }
+        });
+
+        // 4. 이진분류용 Sigmoid 그래프 데이터
+        new Chart(document.getElementById('binarySigmoidChart'), {
+            type: 'line',
+            data: { datasets: [{ data: sigmoidData, borderColor: '#2563eb', borderWidth: 2 }] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { type: 'linear', position: 'bottom', min: -8, max: 8, ticks: { font: { size: 8 } }, grid: { color: '#f1f5f9' } },
+                    y: { min: 0, max: 1, ticks: { stepSize: 0.2, font: { size: 8 } }, grid: { color: '#f1f5f9' } }
+                },
+                elements: { point: { radius: 0 } }
+            }
+        });
+
+        // 5. 신경망(Neural Network) 구조 Canvas 드로잉 함수 (입력층, 은닉층1, 은닉층2, 출력층 구조: [6, 8, 8, 1])
+        function drawNN(canvasId, isBinary = false, isBatch = false) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            // 입력층(6개), 은닉층1(8개), 은닉층2(8개), 출력층(1개) 구성
+            const layers = isBatch ? [6, 8, 8, 1] : [4, 8, 8, 1];
+            const layerXCoords = [];
+            const startX = isBatch ? 25 : 50;
+            const endX = rect.width - (isBatch ? 25 : 60);
+            const stepX = (endX - startX) / (layers.length - 1);
+
+            for (let i = 0; i < layers.length; i++) {
+                layerXCoords.push(startX + i * stepX);
+            }
+
+            const nodeCoords = [];
+            for (let l = 0; l < layers.length; l++) {
+                const count = layers[l];
+                const x = layerXCoords[l];
+                const nodesInLayer = [];
+                const totalHeight = rect.height - 20;
+                const spacing = totalHeight / (count + 1);
+
+                for (let n = 0; n < count; n++) {
+                    const y = 10 + (n + 1) * spacing;
+                    nodesInLayer.push({x: x, y: y});
+                }
+                nodeCoords.push(nodesInLayer);
+            }
+
+            // 가중치 연결선 그리기
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = isBatch ? 0.6 : 0.8;
+
+            for (let l = 0; l < nodeCoords.length - 1; l++) {
+                const currentLayer = nodeCoords[l];
+                const nextLayer = nodeCoords[l + 1];
+
+                for (let i = 0; i < currentLayer.length; i++) {
+                    for (let j = 0; j < nextLayer.length; j++) {
+                        ctx.beginPath();
+                        ctx.moveTo(currentLayer[i].x, currentLayer[i].y);
+                        ctx.lineTo(nextLayer[j].x, nextLayer[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 뉴런(노드) 그리기
+            const nodeRadius = isBatch ? 8 : 11;
+            for (let l = 0; l < nodeCoords.length; l++) {
+                for (let n = 0; n < nodeCoords[l].length; n++) {
+                    const node = nodeCoords[l][n];
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                }
+            }
+
+            // 이진분류 캔버스일 경우 출력층 노드 장식
+            if (isBinary) {
+                const outputNode = nodeCoords[3][0];
+                ctx.fillStyle = '#e11d48';
+                ctx.beginPath();
+                ctx.arc(outputNode.x, outputNode.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = '#818cf8';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(outputNode.x + nodeRadius, outputNode.y);
+                ctx.lineTo(rect.width - 15, outputNode.y);
+                ctx.stroke();
+            }
+        }
+
+        window.addEventListener('load', () => {
+            drawNN('nnCanvas', false, false);
+            drawNN('binaryCanvas', true, false);
+            drawNN('batchNNCanvas', false, true);
+        });
+        window.addEventListener('resize', () => {
+            drawNN('nnCanvas', false, false);
+            drawNN('binaryCanvas', true, false);
+            drawNN('batchNNCanvas', false, true);
+        });
+    </script>
+
+    <!-- 기존 신경망 은닉층 시각화 화살표 추가 스크립트 -->
+    <script>
+        window.addEventListener('load', () => {
+            const containers = document.querySelectorAll('.nn-container');
+            if (containers.length === 0) return;
+            
+            const targetContainer = containers[containers.length - 1];
+            const wrapper = targetContainer.closest('.nn-visualization-wrapper') || targetContainer.parentElement;
+            wrapper.style.position = 'relative';
+
+            const addArea = document.createElement('div');
+            addArea.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 25px;';
+            addArea.innerHTML = `
+                <div style="position:relative; height:160px; background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:10px; box-sizing:border-box;">
+                    <span style="position:absolute; top:-10px; left:12px; background:#fff; padding:0 6px; font-size:0.8rem; font-weight:bold; color:#2563eb;">ReLU 활성화 함수</span>
+                    <canvas id="addedReluChart" style="width:100%; height:100%;"></canvas>
+                </div>
+                <div style="position:relative; height:160px; background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:10px; box-sizing:border-box;">
+                    <span style="position:absolute; top:-10px; left:12px; background:#fff; padding:0 6px; font-size:0.8rem; font-weight:bold; color:#2563eb;">Sigmoid 활성화 함수</span>
+                    <canvas id="addedSigmoidChart" style="width:100%; height:100%;"></canvas>
+                </div>
+            `;
+            wrapper.insertBefore(addArea, targetContainer);
+
+            const commonOpt = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { type: 'linear', position: 'bottom', ticks: { font: { size: 8 } }, grid: { color: '#f1f5f9' } },
+                    y: { ticks: { font: { size: 8 } }, grid: { color: '#f1f5f9' } }
+                },
+                elements: { point: { radius: 0 } }
+            };
+
+            const rData = [];
+            for (let x = -5; x <= 5; x += 0.2) rData.push({x: x, y: Math.max(0, x)});
+            new Chart(document.getElementById('addedReluChart'), {
+                type: 'line',
+                data: { datasets: [{ data: rData, borderColor: '#2563eb', borderWidth: 2 }] },
+                options: { ...commonOpt, scales: { x: { ...commonOpt.scales.x, min: -5, max: 5 }, y: { ...commonOpt.scales.y, min: 0, max: 5 } } }
+            });
+
+            const sData = [];
+            for (let x = -8; x <= 8; x += 0.2) sData.push({x: x, y: 1 / (1 + Math.exp(-x))});
+            new Chart(document.getElementById('addedSigmoidChart'), {
+                type: 'line',
+                data: { datasets: [{ data: sData, borderColor: '#2563eb', borderWidth: 2 }] },
+                options: { ...commonOpt, scales: { x: { ...commonOpt.scales.x, min: -8, max: 8 }, y: { ...commonOpt.scales.y, min: 0, max: 1 } } }
+            });
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;';
+            wrapper.appendChild(svg);
+
+            function drawArrows() {
+                const wRect = wrapper.getBoundingClientRect();
+                svg.setAttribute('viewBox', `0 0 ${wRect.width} ${wRect.height}`);
+                svg.innerHTML = `
+                    <defs>
+                        <marker id="arrowMarker" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                            <polygon points="0 0, 7 2.5, 0 5" fill="#818cf8"/>
+                        </marker>
+                    </defs>
+                `;
+
+                const boxes = addArea.querySelectorAll('div');
+                const canvasEl = targetContainer.querySelector('canvas') || targetContainer;
+                const cRect = canvasEl.getBoundingClientRect();
+
+                if (boxes.length < 2) return;
+                const b1 = boxes[0].getBoundingClientRect();
+                const b2 = boxes[1].getBoundingClientRect();
+
+                const x1 = (b1.left + b1.width / 2) - wRect.left;
+                const y1 = b1.bottom - wRect.top;
+                const x2 = (b2.left + b2.width / 2) - wRect.left;
+                const y2 = b2.bottom - wRect.top;
+
+                const canvasRelX = cRect.left - wRect.left;
+                const canvasRelY = cRect.top - wRect.top;
+                
+                const targetY = canvasRelY + cRect.height * 0.15; 
+                const hidden1X = canvasRelX + cRect.width * 0.35; 
+                const hidden2X = canvasRelX + cRect.width * 0.65; 
+
+                const coords = [
+                    { x1: x1 - 10, y1: y1, x2: hidden1X - 8, y2: targetY },
+                    { x1: x1 + 10, y1: y1, x2: hidden2X - 8, y2: targetY },
+                    { x1: x2 - 10, y1: y1, x2: hidden1X + 8, y2: targetY },
+                    { x1: x2 + 10, y1: y1, x2: hidden2X + 8, y2: targetY }
+                ];
+
+                coords.forEach(c => {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', c.x1); line.setAttribute('y1', c.y1);
+                    line.setAttribute('x2', c.x2); line.setAttribute('y2', c.y2);
+                    line.setAttribute('stroke', '#818cf8');
+                    line.setAttribute('stroke-width', '1.6');
+                    line.setAttribute('marker-end', 'url(#arrowMarker)');
+                    svg.appendChild(line);
+                });
+            }
+
+            setTimeout(drawArrows, 100);
+            window.addEventListener('resize', drawArrows);
+        });
+    </script>
+</body>
+</html>
