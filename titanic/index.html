@@ -588,6 +588,8 @@
 
     <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
+       <!-- 탭 전환 및 기능 구현 스크립트 -->
+    <script>
         function switchTab(sectionId, element) {
             // 모든 본문 영역 숨기기
             const sections = document.querySelectorAll('.content-section');
@@ -641,7 +643,7 @@
                     `;
                 }
 
-                // 정답 페이지 내용 업데이트
+                // 정답 페이지 내용 업데이트 (입력된 값들을 바탕으로 리스트 생성)
                 let resultContentHtml = '<h4>모든 문제의 입력된 정답 내역입니다.</h4><br/><ul>';
                 inputs.forEach((input, index) => {
                     const section = input.closest('.content-section');
@@ -650,6 +652,11 @@
                 });
                 resultContentHtml += '</ul>';
                 document.getElementById('result-content').innerHTML = resultContentHtml;
+
+                // ⭐ 모든 정답 입력 완료 시 input 값 초기화 수행
+                inputs.forEach(input => {
+                    input.value = '';
+                });
 
             } else {
                 // 입력이 비어지면 정답 메뉴 제거 및 탭 해제
@@ -663,6 +670,7 @@
                 }
             }
         }
+    </script>
     </script>
 </body>
 </html>
