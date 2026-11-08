@@ -610,10 +610,66 @@
                 </div>
             </div>
         </section>
+        <!-- 동적으로 생성될 정답 페이지 본문 영역 -->
+        <section id="result-page" class="content-section">
+            <h1>🎉 모든 문제 정답 완료</h1>
+            <div class="form-group">
+                <label>제출자 이름</label>
+                <input type="text" id="student-name-input" placeholder="이름을 입력해주세요 (예: 홍길동)" style="margin-bottom: 20px;">
+                
+                <label>작성하신 전체 정답 목록 (1번 ~ 19번)</label>
+                <div id="result-content" style="background-color: #f8fafc; border-radius: 6px; margin-bottom: 20px;">
+                    <!-- 입력된 정답들이 여기에 1부터 19까지의 표 형식으로 동적으로 표시됩니다. -->
+                </div>
+                
+                <!-- 문자 전송 버튼 -->
+                <button class="btn-save" onclick="sendSmsMessage()" style="background-color: #16a34a; width: 100%; font-size: 1.05rem; padding: 12px;">
+                    📲 010-4057-6001로 완료 문자 전송하기
+                </button>
+            </div>
+        </section>
     </main>
 
     <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
+//
+        // 스마트폰 문자(SMS) 앱을 연동하여 01040576001로 이름과 정답 전송하기
+        function sendSmsMessage() {
+            const studentName = document.getElementById('student-name-input').value.trim();
+            if (!studentName) {
+                alert("제출자 이름을 입력해주세요!");
+                document.getElementById('student-name-input').focus();
+                return;
+            }
+
+            let messageSummary = `[타이타닉 AI 퀴즈 완료]\n제출자: ${studentName}\n\n[정답 목록]\n`;
+            
+            const inputs = document.querySelectorAll('.answer-input');
+            inputs.forEach((input, index) => {
+                const qNum = index + 1;
+                const ans = savedAnswers[qNum] || input.value.trim() || '-';
+                messageSummary += `${qNum}번: ${ans}\n`;
+            });
+
+            messageSummary += "\n모든 문제를 완료했습니다!";
+
+            const phoneNumber = "01040576001";
+            const encodedMessage = encodeURIComponent(messageSummary);
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                window.location.href = `sms:${phoneNumber}?body=${encodedMessage}`;
+            } else {
+                navigator.clipboard.writeText(messageSummary).then(() => {
+                    alert(`[클립보드 복사 완료]\n제출자: ${studentName}\n내용이 복사되었습니다. 010-4057-6001 번호로 붙여넣어 전송해주세요!`);
+                }).catch(() => {
+                    alert("전송할 정답 내용을 확인해주세요:\n\n" + messageSummary);
+                });
+            }
+        }
+
+
+        
     // 페이지가 로드될 때 저장된 파일 불러오기
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedFile();
