@@ -519,7 +519,12 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
                 }
             }
 
-            // 페이지가 로드될 때 저장된 파일 불러오기
+     
+        });
+        
+    </script>
+    <script>
+               // 페이지가 로드될 때 저장된 파일 불러오기
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedFile();
         });
@@ -598,8 +603,6 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
                 document.getElementById('file-download-container').innerHTML = '<span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>';
             }
         }
-        });
-        
     </script>
 </body>
 </html>
