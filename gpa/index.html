@@ -482,6 +482,7 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
     </main>
 
     <!-- 메뉴 클릭 시 오른쪽 섹션을 전환하는 자바스크립트 -->
+  <!-- 메뉴 클릭 시 오른쪽 섹션을 전환하는 자바스크립트 -->
     <script>
        function switchSection(targetId, event) {
             event.preventDefault();
@@ -518,13 +519,9 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
                     }
                 }
             }
-
-     
         });
-        
-    </script>
-    <script>
-               // 페이지가 로드될 때 저장된 파일 불러오기
+
+        // 페이지가 로드될 때 저장된 파일 불러오기
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedFile();
         });
@@ -532,7 +529,6 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
         // 선생님 인증 함수 (간이 비밀번호 방식)
         function teacherLogin() {
             const password = prompt("선생님 비밀번호를 입력하세요:");
-            // 기본 비밀번호를 '1234'로 설정 (필요시 변경 가능)
             if (password === "cktmdal8589!") {
                 document.getElementById('teacher-auth-box').style.display = 'none';
                 document.getElementById('upload-box').style.display = 'block';
@@ -563,7 +559,7 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
                 };
 
                 // 브라우저 저장소에 영구 저장 (새로고침 유지)
-                localStorage.setItem('saved_titanic_file', JSON.stringify(fileInfo));
+                localStorage.setItem('saved_gpa_file', JSON.stringify(fileInfo));
                 renderFileUI(fileInfo);
                 alert('파일이 업로드되었으며 새로고침 시에도 유지됩니다!');
             };
@@ -572,7 +568,7 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
 
         // 저장된 파일 불러오기
         function loadSavedFile() {
-            const savedData = localStorage.getItem('saved_titanic_file');
+            const savedData = localStorage.getItem('saved_gpa_file');
             if (savedData) {
                 const fileInfo = JSON.parse(savedData);
                 renderFileUI(fileInfo);
@@ -590,7 +586,6 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
                     </div>
                     <div>
                         <a href="${fileInfo.data}" download="${fileInfo.name}" style="background-color: #2563eb; color: white; padding: 6px 14px; font-size: 0.85rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin-right: 8px;">다운로드</a>
-                       <!-- <button onclick="deleteFile()" style="background-color: #ef4444; color: white; border: none; padding: 6px 10px; font-size: 0.85rem; border-radius: 4px; cursor: pointer;">삭제</button> -->
                     </div>
                 </div>
             `;
@@ -599,7 +594,7 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
         // 파일 삭제 함수
         function deleteFile() {
             if (confirm("정말 파일을 삭제하시겠습니까?")) {
-                localStorage.removeItem('saved_titanic_file');
+                localStorage.removeItem('saved_gpa_file');
                 document.getElementById('file-download-container').innerHTML = '<span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>';
             }
         }
