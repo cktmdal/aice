@@ -307,21 +307,27 @@
                    ▫️ body (시신 인양 번호)<br>
                    ▫️ home.dest (고향 / 목적지)
             </div>
-            <!-- [추가] 파일 업로드 및 다운로드 영역 -->
-                <div style="margin-top: 30px; padding: 20px; background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
-                    <h5 style="margin-bottom: 10px; color: #1e293b;">📎 학습 자료 및 실습 파일 관리</h5>
-                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">학습할 자료를 다운로드 받으세요.</p>
-                    
-                    <!-- 파일 업로드 입력창 -->
-                    <div style="margin-bottom: 15px;">
-                        <input type="file" id="upload-file-input" style="font-size: 0.9rem; padding: 6px;" onchange="handleFileUpload(event)">
-                    </div>
-
-                    <!-- 업로드된 파일 목록 및 다운로드 링크 표시 영역 -->
-                    <div id="file-download-container" style="margin-top: 10px;">
-                        <span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>
-                    </div>
+            <!-- [추가] 선생님 전용 파일 업로드 및 학생 다운로드 영역 -->
+            <div style="margin-top: 30px; padding: 20px; background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                <h5 style="margin-bottom: 10px; color: #1e293b;">📎 학습 자료 및 실습 파일 관리</h5>
+                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">선생님만 파일을 업로드할 수 있으며, 업로드된 파일은 새로고침해도 유지됩니다.</p>
+                
+                <!-- 선생님 로그인(인증) 버튼 -->
+                <div id="teacher-auth-box" style="margin-bottom: 15px;">
+                    <button class="btn-save" onclick="teacherLogin()" style="background-color: #475569; font-size: 0.85rem; padding: 6px 12px;">교사 모드 인증 (업로드 활성화)</button>
                 </div>
+
+                <!-- 파일 업로드 입력창 (기본 숨김) -->
+                <div id="upload-box" style="margin-bottom: 15px; display: none;">
+                    <input type="file" id="upload-file-input" style="font-size: 0.9rem; padding: 6px;" onchange="handleFileUpload(event)">
+                    <button onclick="teacherLogout()" style="background: none; border: none; color: #ef4444; font-size: 0.85rem; cursor: pointer; margin-left: 10px;">잠금(로그아웃)</button>
+                </div>
+
+                <!-- 업로드된 파일 목록 및 다운로드 링크 표시 영역 -->
+                <div id="file-download-container" style="margin-top: 10px;">
+                    <span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>
+                </div>
+            </div>
         </section>
 
         <section id="da-1" class="content-section">
@@ -608,27 +614,84 @@
 
     <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
-        // 파일 업로드 및 다운로드 처리 함수
+    // 페이지가 로드될 때 저장된 파일 불러오기
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedFile();
+        });
+
+        // 선생님 인증 함수 (간이 비밀번호 방식)
+        function teacherLogin() {
+            const password = prompt("선생님 비밀번호를 입력하세요:");
+            // 기본 비밀번호를 '1234'로 설정 (필요시 변경 가능)
+            if (password === "1234") {
+                document.getElementById('teacher-auth-box').style.display = 'none';
+                document.getElementById('upload-box').style.display = 'block';
+                alert("교사 모드가 활성화되었습니다. 파일을 업로드할 수 있습니다.");
+            } else if (password !== null) {
+                alert("비밀번호가 틀렸습니다.");
+            }
+        }
+
+        // 교사 모드 잠금
+        function teacherLogout() {
+            document.getElementById('teacher-auth-box').style.display = 'block';
+            document.getElementById('upload-box').style.display = 'none';
+        }
+
+        // 파일 업로드 처리 및 localStorage 영구 저장
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            // 브라우저 메모리에 일시적으로 파일을 저장할 수 있는 Blob URL 생성
-            const fileURL = URL.createObjectURL(file);
-            const container = document.getElementById('file-download-container');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                const fileInfo = {
+                    name: file.name,
+                    size: file.size,
+                    data: base64Data
+                };
 
-            // 다운로드 링크 생성
+                // 브라우저 저장소에 영구 저장 (새로고침 유지)
+                localStorage.setItem('saved_titanic_file', JSON.stringify(fileInfo));
+                renderFileUI(fileInfo);
+                alert('파일이 업로드되었으며 새로고침 시에도 유지됩니다!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 저장된 파일 불러오기
+        function loadSavedFile() {
+            const savedData = localStorage.getItem('saved_titanic_file');
+            if (savedData) {
+                const fileInfo = JSON.parse(savedData);
+                renderFileUI(fileInfo);
+            }
+        }
+
+        // 화면에 다운로드 UI 렌더링
+        function renderFileUI(fileInfo) {
+            const container = document.getElementById('file-download-container');
             container.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
                     <div>
-                        <strong style="font-size: 0.9rem; color: #1e293b;">📄 ${file.name}</strong>
-                        <span style="font-size: 0.8rem; color: #64748b; margin-left: 10px;">(${(file.size / 1024).toFixed(1)} KB)</span>
+                        <strong style="font-size: 0.9rem; color: #1e293b;">📄 ${fileInfo.name}</strong>
+                        <span style="font-size: 0.8rem; color: #64748b; margin-left: 10px;">(${(fileInfo.size / 1024).toFixed(1)} KB)</span>
                     </div>
-                    <a href="${fileURL}" download="${file.name}" style="background-color: #2563eb; color: white; padding: 6px 14px; font-size: 0.85rem; border-radius: 4px; text-decoration: none; font-weight: 600;">다운로드</a>
+                    <div>
+                        <a href="${fileInfo.data}" download="${fileInfo.name}" style="background-color: #2563eb; color: white; padding: 6px 14px; font-size: 0.85rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin-right: 8px;">다운로드</a>
+                        <button onclick="deleteFile()" style="background-color: #ef4444; color: white; border: none; padding: 6px 10px; font-size: 0.85rem; border-radius: 4px; cursor: pointer;">삭제</button>
+                    </div>
                 </div>
             `;
-            
-            alert('파일이 성공적으로 업로드되었습니다. 학생들이 다운로드할 수 있습니다!');
+        }
+
+        // 파일 삭제 함수
+        function deleteFile() {
+            if (confirm("정말 파일을 삭제하시겠습니까?")) {
+                localStorage.removeItem('saved_titanic_file');
+                document.getElementById('file-download-container').innerHTML = '<span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>';
+            }
         }
         // 사용자가 입력한 정답들을 순서대로 기억하기 위한 객체 저장소
         const savedAnswers = {};
