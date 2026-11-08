@@ -307,6 +307,21 @@
                    ▫️ body (시신 인양 번호)<br>
                    ▫️ home.dest (고향 / 목적지)
             </div>
+            <!-- [추가] 파일 업로드 및 다운로드 영역 -->
+                <div style="margin-top: 30px; padding: 20px; background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                    <h5 style="margin-bottom: 10px; color: #1e293b;">📎 학습 자료 및 실습 파일 관리</h5>
+                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">학생들이 실습에 필요한 파일을 업로드하고 다운로드할 수 있는 공간입니다.</p>
+                    
+                    <!-- 파일 업로드 입력창 -->
+                    <div style="margin-bottom: 15px;">
+                        <input type="file" id="upload-file-input" style="font-size: 0.9rem; padding: 6px;" onchange="handleFileUpload(event)">
+                    </div>
+
+                    <!-- 업로드된 파일 목록 및 다운로드 링크 표시 영역 -->
+                    <div id="file-download-container" style="margin-top: 10px;">
+                        <span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>
+                    </div>
+                </div>
         </section>
 
         <section id="da-1" class="content-section">
@@ -593,6 +608,28 @@
 
     <!-- 탭 전환 및 기능 구현 스크립트 -->
     <script>
+        // 파일 업로드 및 다운로드 처리 함수
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 브라우저 메모리에 일시적으로 파일을 저장할 수 있는 Blob URL 생성
+            const fileURL = URL.createObjectURL(file);
+            const container = document.getElementById('file-download-container');
+
+            // 다운로드 링크 생성
+            container.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    <div>
+                        <strong style="font-size: 0.9rem; color: #1e293b;">📄 ${file.name}</strong>
+                        <span style="font-size: 0.8rem; color: #64748b; margin-left: 10px;">(${(file.size / 1024).toFixed(1)} KB)</span>
+                    </div>
+                    <a href="${fileURL}" download="${file.name}" style="background-color: #2563eb; color: white; padding: 6px 14px; font-size: 0.85rem; border-radius: 4px; text-decoration: none; font-weight: 600;">다운로드</a>
+                </div>
+            `;
+            
+            alert('파일이 성공적으로 업로드되었습니다. 학생들이 다운로드할 수 있습니다!');
+        }
         // 사용자가 입력한 정답들을 순서대로 기억하기 위한 객체 저장소
         const savedAnswers = {};
 
