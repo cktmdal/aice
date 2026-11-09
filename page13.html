@@ -1,1 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AICE Junior - 오버피팅(Overfitting)</title>
+    <style>
+        :root {
+            --primary: #e11d48;
+            --secondary: #fb7185;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #666666;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 슬라이드형 헤더 스타일 */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        header h1 { 
+            margin: 0 0 0.5rem 0; 
+            font-size: 2.2rem; 
+            color: white !important; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        
+        header p { 
+            margin: 0; 
+            font-size: 1.1rem; 
+            opacity: 0.95; 
+        }
+
+        .container {
+            max-width: 1050px;
+            width: 90%;
+            margin: 0 auto 40px auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
+
+        .section { margin-bottom: 40px; }
+
+        h2 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 20px;
+        }
+
+        .sub-desc {
+            font-size: 1.05rem;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .sub-desc ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+            font-weight: normal;
+            color: #475569;
+        }
+
+        .sub-desc li {
+            margin-bottom: 6px;
+        }
+
+        /* 시각화 박스 컨테이너 */
+        .nn-visualization-wrapper {
+            position: relative;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+
+        /* 이미지가 박스 크기에 꽉 차도록 설정 */
+        .graphs-3-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .graphs-3-row img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        /* 조기종료 및 드롭아웃 레이아웃 */
+        .content-flex, .dropout-flex {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .content-flex img, .dropout-flex img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .content-flex, .dropout-flex {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>용어 설명</h1>
+        <p class="subtitle">AICE Junior - AIDU  프르그램 용어 설명</p>
+    </header>
+
+    <div class="container">
+        
+    
+        <section class="section">
+            <h2>기초정보 분석</h2>
+            <div class="content-flex">
+                 
+                <div class="sub-desc">
+                   <h3>데이터 정보(Data Info)</h3>
+                    <ul>
+                           <li>num_of_obs: 관측치 수 (데이터 행 개수)</li>
+
+                            <li> num_of_var: 변수 수 (데이터 열 개수)</li>
+                            
+                           <li>  missing_cell: 결측값 개수 (데이터가 비어 있는 셀의 수)</li>
+                            
+                            <li> missing_cell_ratio: 결측값 비율</li>
+                            
+                           <li>  duplicated_rows: 중복 행 개수</li>
+                            
+                           <li> duplicated_rows_ratio: 중복 행 비율</li>
+                    </ul>
+                </div>
+
+               <div class="sub-desc">
+                   <h3>유형 (Types)</h3>
+                    <ul>
+                             <li>numeric: 수치형-숫자로 계산이 가능한 데이터 (예: 나이, 점수, 가격)</li>
+
+                              <li> object: 객체형 (문자열 등)-글자로 이루어진 데이터 (예: 이름, 주소)</li>
+                              
+                               <li>category: 범주형-몇 가지 정해진 그룹으로 나뉘는 데이터 (예: 성별 '남/여', 혈액형 'A/B/O/AB')</li>
+                              
+                              <li> datetime: 날짜/시간형-짜나 시간 정보 (예: 2026-06-07)</li>
+                              
+                              <li> timedeltas: 시간 간격형</li>
+                              
+                               <li>boolean: 불리언형 (참/거짓)-참(True) 또는 거짓(False) 둘 중 하나의 값</li>
+                    </ul>
+                </div>
+
+               <div class="sub-desc">
+                   <h3>기술통계 (Descriptive Statistics)</h3>
+                    <ul>
+                             <li>size: 데이터 크기 (총 개수)    </li>
+                               <li> distinct: 고유값 개수 (중복을 제외한 값의 수)     </li>
+                               <li> distinct(%): 고유값 비율     </li>
+                               <li> missing: 결측값 개수    </li>
+                               <li> missing(%): 결측값 비율     </li>
+                               <li> zeros: 0인 값의 개수    </li>
+                               <li> zeros(%): 0인 값의 비율    </li>
+                               <li> mean: 평균  -모든 값을 더해서 개수로 나눈 값 (우리 반 시험 점수의 전체 평균)  </li>
+                               <li> median: 중앙값 -데이터를 크기 순서대로 줄 세웠을 때 정확히 정가운데에 있는 값   </li>
+                               <li> sum: 합계     </li>
+                                <li>sd: 표준편차 (Standard Deviation)  -데이터들이 평균에서 얼마나 흩어져 있는지 보여주는 지표 (점수들이 고르게 분포했는지, 제각각인지)  </li>
+                                <li>skewness: 왜도 (비대칭도)   </li>
+                               <li> minimum: 최솟값    </li>
+                               <li> maximum: 최댓값   </li>
+                    </ul>
+                </div>
+
+               <div class="sub-desc">
+                   <h3>strategy(결측치 채우기 전략)</h3>
+                    <ul>
+                             <li>most_frequent (최빈값)  - 주로 범주형(문자열) 데이터나 특정 값이 반복되는 수치형 데이터에 적용-"가장 흔하게 나온 답으로 채우기" </li>
+                               <li>median (중앙값)  - 데이터를 크기 순서대로 정렬했을 때 정중앙에 위치하는 값으로 결측치를 채우는 방식으로 이상치)의 영향을 덜 받기 때문에 수치형 데이터에 적용 -"정가운데 값으로 채우기" </li>
+                               <li> mean (평균) -   데이터의 모든 값을 더한 뒤 전체 개수로 나눈 평균값으로 결측치를 채우는 방식,데이터가 고르게 분포되어 있는 수치형 데이터에 적합 -"전체 평균값으로 채우기" </li>
+                               <li> constant (상수) - 사용자가 직접 지정한 특정 값(예: 0, "미정" 등)으로 일괄적으로 결측치를 채우는 방식 으로 특정 의미를 부여해야 하거나 빈칸을 고정된 값으로 채우고 싶을 때 사용 -"내가 정해준 특정 값으로 채우기"</li>
+                    </ul>
+                </div>
+
+              <div class="sub-desc">
+                   <h3>데이터 변환 </h3>
+                    <ul>
+                             <li>quantile_transformer (분위수 변환기)  - 데이터의 들쭉날쭉한 분포를 고르게 펴주어, 너무 크거나 작은 값(이상치)이 분석을 방해하지 않도록 다듬어 주는 기능 </li>
+                               <li>numeric_transformer (수치형 변환기)  -나이, 가격, 점수 등 다양한 숫자 데이터들의 단위나 크기 차이가 심할 때, 머신러닝 모델이 편견 없이 공정하게 학습할 수 있도록 숫자의 크기 범위를 조절해 주는 기본 수치 변환 방식 </li>
+                               <li> kbins_discretizer (K-구간 이산화 변환기) -   1점부터 100점까지의 점수(연속된 숫자)를 그대로 두지 않고, 0~60점은 '하', 61~80점은 '중', 81~100점은 '상'처럼 몇 개의 구간(Bin)으로 잘라서 등급(범주)으로 바꾸어 주는 방식  </li>
+                               <li> constant (상수) - 사용자가 직접 지정한 특정 값(예: 0, "미정" 등)으로 일괄적으로 결측치를 채우는 방식 으로 특정 의미를 부여해야 하거나 빈칸을 고정된 값으로 채우고 싶을 때 사용 </li>
+                    </ul>
+                </div>
+              
+           <div class="sub-desc">
+                   <h3>데이터 필터링 </h3>
+                    <ul>
+                             <li>missing_filter (결측치 필터)  - 데이터 중에서 값이 누락되어 빈칸으로 남아 있는 행이나 열을 찾아내어 걸러내는 역할 </li>
+                               <li>iqr_filter (사분위수 범위 필터)  -데이터 전체의 중간 그룹(50%)이 모여 있는 범위를 이용해, 이 범위를 크게 벗어나는 극단적인 값들을 찾아내어 정제하거나 제거 </li>
+                               <li>percentile_filter (백분위수 필터) -   전체 데이터를 100등분으로 나누어, 사용자가 지정한 백분위수 기준(예: 상위 1% 또는 하위 1% 등)을 벗어나는 값들을 필터링할 때 사용  </li>
+              
+                    </ul>
+                </div>
+
+               <div class="sub-desc">
+                   <h3>딥러닝 데이터 유형 </h3>
+                    <ul>
+                             <li>Numerical (수치형)  - 나이, 가격, 점수, 키 등 숫자의 크기 자체가 의미를 가지는 데이터(크기 비교나 사칙연산(더하기, 빼기 등)이 가능한 숫자 데이터) </li>
+                               <li>Category (범주형) -별('남'/'여'), 혈액형('A'/'B'/'O'/'AB'), 등급('상'/'중'/'하')처럼 특정 카테고리(범주)에 속하는 데이터 </li>
+                               <li>Date (날짜형) -특정 사건이 발생한 날짜나 요일 등을 다룰 때 사용하는 데이터 유형 </li>
+                               <li>Text (텍스트형) -이름, 주소, 리뷰 내용처럼 자유로운 형태로 적힌 문자 데이터 </li>
+                               <li>Timeseries (시계열) -시간에 따른 주가 변화, 기온 변화, 시간대별 방문자 수처럼 시간의 흐름이 핵심이 되는 데이터 유형 </li>
+                             
+                             
+                    </ul>
+                </div>
+               <div class="sub-desc">
+                   <h3>딥러닝 디코더 선택 </h3>
+                    <ul>
+                             <li>regressor (회귀 모델) - 집값, 날씨 온도, 주가, 점수 등 특정 숫자 결과값을 연속적으로 예측해야 할 때 사용하는 머신러닝 모델(또는 디코더)의 종류 </li>
+                               <li>Classifier (분류 모델) -참/거짓이나 정해진 카테고리를 맞출 때 사용 </li>
+                             
+                    </ul>
+                </div>
+               <div class="sub-desc">
+                   <h3>딥러닝 활성화함 </h3>
+                    <ul>
+                             <li>linear (선형 함수) - 입력값에 특별한 조작을 가하지 않고 그대로 출력(예: $f(x) = x$)하기 때문에, 주로 <b>회귀 모델의 최종 출력층</b> 등에서 그대로 값을 반환할 때 사용 </li>
+                               <li>relu (ReLU 함수) - 0보다 작은 숫자는 전부 0으로 만들고, 0보다 큰 숫자는 그대로 살려두는 함수로 가장 많이 쓰이며 연산 속도가 빠르고 학습이 효율적이다 </li>
+                      <li>sigmoid (시그모이드 함수) -  주로 '참 또는 거짓', '합격 또는 불합격'처럼 이진 분류<b>(둘 중 하나를 고르는 문제)</b> 를 할 때 결과값을 확률 형태로 바꾸기 위해 사용</li>
+                      <li>tanh (하이퍼볼릭 탄젠트 함수) - 모든 숫자를 -1과 1 사이의 값으로 변환해 주는 함수로 시그모이드와 비슷하지만 출력값의 중심이 0이기 때문에 시그모이드 보다 학습효율이 더 좋</li>
+                          <li>softmax (소프트맥스 함수) - 고양이, 강아지, 토끼 사진 중 무엇인지 맞추는 것처럼 <b> 셋 이상의 여러 카테고리 중 하나를 분류</b>할 때 각 확률을 계산하는 데 사용</li>   
+                          <li>FC 레이어 수 - 은닉층 </li>   
+                    </ul>
+                </div>
+
+               <div class="sub-desc">
+                   <h3>딥러닝 인코더 선택 </h3>
+                    <ul>
+                             <li>passthrough ( 통과) - 중간에 특별한 연산이나 변환을 거치지 않고 원래 값 그대로를 유지하여 전달하고 싶을 때 사용 </li>
+                               <li>dense (밀집) -인공신경망에서 가장 기본이 되는 형태로, 이전 레이어의 모든 출력이 다음 레이어의 모든 입력으로 빽빽하게 연결되어 복잡한 패턴을 학습 </li>
+                               <li>sparse (희) -데이터 중에서 꼭 필요한 핵심 특징만 골라내어 연산 효율을 높이고 과적합(Overfitting)을 방지하는 데 도움을 주는 인코더 방식 </li>
+                          
+                    </ul>
+                </div>
+
+              <div class="sub-desc">
+                   <h3>학습 파라미터 설정 </h3>
+                    <ul>
+                             <li>Epochs (학습 반복 횟수) - 문제집(전체 데이터)을 처음부터 끝까지 몇 번 반복해서 풀며 공부할지 지정하는 설정입니다. 숫자가 너무 작으면 공부가 부족하고, 너무 크면 시간이 오래 걸리거나 과적합(지나친 암기)이 생길 수 있음 </li>
+                               <li>Batch Size (배치 크기) -전체 데이터를 한 번에 다 처리하는 대신, 여러 개의 작은 묶음(배치)으로 나누어 처리 </li>
+                               <li>Early Stop (조기 종료) -모델이 학습을 거듭해도 성능이 더 이상 좋아지지 않고 오히려 떨어지기 시작할 때(과적합 방지), 불필요한 학습을 멈추고 가장 성적이 좋았던 시점에서 끝내도록 설정 </li>
+                               <li>Optimizer (최적화 알고리즘) -델이 예측을 틀렸을 때, 가중치(파라미터)를 어떤 방식으로 얼마나 수정해야 가장 빠르게 정답에 도달할 수 있을지 조절해 주는 알고리 </li>
+                               <li>Learning Rate (학습률) -학습률이 너무 크면 정답을 지나쳐버리고(과하게 수정), 너무 작으면 공부하는 속도가 너무 느려져서 정답을 제대로 못 찾게 되므로 적절한 값을 설정</li>
+                          
+                    </ul>
+                </div>
+
+                 <div class="sub-desc">
+                   <h3>최적화 알고리즘 </h3>
+                    <ul>
+                             <li>adam (아담)-경사하강법의 장점들을 합쳐 만든 알고리즘으로, 학습 속도가 빠르고 안정적이어서 머신러닝과 딥러닝에서 기본(Default)으로 가장 많이 사용 </li>
+                               <li>rmsprop -최근에 자주 바뀐 방향은 보폭을 줄이고, 새로운 방향은 크게 조절해 주는 한 방식 </li>
+                               <li>sgd 확률적 경사하강법 (Stochastic Gradient Descent)-데이터를 하나씩(또는 일부씩) 보며 한 걸음씩 정답을 향해 찾아가는 가장 기초적인 방식 </li>
+                             
+                          
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <footer>
+            AICE Junior 학습 | Hangang Media High School
+        </footer>
+    </div>
+
+</body>
+</html>
