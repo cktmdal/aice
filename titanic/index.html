@@ -310,8 +310,8 @@
             <!-- [추가] 선생님 전용 파일 업로드 및 학생 다운로드 영역 -->
             <div style="margin-top: 30px; padding: 20px; background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
                 <h5 style="margin-bottom: 10px; color: #1e293b;">📎 학습 자료 및 실습 파일 관리</h5>
-                 <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;"><a href="https://www.kaggle.com/datasets/euclidsoft/titianic">타이타닉 다운로드</a></p>
-                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">학습 자료 파일을 다운로드 받으세요</p>
+                 <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;"><a href="https://www.kaggle.com/datasets/euclidsoft/titianic" target="_blank">타이타닉 다운로드 (Kaggle)</a></p>
+                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">아래에서 교사가 등록한 학습 자료 파일을 다운로드 받으세요.</p>
                 
                 <!-- 선생님 로그인(인증) 버튼 -->
                 <div id="teacher-auth-box" style="margin-bottom: 15px;">
@@ -324,7 +324,7 @@
                     <button onclick="teacherLogout()" style="background: none; border: none; color: #ef4444; font-size: 0.85rem; cursor: pointer; margin-left: 10px;">잠금(로그아웃)</button>
                 </div>
 
-                <!-- 업로드된 파일 목록 및 다운로드 링크 표시 영역 -->
+                <!-- 업로드된 파일 목록 및 다운로드 링크 표시 영역 (학생 및 교사 모두 공통 표시) -->
                 <div id="file-download-container" style="margin-top: 10px;">
                     <span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>
                 </div>
@@ -605,17 +605,6 @@
         <section id="result-page" class="content-section">
             <h1>🎉 모든 문제 정답 완료</h1>
             <div class="form-group">
-                <label>작성하신 전체 정답 목록 (1번 ~ 19번)</label>
-                <div id="result-content" style="background-color: #f8fafc; border-radius: 6px;">
-                    <!-- 입력된 정답들이 여기에 1부터 19까지의 표 형식으로 동적으로 표시됩니다. -->
-                </div>
-            </div>
-        </section>
-      
-    <!-- 동적으로 생성될 정답 페이지 본문 영역 -->
-        <section id="result-page" class="content-section">
-            <h1>🎉 모든 문제 정답 완료</h1>
-            <div class="form-group">
                 <label>제출자 이름</label>
                 <input type="text" id="student-name-input" placeholder="이름을 입력해주세요 (예: 홍길동)" style="margin-bottom: 20px;">
                 
@@ -633,9 +622,7 @@
     </main>
 
     <!-- 탭 전환 및 기능 구현 스크립트 -->
-  
-
-       <script>
+    <script>
         // 스마트폰 문자(SMS) 앱을 연동하여 01040576001로 이름과 정답 전송하기
         function sendSmsMessage() {
             const studentName = document.getElementById('student-name-input').value.trim();
@@ -671,8 +658,7 @@
             }
         }
 
-        
-    // 페이지가 로드될 때 저장된 파일 불러오기
+        // 페이지가 로드될 때 저장된 파일 불러오기 (학생 화면에서도 공통으로 렌더링)
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedFile();
         });
@@ -680,7 +666,6 @@
         // 선생님 인증 함수 (간이 비밀번호 방식)
         function teacherLogin() {
             const password = prompt("선생님 비밀번호를 입력하세요:");
-            // 기본 비밀번호를 '1234'로 설정 (필요시 변경 가능)
             if (password === "cktmdal8589!") {
                 document.getElementById('teacher-auth-box').style.display = 'none';
                 document.getElementById('upload-box').style.display = 'block';
@@ -696,7 +681,7 @@
             document.getElementById('upload-box').style.display = 'none';
         }
 
-        // 파일 업로드 처리 및 localStorage 영구 저장
+        // 파일 업로드 처리 및 localStorage 영구 저장 (학생 화면과 동기화)
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -710,10 +695,10 @@
                     data: base64Data
                 };
 
-                // 브라우저 저장소에 영구 저장 (새로고침 유지)
+                // 브라우저 저장소에 영구 저장하여 새로고침 및 다른 학생 접속 시에도 유지되도록 함
                 localStorage.setItem('saved_titanic_file', JSON.stringify(fileInfo));
                 renderFileUI(fileInfo);
-                alert('파일이 업로드되었으며 새로고침 시에도 유지됩니다!');
+                alert('파일이 업로드되었습니다. 학생들이 새로고침해도 다운로드받을 수 있습니다!');
             };
             reader.readAsDataURL(file);
         }
@@ -727,7 +712,7 @@
             }
         }
 
-        // 화면에 다운로드 UI 렌더링
+        // 화면에 다운로드 UI 렌더링 (학생/교사 공통 보기 영역 적용)
         function renderFileUI(fileInfo) {
             const container = document.getElementById('file-download-container');
             container.innerHTML = `
@@ -737,20 +722,12 @@
                         <span style="font-size: 0.8rem; color: #64748b; margin-left: 10px;">(${(fileInfo.size / 1024).toFixed(1)} KB)</span>
                     </div>
                     <div>
-                        <a href="${fileInfo.data}" download="${fileInfo.name}" style="background-color: #2563eb; color: white; padding: 6px 14px; font-size: 0.85rem; border-radius: 4px; text-decoration: none; font-weight: 600; margin-right: 8px;">다운로드</a>
-                       <!-- <button onclick="deleteFile()" style="background-color: #ef4444; color: white; border: none; padding: 6px 10px; font-size: 0.85rem; border-radius: 4px; cursor: pointer;">삭제</button> -->
+                        <a href="${fileInfo.data}" download="${fileInfo.name}" style="background-color: #2563eb; color: white; padding: 6px 14px; font-size: 0.85rem; border-radius: 4px; text-decoration: none; font-weight: 600;">다운로드</a>
                     </div>
                 </div>
             `;
         }
 
-        // 파일 삭제 함수
-        function deleteFile() {
-            if (confirm("정말 파일을 삭제하시겠습니까?")) {
-                localStorage.removeItem('saved_titanic_file');
-                document.getElementById('file-download-container').innerHTML = '<span style="font-size: 0.85rem; color: #94a3b8;">등록된 파일이 없습니다.</span>';
-            }
-        }
         // 사용자가 입력한 정답들을 순서대로 기억하기 위한 객체 저장소
         const savedAnswers = {};
 
@@ -794,7 +771,6 @@
                 if (val === '') {
                     allFilled = false;
                 } else {
-                    // 입력할 때마다 각 문항의 번호(1부터 19)에 맞게 정답 저장
                     savedAnswers[index + 1] = val;
                 }
             });
@@ -802,7 +778,6 @@
             const resultMenuContainer = document.getElementById('result-menu-container');
             
             if (allFilled) {
-                // 정답 메뉴가 생성되어 있지 않다면 생성
                 if (!document.getElementById('result-menu-item')) {
                     resultMenuContainer.innerHTML = `
                         <div class="category-group" style="margin-top: 20px;">
@@ -814,7 +789,6 @@
                     `;
                 }
 
-                // 1번부터 19번까지 표(Table) 형식으로 정답 리스트 HTML 생성
                 let tableHtml = `
                     <table class="answer-table">
                         <thead>
@@ -847,7 +821,6 @@
                 document.getElementById('result-content').innerHTML = tableHtml;
 
             } else {
-                // 입력이 모두 채워지지 않았다면 정답 리스트 메뉴 숨기기
                 const resultMenuItem = document.getElementById('result-menu-item');
                 if (resultMenuItem) {
                     if (resultMenuItem.classList.contains('active')) {
