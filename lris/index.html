@@ -237,11 +237,20 @@
             <p>실습에 사용할 정제된 붓꽃 원본 데이터를 불러옵니다.</p>
             <div class="form-group" style="max-width: 400px; margin-top: 10px;">
               <!-- 다운로드 속성(download)을 넣으면 클릭 시 바로 파일이 다운로드됩니다 -->
-                    <a href="../data/lris1.csv" download class="btn">데이터 CSV 다운로드</a>
+                <button class="btn" onclick="downloadCsv()">데이터 다운로드</button>
             </div>
            
         </section>
-
+<script>
+    function downloadCsv() {
+        const link = document.createElement('a');
+        link.href = '../data/Iris1_processed.csv'; // data 폴더의 상대 경로
+        link.download = 'Iris1_processed.csv';    // 다운로드될 파일명
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
         <!-- 3. 기초 정보 분석 -->
         <section id="sec-info" class="section">
             <h2>기초 정보 분석 (EDA - Summary)</h2>
