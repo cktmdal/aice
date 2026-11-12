@@ -244,8 +244,8 @@
 <script>
     function downloadCsv() {
         const link = document.createElement('a');
-        link.href = '../data/Iris1_processed.csv'; // data 폴더의 상대 경로
-        link.download = 'Iris1_processed.csv';    // 다운로드될 파일명
+        link.href = '../data/Iris1.csv'; // data 폴더의 상대 경로
+        link.download = 'Iris1.csv';    // 다운로드될 파일명
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
