@@ -236,7 +236,7 @@
             <h2>데이터 가져오기 (Data Loading)</h2>
             <p>실습에 사용할 정제된 붓꽃 원본 데이터를 불러옵니다.</p>
             <div class="form-group" style="max-width: 400px; margin-top: 10px;">
-               <a href="../data/lris1.csv">데이터 다운로드</a>
+               <a href="../../data/lris1.csv">데이터 다운로드</a>
             </div>
            
         </section>
@@ -284,7 +284,10 @@
             <h2>시각화 분석 (Data Visualization)</h2>
             <p>특성 간의 상관관계와 품종별 분포 특성을 시각화하여 확인합니다.</p>
             <div style="background: #f1f5f9; height: 260px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 15px; color: #64748b; font-weight: 600;">
-                [산점도 및 박스플롯 차트 영역]
+                <img src="images/6산점도.png" alt=""/><br/>
+                 <img src="images/7산점도.png" alt=""/><br/>
+                 <img src="images/5분포차트.png" alt=""/><br/>
+                 <img src="images/8히트맵.png" alt=""/><br/>
             </div>
         </section>
 
@@ -317,20 +320,29 @@
                 <li><strong>특성 스케일링:</strong> Min-Max 정규화 적용 (0~1 범위로 변환)</li>
                 <li><strong>데이터 분할:</strong> 학습용 데이터(Train) 80% / 테스트용 데이터(Test) 20%</li>
             </ul>
-            <button class="btn" onclick="alert('데이터 전처리가 완료되었습니다.')">전처리 실행</button>
+            <img src="images/12데이터가공.png" alt=""/>
         </section>
 
         <!-- 7. 딥러닝 학습 -->
         <section id="sec-train" class="section">
             <h2>딥러닝 학습 (Deep Learning Training)</h2>
             <p>인공신경망(MLP) 모델의 하이퍼파라미터를 설정하고 학습을 시작합니다.</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
-                <div class="form-group"><label>Epochs (반복 횟수)</label><input type="number" value="100"></div>
-                <div class="form-group"><label>Batch Size</label><input type="number" value="32"></div>
-                <div class="form-group"><label>Learning Rate</label><input type="text" value="0.001"></div>
-                <div class="form-group"><label>Optimizer</label><select><option>Adam</option><option>SGD</option></select></div>
+            <ul>
+                <li>output칼럼: 종류</li>
+                <li>제외컬럼 : 가공전 데이터</li>
+                <li>데이터유형 : category</li>
+                <li>디코더 : classifier</li>
+                <li>활성화 함수 : softmax</li>
+                <li>FC 레이어수 : 2</li>
+                <li>Epochs : 100</li>
+                <li>Optimizer : adam</li>
+            </ul>
+             <div>
+                 accuracy: <input type="text"  name=""/>
+             </div>
+            <div>
+                <img src="images/13딥러닝 학습.png" alt=""/>
             </div>
-            <button class="btn" onclick="alert('모델 학습이 완료되었습니다!')">모델 학습 시작</button>
         </section>
 
         <!-- 8. 모델 학습 결과 -->
@@ -342,7 +354,7 @@
                 <li><strong>최종 테스트 정확도 (Test Accuracy):</strong> 96.7%</li>
             </ul>
             <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 10px; color: #64748b; font-weight: 600;">
-                [손실(Loss) 감소 학습 곡선 그래프]
+                <img src="images/14모델확습결과.png" alt=""/>
             </div>
         </section>
 
@@ -356,6 +368,9 @@
                 <li>3위: 꽃받침 길이 (Sepal Length) - <strong>12%</strong></li>
                 <li>4위: 꽃받침 너비 (Sepal Width) - <strong>5%</strong></li>
             </ul>
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 10px; color: #64748b; font-weight: 600;">
+                <img src="images/15변수영향도확인.png" alt=""/>
+            </div>
         </section>
 
         <!-- 10. 시뮬레이션 -->
@@ -369,6 +384,10 @@
                 <div class="form-group"><label>꽃잎 너비 (cm)</label><input type="number" id="pw" value="0.2" step="0.1"></div>
             </div>
             <button class="btn" onclick="runSimulation()">품종 예측하기</button>
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 10px; color: #64748b; font-weight: 600;">
+                <img src="images/16시뮬레이션.png" alt=""/>
+            </div>
+        </section>
             <div id="simResult" class="sim-result"></div>
         </section>
     </main>
