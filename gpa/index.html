@@ -248,7 +248,18 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
                 <div id="teacher-auth-box" style="margin-bottom: 15px;">
                     <button class="btn-save" onclick="teacherLogin()" style="background-color: #475569; font-size: 0.85rem; padding: 6px 12px;">교사 모드 인증 (업로드 활성화)</button>
                 </div>
-
+                 <button class="btn" onclick="downloadCsv()">데이터 다운로드</button>
+           
+<script>
+    function downloadCsv() {
+        const link = document.createElement('a');
+        link.href = '../data/student_GPA.csv'; // data 폴더의 상대 경로
+        link.download = 'Iris1.csv';    // 다운로드될 파일명
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
                 <!-- 파일 업로드 입력창 (기본 숨김) -->
                 <div id="upload-box" style="margin-bottom: 15px; display: none;">
                     <input type="file" id="upload-file-input" style="font-size: 0.9rem; padding: 6px;" onchange="handleFileUpload(event)">
