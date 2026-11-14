@@ -411,7 +411,7 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
         <section id="train-hyper" class="content-section">
             <h1>딥러닝 학습</h1>
             <p class="section-desc">모델의 학습 성능에 영향을 주는 세부 파라미터 값(학습률, 트리 깊이 등)을 지정합니다.</p>
-            <div class="card-grid">
+            
                  <div class="card"><h3>딥러닝 학습</h3><p><img src="images/10.png" alt=""></p><p><img src="images/11.png" alt=""></p>
                  <p class="section-desc">스트레스 수준은 "object"로 데이터 유형  category, 디코더 선택 sparse로 한다 <br/>
                  컴퓨터는 문자나 단어를 직접 이해하지 못하기 때문에, 범주형 데이터를 학습할 때 원-핫 인코딩(One-Hot Encoding)이라는 방식을 거칩니다.<br>
@@ -424,6 +424,40 @@ input{border:1px solid #d9d9d9; height: 50px; width: 350px;  display: inline-blo
        
                 </div>
             </div>
+<div class="card-grid">
+        <h3>🧯문제</h3><p>아래 가이드에 따라 딥러닝을 학습하고 정확도를 작성하시오 </p>
+         <ul>
+             <li>작업 데이터 선택: 가공된 데이터를 사용하세요</li>
+             <li> Input 칼럼
+                 <ul>
+                         <li>연도, 시도, 학교급, 학년_IM, BMI는 제외 컬럼으로 지정</li>
+                         <li>범주형 변수는 데이터 인코더를, sparse로 설정</li>
+                 </ul>
+             </li>
+             <li>
+                 Output 칼럼 : 종속변수를 Output로 설정
+                
+             </li>
+             <li> 칼럼 parameter설정
+                 <ul>
+                         <li>데이터 유형은 모델 유형에 맞게 설정하시오</li></li>
+                         <li>FC레이어수:2. FC레이어크기:100, 드롭아웃0, 활성화함수 relu</li>
+                 </ul>
+                 
+             </li>
+             <li>
+                 학습 Parameter 설정 : Epochs:2, Batch size:128, Early Stop:5, Optimizer: adam, Learning Rate:0.001, 교차검증 fold수 :1
+             </li>
+             <li>
+                 답안작성
+                 <ul>
+                         <li>모델 학습후 오른쪽 상단의[모델저장 ]기능을 ㅌㅇ해 모델을 저장하시오</li></li>
+                         <li>정답 작성은 반올림하여 소숫점 넷째 자리까지 작성하시오</li>
+                 </ul>
+             </li>
+         </ul>
+</div>
+            
          
                 
 
