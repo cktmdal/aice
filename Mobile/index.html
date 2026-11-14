@@ -36,6 +36,7 @@
         /* 왼쪽 메뉴바 영역 */
         aside {
             width: 260px;
+            min-width: 260px;
             background-color: var(--sidebar-bg);
             display: flex;
             flex-direction: column;
@@ -99,7 +100,6 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             border: 1px solid var(--border-color);
             animation: fadeIn 0.3s ease-in-out;
-            min-height: 100%;
         }
 
         .section.active {
@@ -195,9 +195,30 @@
             color: #312e81;
             display: none;
         }
-        .photo{
-            display:block;
-            margin-top:20px;
+
+        /* 이미지 컨테이너 세로 정렬 및 겹침 방지 수정 */
+        .img-container {
+            background: #f1f5f9;
+            width: 100%;
+            min-height: 220px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-top: 20px;
+            padding: 20px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .photo {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -255,7 +276,6 @@
                </tr>
              </tbody>
            </table>
-           
         </section>
 
         <!-- 2. 데이터 가져오기 -->
@@ -263,60 +283,44 @@
             <h2>데이터 가져오기 (Data Loading)</h2>
             <p>실습에 사용할 정제된 모바일 중고기기 데이터를 불러옵니다.</p>
             <div class="form-group" style="max-width: 400px; margin-top: 10px;">
-              <!-- 다운로드 속성(download)을 넣으면 클릭 시 바로 파일이 다운로드됩니다 -->
                 <button class="btn" onclick="downloadCsv()">데이터 다운로드</button>
             </div>
-           
         </section>
-<script>
-    function downloadCsv() {
-        const link = document.createElement('a');
-        link.href = '../data/used_phone.csv'; // data 폴더의 상대 경로
-        link.download = 'used_phone.csv';    // 다운로드될 파일명
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-</script>
+
         <!-- 3. 기초 정보 분석 -->
         <section id="sec-info" class="section">
             <h2>기초 정보 분석 (EDA - Summary)</h2>
             <p>데이터의 전체 크기, 결측치 유무, 데이터 타입 및 기술통계량을 확인합니다.</p>
-            <p>[문항1] 종소변수(output 칼럼)란 독립변수(input컬럼)를 바탕으로  예측하는 대상을 의미한다. 다음주 이 과제를 해결하는 데 필요한 종속 변수를 고르시오</p>
+            <p>[문항1] 종소변수(output 칼럼)란 독립변수(input컬럼)를 바탕으로 예측하는 대상을 의미한다. 다음주 이 과제를 해결하는 데 필요한 종속 변수를 고르시오</p>
             <ul>
                 <li>기기브랜드(brand)</li>
                 <li>중고기기가격(used_price)</li>
                 <li>기기브랜드(release_price)</li>
                 <li>기기브랜드(release_year)</li>
             </ul>
-           <p> 입력:  <input type="text" name="" /> </p>
+            <p> 입력: <input type="text" name="" /> </p>
             <br/>
-            <br/>
-     
-        
-         
+            
             <p>[문항2] 데이터의 전체 개수(observation)을 작성하시오 [데이터분석/기초정보분석]메뉴를 활용하시오</p>
-              <p> 입력:  <input type="text" name="" /> </p>
+            <p> 입력: <input type="text" name="" /> </p>
             
-           <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;"> <img src="images/1.png" alt="" class="photo"/> </div>
+            <div class="img-container"> 
+                <img src="images/1.png" alt="" class="photo"/> 
+            </div>
             
-             <br/>
             <br/>
-    
-           
-           
             <p>[문항3]후면카메라해상도(rear_camera)의 중앙값(median)을 작성하시오[데이터분석/기초정보분석]</p>
-             <p> 입력:  <input type="text" name="" /> </p>
+            <p> 입력: <input type="text" name="" /> </p>
             
-           <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;"> <img src="imgaes/2.png" alt="" class="photo"/> </div>
-            
+            <div class="img-container"> 
+                <img src="images/2.png" alt="" class="photo"/> 
+            </div>
         </section>
-
 
         <!-- 4. 시각화 분석 -->
         <section id="sec-viz" class="section">
             <h2>시각화 분석 (Data Visualization)</h2>
-            <p>[문항4]4G가 내장된 휴대폰의 구매가격(releae_price)의 계급구산중 빈도수((frequency)가 가장 높은 구간을 고르시오 [데이터분석/기초정보분석]<br/>
+            <p>[문항4]4G가 내장된 휴대폰의 구매가격(release_price)의 계급구간중 빈도수(frequency)가 가장 높은 구간을 고르시오 [데이터분석/기초정보분석]<br/>
             범례를 클릭하면 원하는 범례만 확인 가능합니다.
             </p>
            <ul>
@@ -325,43 +329,39 @@
                 <li>715k-719k</li>
                 <li>740k-744k</li>
             </ul>
-           <p> 입력:  <input type="text" name="" /> </p> 
-            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;"> <img src="images/3.png" alt="" class="photo"/> </div>
+            <p> 입력: <input type="text" name="" /> </p> 
+            <div class="img-container"> 
+                <img src="images/3.png" alt="" class="photo"/> 
+            </div>
         </section>
 
-    
         <!-- 6. 데이터 가공 -->
         <section id="sec-process" class="section">
             <h2>데이터 가공 (Data Preprocessing)</h2>
             <p>데이터의 성격 (연속형 vs 범주형)</p>
-             <p>[문항5]모든 변수의 결측치(missing cells)를 다음 가이드에 따라 처리한후, 전면카메라해상도(front_camera)의 결측치(missing cells)를 대체하는 값을 작성하시오.
-            </p>
-           
+            <p>[문항5]모든 변수의 결측치(missing cells)를 다음 가이드에 따라 처리한후, 전면카메라해상도(front_camera)의 결측치(missing cells)를 대체하는 값을 작성하시오.</p>
             <ul>
                 <li>종속변수를 제외한 모든 변수의 결측치(missing cells)를 처리하시오
                     <ul>
                         <li>수치형 데이터로 구성된 변수는 중앙값(median)으로 대체하시오</li>
                         <li>범주형 데이터로 구성된 변수는 최빈값(most_frequent)으로 대체하시오</li>
                     </ul>
-                
                 </li>
-                <li>수행후 기존 변수는 삭제하고[가공데이터 저장]을 클릭하여 가공된 데이터를 저장하시오</li>
-              
+                <li>수행후 기존 변수는 삭제하고 [가공데이터 저장]을 클릭하여 가공된 데이터를 저장하시오</li>
             </ul>
-            <p> 입력:  <input type="text" name="" /> </p> 
-            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
-                <img src="images/4.png" alt="" class="photo"/><br/>
-                <img src="images/5.png" alt="" class="photo"/><br/>
-             </div>
-           
+            <p> 입력: <input type="text" name="" /> </p> 
+            
+            <div class="img-container">
+                <img src="images/4.png" alt="" class="photo"/>
+                <img src="images/5.png" alt="" class="photo"/>
+            </div>
         </section>
 
         <!-- 7. 딥러닝 학습 -->
         <section id="sec-train" class="section">
             <h2>딥러닝 학습 (Deep Learning Training)</h2>
             <p>인공신경망(MLP) 모델의 하이퍼파라미터를 설정하고 학습을 시작합니다.</p>
-             <p>[문항6]다음 가이드에 따라 딥러닝 모델을 학습하고, 해당 모델의 평균제곱오차(MSE)를 작성하시오[AI모델 학습]
-            </p>
+            <p>[문항6]다음 가이드에 따라 딥러닝 모델을 학습하고, 해당 모델의 평균제곱오차(MSE)를 작성하시오[AI모델 학습]</p>
             <ul>
                 <li>작업 데이터 선택 : 문항5에서 처리한 데이터를 사용하시오</li>
                 <li>INPUT 칼럼 :
@@ -370,39 +370,36 @@
                         <li>범주형 변수는 데이터 인코더를 sparse로 설정하시오</li>
                    </ul>
                 </li>
-                 <li>Output 칼럼 : 종속변수를 Output 칼럼으로 설정하시오
-                   
-                </li>
+                <li>Output 칼럼 : 종속변수를 Output 칼럼으로 설정하시오</li>
                 <li>컬럼 Parameter 설정:
                    <ul>
                         <li>데이터 유형은 모델 유형에 맞게 설정하시오</li>
-                        <li>FC 레이어수:2, FC레이어크기 :256, 드롭아웃0, 활성함수:relu</li>
+                        <li>FC 레이어수:2, FC레이어크기:256, 드롭아웃:0, 활성함수:relu</li>
                    </ul>
                 </li>
-                  <li>학습 Parameter 설정: Epochs:20, Batch Size:128, Early Stop:5, Optimizer:adam, Learning Rate:0.001
-                   
-                </li>
-                 <li>답안작성 :
+                <li>학습 Parameter 설정: Epochs:20, Batch Size:128, Early Stop:5, Optimizer:adam, Learning Rate:0.001</li>
+                <li>답안작성 :
                    <ul>
-                        <li>모델 학습후 오른쪽 상단의[모델저장]기능을 통해 모델을 저장하시오</li>
+                        <li>모델 학습후 오른쪽 상단의 [모델저장]기능을 통해 모델을 저장하시오</li>
                         <li>정답 작성은 반올림하여 소숫점넷째자리까지 작성하시오</li>
                    </ul>
                 </li>
             </ul>
-             <div>
-                 mean_squared_error: <input type="text"  name=""/><br/>
-                 r2: <input type="text"  name=""/><br/>
-             </div>
-            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
-                <img src="images/6.png" alt="" /><br/><br/>
-                <img src="images/7.png" alt="" /><br/><br/>
-                <img src="images/8.png" alt="" /><br/><br/>
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+                 mean_squared_error: <input type="text" name=""/><br/><br/>
+                 r2: <input type="text" name=""/><br/>
+            </div>
+            
+            <div class="img-container">
+                <img src="images/6.png" alt="" class="photo"/>
+                <img src="images/7.png" alt="" class="photo"/>
+                <img src="images/8.png" alt="" class="photo"/>
             </div>
         </section>
 
         <!-- 8. 모델 학습 결과 -->
         <section id="sec-result" class="section">
-          
+          <!-- 모델 학습 결과 내용 -->
         </section>
 
         <!-- 9. 변수 영향도 확인 -->
@@ -415,14 +412,14 @@
                 <li>출시년도(release_year)</li>
                 <li>구매가격(release_price)</li>
             </ul>
-            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
-                <img src="images/9.png" alt=""/>
+            <div class="img-container">
+                <img src="images/9.png" alt="" class="photo"/>
             </div>
         </section>
 
         <!-- 10. 시뮬레이션 -->
         <section id="sec-sim" class="section">
-           
+           <!-- 시뮬레이션 내용 -->
         </section>
     </main>
 
@@ -442,20 +439,13 @@
             document.getElementById(sectionId).classList.add('active');
         }
 
-        function runSimulation() {
-            const pl = parseFloat(document.getElementById('pl').value);
-            const resultBox = document.getElementById('simResult');
-            
-            // 간단한 규칙 기반 시뮬레이션 로직 (실제 학습 모델 대체)
-            let predicted = "Setosa (세토사)";
-            if (pl >= 3.0 && pl < 5.0) {
-                predicted = "Versicolor (버시컬러)";
-            } else if (pl >= 5.0) {
-                predicted = "Virginica (버지니카)";
-            }
-
-            resultBox.style.display = "block";
-            resultBox.innerHTML = `✨ 예측 결과: 입력하신 붓꽃의 예측 품종은 <strong>[${predicted}]</strong> 입니다!`;
+        function downloadCsv() {
+            const link = document.createElement('a');
+            link.href = '../data/used_phone.csv'; // data 폴더의 상대 경로
+            link.download = 'used_phone.csv';    // 다운로드될 파일명
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
