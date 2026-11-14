@@ -1,1 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중고 모바일 기기</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #94a3b8;
+            --sidebar-text-hover: #ffffff;
+            --sidebar-active: #334155;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --border-color: #e2e8f0;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* 왼쪽 메뉴바 영역 */
+        aside {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .logo-area {
+            padding: 24px 20px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: #0f172a;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 16px 12px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            color: var(--sidebar-text);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover {
+            background-color: var(--sidebar-active);
+            color: var(--sidebar-text-hover);
+        }
+
+        .menu-item.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        /* 오른쪽 컨텐츠 영역 */
+        main {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.3s ease-in-out;
+            min-height: 100%;
+        }
+
+        .section.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: #0f172a;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        p, li {
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        /* 공통 UI 요소 스타일 */
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            align-self: flex-start;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .sim-result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e0e7ff;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #312e81;
+            display: none;
+        }
+        .photo{
+            display:block;
+            margin-top:20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 왼쪽 메뉴 영역 -->
+    <aside>
+        <div class="logo-area">🌸중고 모바일 기기 거래 </div>
+        <ul class="menu-list">
+            <li class="menu-item active" onclick="switchSection('sec-problem')">문제 정의</li>
+            <li class="menu-item" onclick="switchSection('sec-load')">데이터 가져오기</li>
+            <li class="menu-item" onclick="switchSection('sec-info')">기초 정보 분석</li>
+            <li class="menu-item" onclick="switchSection('sec-viz')">시각화 분석</li>
+            <li class="menu-item" onclick="switchSection('sec-sample')">데이터 샘플 보기</li>
+            <li class="menu-item" onclick="switchSection('sec-process')">데이터 가공</li>
+            <li class="menu-item" onclick="switchSection('sec-train')">딥러닝 학습</li>
+            <li class="menu-item" onclick="switchSection('sec-result')">모델 학습 결과</li>
+            <li class="menu-item" onclick="switchSection('sec-feature')">변수 영향도 확인</li>
+            <li class="menu-item" onclick="switchSection('sec-sim')">시뮬레이션</li>
+        </ul>
+    </aside>
+
+    <!-- 오른쪽 컨텐츠 섹션 영역 -->
+    <main>
+        <!-- 1. 문제 정의 -->
+        <section id="sec-problem" class="section active">
+            <h2>문제 정의 (Problem Definition)</h2>
+            <p><strong>목표:</strong> 중고 모바일 기기 거래 플랫폼 A사는 합리적인 중고 거래를 위해 모바일기기 데이터를 이용하여 모바일 기기 중고가를 예측하고자 한다.</p>
+            <p><strong>타겟변수:중고기기가격(used_price)</strong></p>
+           <table>
+             <tbody>
+               <tr>
+                 <td>고객ID(customer)</td> <td>기기브랜드(brand)</td>
+               </tr>
+                <tr>
+                 <td>운영체제(os)</td> <td>4G(4g)</td>
+               </tr>
+                <tr>
+                 <td>5G(5g)</td> <td>스크린기기(Screen_size)</td>
+               </tr>
+                <tr>
+                 <td>후면카메라해상도(rear_camera)</td> <td>전면카메라해상도(front_camera)</td>
+               </tr>
+                <tr>
+                 <td>내장메모리(internal_memory)</td> <td>램(ram)</td>
+               </tr>
+                <tr>
+                 <td>배터리(battery)</td> <td>무게(weight)</td>
+               </tr>
+                <tr>
+                 <td>출시년도(release_year)</td> <td>사용일수(days_used)</td>
+               </tr>
+                <tr>
+                 <td>중고기기가격(used_price)</td> <td>구매가격(release_price)</td>
+               </tr>
+             </tbody>
+           </table>
+            <p><strong>기대 효과:</strong> 지도학습(Supervised Learning) 중 다중 클래스 분류(Multi-class Classification) 모델의 구조를 이해하고, 인공신경망의 학습 과정을 파악할 수 있습니다.</p>
+        </section>
+
+        <!-- 2. 데이터 가져오기 -->
+        <section id="sec-load" class="section">
+            <h2>데이터 가져오기 (Data Loading)</h2>
+            <p>실습에 사용할 정제된 붓꽃 원본 데이터를 불러옵니다.</p>
+            <div class="form-group" style="max-width: 400px; margin-top: 10px;">
+              <!-- 다운로드 속성(download)을 넣으면 클릭 시 바로 파일이 다운로드됩니다 -->
+                <button class="btn" onclick="downloadCsv()">데이터 다운로드</button>
+            </div>
+           
+        </section>
+<script>
+    function downloadCsv() {
+        const link = document.createElement('a');
+        link.href = '../data/Iris1.csv'; // data 폴더의 상대 경로
+        link.download = 'Iris1.csv';    // 다운로드될 파일명
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+        <!-- 3. 기초 정보 분석 -->
+        <section id="sec-info" class="section">
+            <h2>기초 정보 분석 (EDA - Summary)</h2>
+            <p>데이터의 전체 크기, 결측치 유무, 데이터 타입 및 기술통계량을 확인합니다.</p>
+            <ul>
+                <li><strong>전체 샘플 수:</strong> 150행 (각 품종당 50개)</li>
+                <li><strong>결측치 (Missing Values):</strong> 없음 (0건)</li>
+                <li><strong>특성 변수 (Feature Type):</strong> 수치형(Numerical) 4개, 범주형(Category) 1개</li>
+            </ul>
+            <table>
+                <tr>
+                    <th>통계량</th>
+                    <th>꽃받침 길이(cm)</th>
+                    <th>꽃받침 너비(cm)</th>
+                    <th>꽃잎 길이(cm)</th>
+                    <th>꽃잎 너비(cm)</th>
+                </tr>
+                <tr>
+                    <td>평균 (Mean)</td>
+                    <td>5.84</td>
+                    <td>3.05</td>
+                    <td>3.75</td>
+                    <td>1.20</td>
+                </tr>
+                <tr>
+                    <td>표준편차 (Std)</td>
+                    <td>0.83</td>
+                    <td>0.43</td>
+                    <td>1.76</td>
+                    <td>0.76</td>
+                </tr>
+            </table>
+            <div class="photo">
+                <img src="imgaes/1.png" alt=""/>
+                    
+            </div>
+        </section>
+
+        <!-- 4. 시각화 분석 -->
+        <section id="sec-viz" class="section">
+            <h2>시각화 분석 (Data Visualization)</h2>
+            <p>특성 간의 상관관계와 품종별 분포 특성을 시각화하여 확인합니다.</p>
+            <div style="background: #f1f5f9; height: 260px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 15px; color: #64748b; font-weight: 600;">
+                <img src="imgaes/6산점도.png" alt=""  class="photo"/><br/>
+                 <img src="imgaes/7산점도.png" alt="" class="photo"/><br/>
+                 <img src="imgaes/5분포차트.png" alt="" class="photo"/><br/>
+                 <img src="imgaes/8히트맵.png" alt="" class="photo"/><br/>
+            </div>
+        </section>
+
+        <!-- 5. 데이터 샘플 보기 -->
+        <section id="sec-sample" class="section">
+            <h2>데이터 샘플 보기 (Data Sample)</h2>
+            <p>데이터셋의 상위 5개 행을 미리 살펴봅니다.</p>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>꽃받침 길이</th>
+                    <th>꽃받침 너비</th>
+                    <th>꽃잎 길이</th>
+                    <th>꽃잎 너비</th>
+                    <th>품종 (Species)</th>
+                </tr>
+                <tr><td>1</td><td>5.1</td><td>3.5</td><td>1.4</td><td>0.2</td><td>Setosa</td></tr>
+                <tr><td>2</td><td>4.9</td><td>3.0</td><td>1.4</td><td>0.2</td><td>Setosa</td></tr>
+                <tr><td>3</td><td>4.7</td><td>3.2</td><td>1.3</td><td>0.2</td><td>Setosa</td></tr>
+                <tr><td>4</td><td>7.0</td><td>3.2</td><td>4.7</td><td>1.4</td><td>Versicolor</td></tr>
+                <tr><td>5</td><td>6.3</td><td>3.3</td><td>6.0</td><td>2.5</td><td>Virginica</td></tr>
+            </table>
+        </section>
+
+        <!-- 6. 데이터 가공 -->
+        <section id="sec-process" class="section">
+            <h2>데이터 가공 (Data Preprocessing)</h2>
+            <p>데이터의 성격 (연속형 vs 범주형)</p>
+            <ol>
+                <li>최빈값(most_frequent): 주로 성별, 품종 같은 범주형(카테고리) 데이터나 정수형태의 빈도가 중요한 데이터에 주로 사용</li>
+                <li>평균(mean) / 중앙값(median): '꽃받침 길이'처럼 연속적으로 측정된 수치형 데이터는 값의 크기 정보가 중요하므로, 중심을 가장 잘 나타내는 평균이나 중앙값으로 채워야 데이터가  원래의 형태와 특성을 유지할 수 있다</li>
+                <li>예):시험을 안 본 친구(결측치)의 점수를 채워야 할 때, 생뚱맞게 0점이나 100점을 넣으면 성적표가 왜곡되겠죠? 대신 반 친구들의 평균 점수나 중간 순위 점수를 넣어주면 전체 성적의 흐름을 가장 자연스럽게 유지할 수 있는 것과 같습니다</li>
+            </ol>
+            <ul>
+                <li><strong>특성 스케일링:</strong> Min-Max 정규화 적용 (0~1 범위로 변환)</li>
+                <li><strong>데이터 분할:</strong> 학습용 데이터(Train) 80% / 테스트용 데이터(Test) 20%</li>
+            </ul>
+            <img src="imgaes/12데이터가공.png" alt="" class="photo"/>
+        </section>
+
+        <!-- 7. 딥러닝 학습 -->
+        <section id="sec-train" class="section">
+            <h2>딥러닝 학습 (Deep Learning Training)</h2>
+            <p>인공신경망(MLP) 모델의 하이퍼파라미터를 설정하고 학습을 시작합니다.</p>
+            <ul>
+                <li>output칼럼: 종류</li>
+                <li>제외컬럼 : 가공전 데이터</li>
+                <li>데이터유형 : category</li>
+                <li>디코더 : classifier</li>
+                <li>활성화 함수 : softmax</li>
+                <li>FC 레이어수 : 2</li>
+                <li>Epochs : 100</li>
+                <li>Optimizer : adam</li>
+            </ul>
+             <div>
+                 accuracy: <input type="text"  name=""/>
+             </div>
+            <div class="photo">
+                <img src="imgaes/13딥러닝 학습.png" alt="" />
+            </div>
+        </section>
+
+        <!-- 8. 모델 학습 결과 -->
+        <section id="sec-result" class="section">
+            <h2>모델 학습 결과 (Learning Curve & Result)</h2>
+            <p>학습 과정에서의 Loss(손실 함수) 감소 추이와 정확도(Accuracy)를 확인합니다.</p>
+            <ul>
+                <li><strong>최종 학습 정확도 (Train Accuracy):</strong> 97.5%</li>
+                <li><strong>최종 테스트 정확도 (Test Accuracy):</strong> 96.7%</li>
+            </ul>
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
+                <img src="imgaes/14모델확습결과.png" alt=""/>
+            </div>
+        </section>
+
+        <!-- 9. 변수 영향도 확인 -->
+        <section id="sec-feature" class="section">
+            <h2>변수 영향도 확인 (Feature Importance)</h2>
+            <p>분류 예측 모델에서 어떤 특성(Feature)이 붓꽃 품종 결정에 가장 큰 영향을 주었는지 기여도를 확인합니다.</p>
+            <ul>
+                <li>1위: 꽃잎 길이 (Petal Length) - <strong>45%</strong></li>
+                <li>2위: 꽃잎 너비 (Petal Width) - <strong>38%</strong></li>
+                <li>3위: 꽃받침 길이 (Sepal Length) - <strong>12%</strong></li>
+                <li>4위: 꽃받침 너비 (Sepal Width) - <strong>5%</strong></li>
+            </ul>
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
+                <img src="imgaes/15변수영향도확인.png" alt=""/>
+            </div>
+        </section>
+
+        <!-- 10. 시뮬레이션 -->
+        <section id="sec-sim" class="section">
+            <h2>시뮬레이션 (Prediction Simulation)</h2>
+            <p>사용자가 직접 수치를 입력하여 학습된 모델이 어떤 붓꽃 품종으로 예측하는지 테스트합니다.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                <div class="form-group"><label>꽃받침 길이 (cm)</label><input type="number" id="sl" value="5.1" step="0.1"></div>
+                <div class="form-group"><label>꽃받침 너비 (cm)</label><input type="number" id="sw" value="3.5" step="0.1"></div>
+                <div class="form-group"><label>꽃잎 길이 (cm)</label><input type="number" id="pl" value="1.4" step="0.1"></div>
+                <div class="form-group"><label>꽃잎 너비 (cm)</label><input type="number" id="pw" value="0.2" step="0.1"></div>
+            </div>
+            <button class="btn" onclick="runSimulation()">품종 예측하기</button>
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
+                <img src="imgaes/16시뮬레이션.png" alt=""/>
+            </div>
+        </section>
+            <div id="simResult" class="sim-result"></div>
+        </section>
+    </main>
+
+    <!-- JavaScript 상호작용 로직 -->
+    <script>
+        function switchSection(sectionId) {
+            // 모든 메뉴 항목에서 active 제거
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+
+            // 모든 섹션에서 active 제거
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // 클릭한 메뉴와 대응하는 섹션에 active 추가
+            event.currentTarget.classList.add('active');
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function runSimulation() {
+            const pl = parseFloat(document.getElementById('pl').value);
+            const resultBox = document.getElementById('simResult');
+            
+            // 간단한 규칙 기반 시뮬레이션 로직 (실제 학습 모델 대체)
+            let predicted = "Setosa (세토사)";
+            if (pl >= 3.0 && pl < 5.0) {
+                predicted = "Versicolor (버시컬러)";
+            } else if (pl >= 5.0) {
+                predicted = "Virginica (버지니카)";
+            }
+
+            resultBox.style.display = "block";
+            resultBox.innerHTML = `✨ 예측 결과: 입력하신 붓꽃의 예측 품종은 <strong>[${predicted}]</strong> 입니다!`;
+        }
+    </script>
+</body>
+</html>
