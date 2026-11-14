@@ -298,7 +298,7 @@
             <p>[문항2] 데이터의 전체 개수(observation)을 작성하시오 [데이터분석/기초정보분석]메뉴를 활용하시오</p>
               <p> 입력:  <input type="text" name="" /> </p>
             
-           <div> <img src="imgaes/1.png" alt="" class="photo"/> </div>
+           <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;"> <img src="imgaes/1.png" alt="" class="photo"/> </div>
             
              <br/>
             <br/>
@@ -308,7 +308,7 @@
             <p>[문항3]후면카메라해상도(rear_camera)의 중앙값(median)을 작성하시오[데이터분석/기초정보분석]</p>
              <p> 입력:  <input type="text" name="" /> </p>
             
-           <div> <img src="imgaes/2.png" alt="" class="photo"/> </div>
+           <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;"> <img src="imgaes/2.png" alt="" class="photo"/> </div>
             
         </section>
 
@@ -326,7 +326,7 @@
                 <li>740k-744k</li>
             </ul>
            <p> 입력:  <input type="text" name="" /> </p> 
-            <div> <img src="imgaes/3.png" alt="" class="photo"/> </div>
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;"> <img src="imgaes/3.png" alt="" class="photo"/> </div>
         </section>
 
     
@@ -349,7 +349,7 @@
               
             </ul>
             <p> 입력:  <input type="text" name="" /> </p> 
-            <div>
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
                 <img src="imgaes/4.png" alt="" class="photo"/><br/>
                 <img src="imgaes/5.png" alt="" class="photo"/><br/>
              </div>
@@ -390,38 +390,33 @@
                 </li>
             </ul>
              <div>
-                 accuracy: <input type="text"  name=""/>
+                 mean_squared_error: <input type="text"  name=""/><br/>
+                 r2: <input type="text"  name=""/><br/>
              </div>
-            <div class="photo">
-                <img src="imgaes/13딥러닝 학습.png" alt="" />
+            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
+                <img src="imgaes/6.png" alt="" /><br/><br/>
+                <img src="imgaes/7.png" alt="" /><br/><br/>
+                <img src="imgaes/8.png" alt="" /><br/><br/>
             </div>
         </section>
 
         <!-- 8. 모델 학습 결과 -->
         <section id="sec-result" class="section">
-            <h2>모델 학습 결과 (Learning Curve & Result)</h2>
-            <p>학습 과정에서의 Loss(손실 함수) 감소 추이와 정확도(Accuracy)를 확인합니다.</p>
-            <ul>
-                <li><strong>최종 학습 정확도 (Train Accuracy):</strong> 97.5%</li>
-                <li><strong>최종 테스트 정확도 (Test Accuracy):</strong> 96.7%</li>
-            </ul>
-            <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
-                <img src="imgaes/14모델확습결과.png" alt=""/>
-            </div>
+          
         </section>
 
         <!-- 9. 변수 영향도 확인 -->
         <section id="sec-feature" class="section">
             <h2>변수 영향도 확인 (Feature Importance)</h2>
-            <p>분류 예측 모델에서 어떤 특성(Feature)이 붓꽃 품종 결정에 가장 큰 영향을 주었는지 기여도를 확인합니다.</p>
+            <p>[문항7]문항6에서 학습한 딥러닝 모델 분석 결과, 중고기기가격(used_price)을 결정하는데 가장 중요한 요소를 고르시오[AI모델활용]</p>
             <ul>
-                <li>1위: 꽃잎 길이 (Petal Length) - <strong>45%</strong></li>
-                <li>2위: 꽃잎 너비 (Petal Width) - <strong>38%</strong></li>
-                <li>3위: 꽃받침 길이 (Sepal Length) - <strong>12%</strong></li>
-                <li>4위: 꽃받침 너비 (Sepal Width) - <strong>5%</strong></li>
+                <li>내장메모리(internal_memory)</li>
+                <li>사용일수(days_used)</li>
+                <li>출시년도(release_year)</li>
+                <li>구매가격(release_price)</li>
             </ul>
             <div style="background: #f1f5f9; height: 220px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-top: 20px; color: #64748b; font-weight: 600;">
-                <img src="imgaes/15변수영향도확인.png" alt=""/>
+                <img src="imgaes/9.png" alt=""/>
             </div>
         </section>
 
