@@ -350,9 +350,9 @@
             </ul>
             <p> 입력:  <input type="text" name="" /> </p> 
             <div>
-            <img src="imgaes/4.png" alt="" class="photo"/><br/>
-            <img src="imgaes/5.png" alt="" class="photo"/><br/>
-            </div>
+                <img src="imgaes/4.png" alt="" class="photo"/><br/>
+                <img src="imgaes/5.png" alt="" class="photo"/><br/>
+             </div>
            
         </section>
 
@@ -360,15 +360,34 @@
         <section id="sec-train" class="section">
             <h2>딥러닝 학습 (Deep Learning Training)</h2>
             <p>인공신경망(MLP) 모델의 하이퍼파라미터를 설정하고 학습을 시작합니다.</p>
+             <p>[문항6]다음 가이드에 따라 딥러닝 모델을 학습하고, 해당 모델의 평균제곱오차(MSE)를 작성하시오[AI모델 학습]
+            </p>
             <ul>
-                <li>output칼럼: 종류</li>
-                <li>제외컬럼 : 가공전 데이터</li>
-                <li>데이터유형 : category</li>
-                <li>디코더 : classifier</li>
-                <li>활성화 함수 : softmax</li>
-                <li>FC 레이어수 : 2</li>
-                <li>Epochs : 100</li>
-                <li>Optimizer : adam</li>
+                <li>작업 데이터 선택 : 문항5에서 처리한 데이터를 사용하시오</li>
+                <li>INPUT 칼럼 :
+                   <ul>
+                        <li>고객 ID(customer)는 제외칼럼으로 지정하시오</li>
+                        <li>범주형 변수는 데이터 인코더를 sparse로 설정하시오</li>
+                   </ul>
+                </li>
+                 <li>Output 칼럼 : 종속변수를 Output 칼럼으로 설정하시오
+                   
+                </li>
+                <li>컬럼 Parameter 설정:
+                   <ul>
+                        <li>데이터 유형은 모델 유형에 맞게 설정하시오</li>
+                        <li>FC 레이어수:2, FC레이어크기 :256, 드롭아웃0, 활성함수:relu</li>
+                   </ul>
+                </li>
+                  <li>학습 Parameter 설정: Epochs:20, Batch Size:128, Early Stop:5, Optimizer:adam, Learning Rate:0.001
+                   
+                </li>
+                 <li>답안작성 :
+                   <ul>
+                        <li>모델 학습후 오른쪽 상단의[모델저장]기능을 통해 모델을 저장하시오</li>
+                        <li>정답 작성은 반올림하여 소숫점넷째자리까지 작성하시오</li>
+                   </ul>
+                </li>
             </ul>
              <div>
                  accuracy: <input type="text"  name=""/>
